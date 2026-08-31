@@ -70,7 +70,6 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   const [regPostcode, setRegPostcode] = useState('1011');
   const [regPassword, setRegPassword] = useState('');
   const [regConfirmPassword, setRegConfirmPassword] = useState('');
-  const [regDietary, setRegDietary] = useState<DietaryType[]>(['halal']);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,12 +135,6 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
     setErrorMsg(null);
     setErrorCode(null);
     setMode('register');
-  };
-
-  const toggleDietaryPref = (d: DietaryType) => {
-    setRegDietary(prev => 
-      prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]
-    );
   };
 
   return (
@@ -416,36 +409,6 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
                   onChange={(e) => setRegConfirmPassword(e.target.value)}
                   className="w-full bg-white border border-[#D9CFBF] rounded-xl px-3 py-2 text-xs text-[#1E1B18] focus:outline-none focus:border-[#E06D53]"
                 />
-              </div>
-            </div>
-
-            {/* Dietary Preferences */}
-            <div className="space-y-1.5 pt-1">
-              <label className="font-bold text-[#3D372E]">My Dietary Preferences</label>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { id: 'halal', label: '100% Halal' },
-                  { id: 'veg', label: 'Vegetarian' },
-                  { id: 'vegan', label: 'Vegan' },
-                  { id: 'gf', label: 'Gluten-Free' },
-                  { id: 'nut-free', label: 'Nut-Free' }
-                ].map(d => {
-                  const isSel = regDietary.includes(d.id as DietaryType);
-                  return (
-                    <button
-                      key={d.id}
-                      type="button"
-                      onClick={() => toggleDietaryPref(d.id as DietaryType)}
-                      className={`px-3 py-1 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                        isSel 
-                          ? 'bg-[#E06D53] text-white border-[#E06D53]' 
-                          : 'bg-white text-[#706658] border-[#D9CFBF] hover:border-[#B4A48F]'
-                      }`}
-                    >
-                      {d.label}
-                    </button>
-                  );
-                })}
               </div>
             </div>
 

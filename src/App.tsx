@@ -131,7 +131,6 @@ export default function App() {
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCategory, setActiveCategory] = useState<ProductCategory>('all');
-  const [selectedDietary, setSelectedDietary] = useState<DietaryType[]>([]);
 
   // Modal Triggers
   const [isStoreSelectorOpen, setIsStoreSelectorOpen] = useState(false);
@@ -361,15 +360,9 @@ export default function App() {
         if (item.category !== activeCategory) return false;
       }
 
-      // 3. Dietary Filters
-      if (selectedDietary.length > 0) {
-        const hasAllDietary = selectedDietary.every(d => item.dietary.includes(d));
-        if (!hasAllDietary) return false;
-      }
-
       return true;
     });
-  }, [menuItems, searchQuery, activeCategory, selectedDietary]);
+  }, [menuItems, searchQuery, activeCategory]);
 
   // Cart Operations
   const handleAddToCart = (itemToAdd: CartItem) => {
@@ -508,13 +501,6 @@ export default function App() {
     setIsCustomizerOpen(true);
   };
 
-  // Toggle Dietary
-  const handleToggleDietary = (dietary: DietaryType) => {
-    setSelectedDietary(prev => 
-      prev.includes(dietary) ? prev.filter(d => d !== dietary) : [...prev, dietary]
-    );
-  };
-
   const handleOrderPlaced = (order: PlacedOrder) => {
     setActivePlacedOrder(order);
     setOrders(prev => [order, ...prev]);
@@ -642,9 +628,6 @@ export default function App() {
       <MenuFilterBar
         activeCategory={activeCategory}
         onSelectCategory={(cat) => setActiveCategory(cat)}
-        selectedDietary={selectedDietary}
-        onToggleDietary={handleToggleDietary}
-        onClearDietary={() => setSelectedDietary([])}
         itemCount={filteredMenuItems.length}
       />
 
@@ -674,15 +657,14 @@ export default function App() {
                   No matching dishes found
                 </h3>
                 <p className="text-xs text-[#706658] max-w-sm mx-auto">
-                  Try clearing your dietary filters or search keywords to view all our tiffins and pizzas.
+                  Try clearing your search keywords or switching categories to view all our delicious tiffins.
                 </p>
                 <button
                   onClick={() => {
                     setSearchQuery('');
-                    setSelectedDietary([]);
                     setActiveCategory('all');
                   }}
-                  className="py-2 px-4 bg-[#1E1B18] text-white font-bold text-xs rounded-xl"
+                  className="py-2 px-4 bg-[#1E1B18] text-white font-bold text-xs rounded-xl cursor-pointer"
                 >
                   Reset All Filters
                 </button>

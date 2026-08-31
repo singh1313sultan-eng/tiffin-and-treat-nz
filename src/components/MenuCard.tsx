@@ -3,14 +3,10 @@ import {
   Plus, 
   Sparkles, 
   Flame, 
-  ShieldCheck, 
-  Leaf, 
-  Wheat, 
-  Layers, 
   SlidersHorizontal,
   Users
 } from 'lucide-react';
-import { MenuItem, DietaryType } from '../types';
+import { MenuItem } from '../types';
 
 interface MenuCardProps {
   item: MenuItem;
@@ -23,37 +19,6 @@ export const MenuCard: React.FC<MenuCardProps> = ({
   onCustomize,
   onQuickAdd
 }) => {
-  const getDietaryBadge = (dietary: DietaryType) => {
-    switch (dietary) {
-      case 'halal':
-        return (
-          <span key="halal" className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">
-            <ShieldCheck className="w-3 h-3" /> Halal
-          </span>
-        );
-      case 'veg':
-        return (
-          <span key="veg" className="inline-flex items-center gap-1 text-[10px] font-bold text-green-800 bg-green-100/80 px-2 py-0.5 rounded-md">
-            <Leaf className="w-3 h-3" /> Veg
-          </span>
-        );
-      case 'vegan':
-        return (
-          <span key="vegan" className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-900 bg-emerald-200/70 px-2 py-0.5 rounded-md">
-            <Leaf className="w-3 h-3" /> Vegan
-          </span>
-        );
-      case 'gf':
-        return (
-          <span key="gf" className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-900 bg-amber-100/80 px-2 py-0.5 rounded-md">
-            <Wheat className="w-3 h-3" /> GF
-          </span>
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <div 
       id={`menu-card-${item.id}`}
@@ -120,11 +85,6 @@ export const MenuCard: React.FC<MenuCardProps> = ({
       {/* Content Body */}
       <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
         <div className="space-y-2">
-          
-          {/* Dietary Badges */}
-          <div className="flex flex-wrap gap-1">
-            {item.dietary.map((d) => getDietaryBadge(d))}
-          </div>
 
           {/* Title & Tagline */}
           <div>

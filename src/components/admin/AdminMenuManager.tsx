@@ -34,17 +34,6 @@ interface AdminMenuManagerProps {
   onQuickUpdatePrice: (itemId: string, newPrice: number) => void;
 }
 
-const ALL_DIETARY: { id: DietaryType; label: string }[] = [
-  { id: 'veg', label: 'Vegetarian' },
-  { id: 'vegan', label: 'Vegan' },
-  { id: 'halal', label: '100% Halal' },
-  { id: 'gf', label: 'Gluten-Free' },
-  { id: 'nut-free', label: 'Nut-Free' },
-  { id: 'dairy-free', label: 'Dairy-Free' },
-  { id: 'spicy', label: 'Spicy' },
-  { id: 'chef-special', label: "Chef's Signature" }
-];
-
 const CATEGORIES: { id: ProductCategory; label: string }[] = [
   { id: 'all', label: 'All Categories' },
   { id: 'tiffins', label: 'Tiffin Boxes' },
@@ -84,7 +73,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
   const [formOriginalPrice, setFormOriginalPrice] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formImage, setFormImage] = useState('https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80');
-  const [formDietary, setFormDietary] = useState<DietaryType[]>(['halal']);
   const [formCalories, setFormCalories] = useState('580 kcal');
   const [formServes, setFormServes] = useState('1 person');
   const [formIsChefSpecial, setFormIsChefSpecial] = useState(false);
@@ -131,7 +119,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
     setFormOriginalPrice('');
     setFormDescription('');
     setFormImage('https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80');
-    setFormDietary(['halal']);
     setFormCalories('580 kcal');
     setFormServes('1 person');
     setFormIsChefSpecial(false);
@@ -149,7 +136,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
     setFormOriginalPrice(item.originalPrice ? item.originalPrice.toString() : '');
     setFormDescription(item.description);
     setFormImage(item.image);
-    setFormDietary(item.dietary || []);
     setFormCalories(item.calories || '550 kcal');
     setFormServes(item.serves || '1 person');
     setFormIsChefSpecial(!!item.isChefSpecial);
@@ -172,7 +158,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
         originalPrice: origPriceNum,
         description: formDescription.trim() || editingItem.description,
         image: formImage.trim() || editingItem.image,
-        dietary: formDietary,
         calories: formCalories.trim() || undefined,
         serves: formServes.trim() || undefined,
         isChefSpecial: formIsChefSpecial,
@@ -189,7 +174,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
         originalPrice: origPriceNum,
         description: formDescription.trim() || 'Freshly made with authentic herbs and ingredients.',
         image: formImage.trim() || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
-        dietary: formDietary,
         calories: formCalories.trim() || undefined,
         serves: formServes.trim() || '1 person',
         isChefSpecial: formIsChefSpecial,
@@ -200,12 +184,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
     }
 
     setIsAddModalOpen(false);
-  };
-
-  const handleToggleFormDietary = (d: DietaryType) => {
-    setFormDietary(prev => 
-      prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d]
-    );
   };
 
   const handleSaveInlinePrice = (itemId: string) => {
@@ -615,30 +593,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                       className="w-10 h-10 rounded-xl object-cover border border-[#E8E0D2] shrink-0"
                     />
                   )}
-                </div>
-              </div>
-
-              {/* Dietary Tags */}
-              <div className="space-y-2">
-                <label className="text-[#3D372E] font-bold">Dietary Tags</label>
-                <div className="flex flex-wrap gap-2">
-                  {ALL_DIETARY.map(d => {
-                    const isSelected = formDietary.includes(d.id);
-                    return (
-                      <button
-                        type="button"
-                        key={d.id}
-                        onClick={() => handleToggleFormDietary(d.id)}
-                        className={`px-3 py-1.5 rounded-xl font-semibold border transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-[#E06D53] text-white border-[#E06D53]'
-                            : 'bg-white text-[#706658] border-[#D9CFBF] hover:border-[#B8AB99]'
-                        }`}
-                      >
-                        {d.label}
-                      </button>
-                    );
-                  })}
                 </div>
               </div>
 
