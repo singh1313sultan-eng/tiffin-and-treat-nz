@@ -59,20 +59,6 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
     }
   };
 
-  const handleQuickRoleLogin = async (role: 'Store General Manager' | 'Head Chef & Kitchen Lead' | 'Dispatch Supervisor', email: string, pin: string) => {
-    setErrorMsg(null);
-    setIsAuthenticating(true);
-    try {
-      const res = await apiAdminLogin(email, pin, role, 'all');
-      onAdminLoginSuccess(res.adminUser);
-      onClose();
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Fast pass login failed.');
-    } finally {
-      setIsAuthenticating(false);
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
       <div className="bg-[#1C1A17] text-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-neutral-700 space-y-6 animate-in zoom-in-95 duration-200">
@@ -202,39 +188,6 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           </button>
 
         </form>
-
-        {/* 1-Click Fast Pass Role Logins for seamless evaluation */}
-        <div className="pt-4 border-t border-neutral-800 space-y-2">
-          <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider text-center">
-            Or 1-Click Fast Pass Staff Login:
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button
-              onClick={() => handleQuickRoleLogin('Store General Manager', 'manager@tiffintreat.co.nz', '8899')}
-              className="p-2.5 bg-[#141210] hover:bg-neutral-800 rounded-xl border border-neutral-700 text-left transition-all cursor-pointer group"
-            >
-              <div className="font-bold text-xs text-white group-hover:text-[#E06D53]">General Manager</div>
-              <div className="text-[10px] text-neutral-400">PIN: 8899 • All features</div>
-            </button>
-
-            <button
-              onClick={() => handleQuickRoleLogin('Head Chef & Kitchen Lead', 'chef.rakesh@tiffintreat.co.nz', '5544')}
-              className="p-2.5 bg-[#141210] hover:bg-neutral-800 rounded-xl border border-neutral-700 text-left transition-all cursor-pointer group"
-            >
-              <div className="font-bold text-xs text-white group-hover:text-orange-400">Kitchen Head Chef</div>
-              <div className="text-[10px] text-neutral-400">PIN: 5544 • KDS & Stock</div>
-            </button>
-
-            <button
-              onClick={() => handleQuickRoleLogin('Dispatch Supervisor', 'dispatch@tiffintreat.co.nz', '1122')}
-              className="p-2.5 bg-[#141210] hover:bg-neutral-800 rounded-xl border border-neutral-700 text-left transition-all cursor-pointer group"
-            >
-              <div className="font-bold text-xs text-white group-hover:text-blue-400">Dispatch Lead</div>
-              <div className="text-[10px] text-neutral-400">PIN: 1122 • Delivery</div>
-            </button>
-          </div>
-        </div>
 
       </div>
     </div>

@@ -97,9 +97,23 @@ export default function App() {
     '⚡ Free Gulab Jamun Sundae on all orders over NZD $45 across Auckland & Christchurch!'
   );
 
-  // Authentication State
-  const [currentCustomer, setCurrentCustomer] = useState<CustomerRecord | null>(INITIAL_CUSTOMERS[0]); // default Sarah Jenkins logged in
-  const [currentAdmin, setCurrentAdmin] = useState<AdminUser | null>(null); // staff auth
+  // Authentication State - Only load saved user/admin sessions (No hardcoded default login)
+  const [currentCustomer, setCurrentCustomer] = useState<CustomerRecord | null>(() => {
+    try {
+      const saved = localStorage.getItem('tt_current_customer');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [currentAdmin, setCurrentAdmin] = useState<AdminUser | null>(() => {
+    try {
+      const saved = localStorage.getItem('tt_current_admin');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [isCustomerAuthOpen, setIsCustomerAuthOpen] = useState(false);
   const [customerAuthInitialMode, setCustomerAuthInitialMode] = useState<'login' | 'register'>('login');
   const [isCustomerProfileOpen, setIsCustomerProfileOpen] = useState(false);
@@ -175,18 +189,27 @@ export default function App() {
 
   const handleCustomerLogin = (customer: CustomerRecord) => {
     setCurrentCustomer(customer);
+    try {
+      localStorage.setItem('tt_current_customer', JSON.stringify(customer));
+    } catch {}
     showToast(`Welcome back, ${customer.name}!`);
   };
 
   const handleCustomerRegister = (newCustomer: CustomerRecord) => {
     setCustomers(prev => [newCustomer, ...prev]);
     setCurrentCustomer(newCustomer);
+    try {
+      localStorage.setItem('tt_current_customer', JSON.stringify(newCustomer));
+    } catch {}
     dbUpsertCustomer(newCustomer);
     showToast(`Welcome to Tiffin & Treat NZ, ${newCustomer.name}!`);
   };
 
   const handleCustomerLogout = () => {
     setCurrentCustomer(null);
+    try {
+      localStorage.removeItem('tt_current_customer');
+    } catch {}
     showToast('Signed out successfully');
   };
 
@@ -201,12 +224,18 @@ export default function App() {
   const handleAdminLoginSuccess = (admin: AdminUser) => {
     setCurrentAdmin(admin);
     setIsAdminOpen(true);
+    try {
+      localStorage.setItem('tt_current_admin', JSON.stringify(admin));
+    } catch {}
     showToast(`Staff Authenticated: ${admin.name} (${admin.role})`);
   };
 
   const handleAdminLogout = () => {
     setCurrentAdmin(null);
     setIsAdminOpen(false);
+    try {
+      localStorage.removeItem('tt_current_admin');
+    } catch {}
     showToast('Manager session locked & signed out');
   };
 
