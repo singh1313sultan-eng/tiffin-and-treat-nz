@@ -124,484 +124,364 @@ export const TOPPING_OPTIONS: ToppingOption[] = [
 ];
 
 export const MENU_ITEMS: MenuItem[] = [
-  // TIFFIN & THALIS
+  // ============================================================================
+  // 1. REGULAR (Daily Tiffin Menu - NZD $10.00 each)
+  // ============================================================================
   {
-    id: 'tiffin-royal-maharani',
-    name: 'The Royal 4-Tier Gourmet Tiffin',
-    tagline: 'Our signature multi-tier hot tiffin feast',
+    id: 'tiffin-kadhi-pakora',
+    name: 'Kadhi Pakora (Monday Special)',
+    tagline: 'Monday Tiffin • Crispy gram flour pakoras in tangy spiced yogurt curry',
     category: 'tiffins',
-    description: 'Freshly packed in insulated containers: 3 handmade butter rotis, Shahi Paneer or Butter Chicken, 18-hour slow Dal Makhani, fragrant Jeera Basmati Rice, cucumber mint raita, and 2 warm Gulab Jamuns.',
-    price: 24.90,
-    originalPrice: 28.50,
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'chef-special'],
+    description: 'Slow-cooked Punjabi style yogurt Kadhi infused with roasted cumin, fenugreek, and ginger, loaded with soft onion-spinach pakoras. Served with 3 hot phulkas/rotis and steamed basmati rice.',
+    price: 10.00,
+    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'halal'],
     isPopular: true,
     isChefSpecial: true,
-    calories: '890 kcal',
-    serves: '1 - 2 People',
+    calories: '620 kcal',
+    serves: '1 Person',
     customizable: true,
     defaultSpice: 'Medium',
-    includedTiers: ['3 Hot Butter Rotis / Naan', 'Choice of Royal Curry', 'Slow-cooked Dal Makhani', 'Jeera Basmati Pilaf', 'Cucumber Mint Raita & Gulab Jamun']
+    includedTiers: ['3 Hot Butter Rotis / Phulkas', 'Punjabi Kadhi Pakora', 'Steamed Basmati Rice', 'Spiced Mango Pickle']
   },
   {
-    id: 'tiffin-homestyle-dabba',
-    name: 'Homestyle Desi Dabba Box',
-    tagline: 'Just like mum made — comforting & wholesome',
+    id: 'tiffin-black-chana',
+    name: 'Black Chana (Tuesday Special)',
+    tagline: 'Tuesday Tiffin • Nutritious black chickpeas simmered in hearty Punjabi masala',
     category: 'tiffins',
-    description: '4 hot wholewheat phulkas, homestyle seasonal sabzi, comforting yellow tadka dal, steaming aromatic basmati rice, crispy papadum, spiced mango pickle & sweet treat.',
-    price: 19.90,
+    description: 'Traditional spiced Kala Chana cooked in an aromatic onion, ginger, garlic, tomato, and roasted cumin reduction. High in plant protein and fiber, served with 3 soft rotis and fragrant basmati rice.',
+    price: 10.00,
+    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80',
+    dietary: ['vegan', 'veg', 'halal'],
+    isPopular: true,
+    calories: '590 kcal',
+    serves: '1 Person',
+    customizable: true,
+    defaultSpice: 'Medium',
+    includedTiers: ['3 Hot Wholewheat Rotis', 'Kala Chana Curry', 'Basmati Rice', 'Kachumber Salad']
+  },
+  {
+    id: 'tiffin-daal-tadka',
+    name: 'Daal Tadka (Wednesday Special)',
+    tagline: 'Wednesday Tiffin • Yellow lentils tempered with cumin, garlic & desi ghee',
+    category: 'tiffins',
+    description: 'Comforting homestyle yellow toor & moong lentils double-tempered with golden garlic, cumin seeds, dry red chilies, and fresh coriander. Served with 3 handmade rotis and basmati rice.',
+    price: 10.00,
     image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
     dietary: ['veg', 'halal'],
     isPopular: true,
-    calories: '720 kcal',
+    calories: '560 kcal',
     serves: '1 Person',
     customizable: true,
     defaultSpice: 'Medium',
-    includedTiers: ['4 Soft Phulkas', 'Seasonal Vegetable Sabzi', 'Yellow Tadka Dal', 'Basmati Steamed Rice', 'Papadum & Mango Pickle']
+    includedTiers: ['3 Hot Phulkas', 'Golden Daal Tadka', 'Jeera Basmati Rice', 'Crispy Papadum']
   },
   {
-    id: 'tiffin-protein-power',
-    name: 'Tandoori Protein Power Tiffin',
-    tagline: 'High protein, clean nourishment',
+    id: 'tiffin-shalgam-mater',
+    name: 'Shalgam Mater (Thursday Special)',
+    tagline: 'Thursday Tiffin • Tender turnips & sweet garden peas in spiced Punjabi gravy',
     category: 'tiffins',
-    description: 'Generous portion of succulent char-grilled Tandoori chicken breast (or grilled Soya Chaap), spiced high-protein chickpea salad, quinoa & basmati blend, yellow lentil stew, and mint yogurt dip.',
-    price: 22.90,
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'gf'],
-    isPopular: false,
-    calories: '680 kcal | 52g Protein',
-    serves: '1 Person',
-    customizable: true,
-    defaultSpice: 'Kiwi Hot'
-  },
-  {
-    id: 'tiffin-vegan-vitality',
-    name: 'Vegan Vitality Harvest Tiffin',
-    tagline: '100% Plant-based comfort feast',
-    category: 'tiffins',
-    description: '3 fresh Methi Theplas (fenugreek flatbreads), coconut vegetable korma, Amritsari Chana Masala, turmeric spiced rice, fresh kachumber salad, and dairy-free mango chia pudding.',
-    price: 21.50,
+    description: 'Homestyle Punjabi Shalgam (turnips) and tender green peas cooked with caramelized onions, tomatoes, ginger, and warm ground spices. Served with 3 hot handmade rotis and rice.',
+    price: 10.00,
     image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
-    dietary: ['vegan', 'veg', 'dairy-free'],
+    dietary: ['vegan', 'veg', 'halal'],
     isPopular: false,
-    calories: '640 kcal',
+    calories: '510 kcal',
     serves: '1 Person',
     customizable: true,
-    defaultSpice: 'Medium'
+    defaultSpice: 'Medium',
+    includedTiers: ['3 Soft Rotis', 'Shalgam Mater Sabzi', 'Steamed Rice', 'Mango Pickle']
   },
   {
-    id: 'tiffin-student-express',
-    name: 'Express Lunch Tiffin Deal',
-    tagline: 'Quick, filling lunch special',
+    id: 'tiffin-aloo-pakora',
+    name: 'Aloo Pakora (Friday Special)',
+    tagline: 'Friday Tiffin • Spiced potato fritters simmered in rich North Indian curry',
     category: 'tiffins',
-    description: '2 layered buttery parathas with your choice of Shahi Paneer or Butter Chicken, fragrant rice, and house pickled onions.',
-    price: 15.90,
-    originalPrice: 18.50,
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal'],
-    isPopular: true,
-    calories: '610 kcal',
-    serves: '1 Person',
-    customizable: true,
-    defaultSpice: 'Medium'
-  },
-
-  // ARTISANAL & FUSION PIZZAS
-  {
-    id: 'pizza-butter-chicken-supreme',
-    name: 'Auckland Butter Chicken Supreme',
-    tagline: 'Our best-selling iconic fusion masterpiece',
-    category: 'pizzas',
-    description: 'Slow-simmered rich makhani tomato reduction, tender tandoori chicken thigh, red Spanish onions, bell peppers, fresh NZ mozzarella, garnished with fresh cilantro and spiced garlic butter drizzle.',
-    price: 21.90,
-    originalPrice: 24.50,
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'chef-special'],
-    isPopular: true,
-    isChefSpecial: true,
-    calories: '1120 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Medium'
-  },
-  {
-    id: 'pizza-paneer-tikka-feast',
-    name: 'Royal Paneer Tikka Feast',
-    tagline: 'Smoky spiced cottage cheese with creamy gravy',
-    category: 'pizzas',
-    description: 'Charred tandoori paneer cubes, roasted capsicum, red onion rings, fresh green chilies, NZ mozzarella on a rich fenugreek spiced sauce, finished with fresh mint chutney swirl.',
-    price: 20.90,
-    image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg', 'halal'],
-    isPopular: true,
-    calories: '1050 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Kiwi Hot'
-  },
-  {
-    id: 'pizza-smoky-lamb-peri-peri',
-    name: 'Canterbury Smoky Lamb & Peri-Peri',
-    tagline: 'Slow roasted NZ Canterbury lamb shreds',
-    category: 'pizzas',
-    description: '12-hour braised spiced lamb shoulder, baby spinach, caramelized Spanish onions, roasted garlic cloves, creamy mozzarella, topped with our fiery house peri-peri drizzle.',
-    price: 23.90,
-    image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'chef-special'],
-    isPopular: true,
-    calories: '1190 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Kiwi Hot'
-  },
-  {
-    id: 'pizza-truffle-wild-mushroom',
-    name: 'Truffle & Wild Forest Mushroom',
-    tagline: 'Earthy luxury with Italian white truffle essence',
-    category: 'pizzas',
-    description: 'Sautéed portobello and button mushrooms, roasted garlic white crema, Fior di Latte mozzarella, aged parmesan shavings, fresh garden thyme, and aromatic white truffle oil.',
-    price: 22.90,
-    image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg'],
-    isPopular: false,
-    calories: '980 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Mild'
-  },
-  {
-    id: 'pizza-fiery-vindaloo',
-    name: 'Fiery Goan Vindaloo Flame',
-    tagline: 'For true spice connoisseurs',
-    category: 'pizzas',
-    description: 'Tangy red vindaloo chili base, pulled marinated chicken or beef, pickled jalapeños, crispy fried shallots, cracked black pepper, and melted mozzarella.',
-    price: 21.90,
-    image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'spicy'],
-    isPopular: false,
-    calories: '1090 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Indian Fire 🔥'
-  },
-  {
-    id: 'pizza-double-pepperoni-hot-honey',
-    name: 'Artisan Double Pepperoni & Hot Honey',
-    tagline: 'Crispy cupping pepperoni with habanero blossom honey',
-    category: 'pizzas',
-    description: 'Layers of crispy beef pepperoni cups, rich San Marzano tomato sauce, double mozzarella, finished with a generous drizzle of hot chili-infused blossom honey.',
-    price: 21.90,
-    image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal'],
-    isPopular: true,
-    calories: '1150 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Medium'
-  },
-  {
-    id: 'pizza-classic-margherita',
-    name: 'Classic Margherita D.O.P',
-    tagline: 'Simple, authentic perfection',
-    category: 'pizzas',
-    description: 'Sweet San Marzano crushed tomato sauce, fresh buffalo mozzarella, fragrant whole sweet basil leaves, extra virgin olive oil, and sea salt flakes.',
-    price: 18.50,
-    image: 'https://images.unsplash.com/photo-1573821663912-569905455b1c?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg'],
-    isPopular: true,
-    calories: '890 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Mild'
-  },
-  {
-    id: 'pizza-tandoori-garlic-prawn',
-    name: 'Coastal Tandoori Garlic Prawn',
-    tagline: 'Succulent king prawns with lime & garlic cream',
-    category: 'pizzas',
-    description: 'Marinated juicy king tiger prawns, sweet cherry tomatoes, roasted garlic cloves, baby spinach, mozzarella, fresh dill, and zesty lime cream swirl.',
-    price: 24.90,
-    image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'chef-special'],
-    isPopular: false,
-    isChefSpecial: true,
-    calories: '1020 kcal (Large)',
-    serves: '2 - 3 People',
-    customizable: true,
-    supportsHalfHalf: true,
-    defaultSpice: 'Medium'
-  },
-
-  // STREET TREATS & STARTERS
-  {
-    id: 'side-samosa-chaat',
-    name: 'Royal Samosa Chaat Platter',
-    tagline: 'Crisp handmade samosas with spiced chutneys',
-    category: 'starters',
-    description: 'Two golden potato & pea samosas crushed and layered with warm spiced chana masala, chilled sweet yogurt, tangy tamarind & mint chutney, fresh pomegranate, and crispy sev.',
-    price: 12.90,
+    description: 'Crispy spiced potato fritters soaked in a rich, flavorful tomato-onion masala with fragrant herbs. The ultimate Friday comfort food, served with 3 hot rotis and basmati rice.',
+    price: 10.00,
     image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
     dietary: ['veg', 'halal'],
     isPopular: true,
-    calories: '480 kcal',
-    serves: '1 - 2 People'
+    calories: '640 kcal',
+    serves: '1 Person',
+    customizable: true,
+    defaultSpice: 'Medium',
+    includedTiers: ['3 Hot Butter Rotis', 'Aloo Pakora Curry', 'Basmati Rice', 'Salad']
   },
   {
-    id: 'side-cheesy-garlic-naan-sticks',
-    name: 'Stuffed Cheesy Garlic Naan-Sticks',
-    tagline: 'Oven-baked cheesy perfection with makhani dip',
-    category: 'starters',
-    description: 'Eight pieces of freshly baked garlic & herb dough sticks stuffed with molten cheddar & mozzarella, served with a pot of warm butter chicken / makhani gravy dip.',
-    price: 11.50,
-    image: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg'],
+    id: 'tiffin-allo-jeera',
+    name: 'Allo Jeera (Saturday Special)',
+    tagline: 'Saturday Tiffin • Roasted cumin potatoes with fresh herbs & ginger',
+    category: 'tiffins',
+    description: 'Tender diced potatoes sautéed with toasted roasted cumin seeds, turmeric, ginger, and fresh green chilies. A classic dry Punjabi sabzi served with 3 fluffy phulkas and basmati rice.',
+    price: 10.00,
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80',
+    dietary: ['vegan', 'veg', 'halal'],
     isPopular: true,
-    calories: '540 kcal',
-    serves: '2 - 3 People'
+    calories: '550 kcal',
+    serves: '1 Person',
+    customizable: true,
+    defaultSpice: 'Medium',
+    includedTiers: ['3 Wholewheat Phulkas', 'Allo Jeera Sabzi', 'Basmati Steamed Rice', 'Pickled Chillies']
   },
   {
-    id: 'side-chicken-tikka-skewers',
-    name: 'Charred Chicken Tikka Skewers (4 pcs)',
-    tagline: 'Smoky clay-oven grilled boneless chicken',
-    category: 'starters',
-    description: 'Succulent boneless chicken thigh pieces marinated overnight in yogurt, Kashmiri paprika, and roasted spices, served with fresh lemon wedges and mint coriander yogurt dip.',
-    price: 14.50,
-    image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'gf'],
-    isPopular: true,
-    calories: '420 kcal | 40g Protein',
-    serves: '2 People'
-  },
-  {
-    id: 'side-gunpowder-fries',
-    name: 'Gunpowder Masala Crinkle Fries',
-    tagline: 'Crisp fries with southern Indian aromatic spices',
-    category: 'starters',
-    description: 'Crunchy golden fries tossed in our secret Southern Indian gunpowder podi spice mix, served with garlic aioli and sweet chili dip.',
-    price: 8.90,
-    image: 'https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=800&q=80',
-    dietary: ['vegan', 'veg', 'gf'],
-    isPopular: false,
-    calories: '390 kcal',
-    serves: '1 - 2 People'
-  },
-  {
-    id: 'side-crispy-amritsari-fish',
-    name: 'Crispy Amritsari Fish Bites',
-    tagline: 'Ajwain & gram flour spiced fish goujons',
-    category: 'starters',
-    description: 'Lightly battered fresh fish fillets seasoned with carom seeds and chaat masala, fried until golden and crisp. Served with spicy tartare and lemon.',
-    price: 15.90,
-    image: 'https://images.unsplash.com/photo-1535007802871-4131f70c4417?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'gf'],
-    isPopular: false,
-    calories: '450 kcal',
-    serves: '2 People'
-  },
-
-  // BIRYANI & RICE BOWLS
-  {
-    id: 'biryani-hyderabadi-dum-chicken',
-    name: 'Hyderabadi Dum Chicken Biryani',
-    tagline: 'Slow steam cooked with saffron & caramelized onions',
-    category: 'biryani',
-    description: 'Long-grain royal basmati rice cooked in traditional sealed pot with tender bone-in spiced chicken, whole spices, mint, saffron, accompanied by rich Mirchi Ka Salan curry and chilled raita.',
-    price: 21.90,
-    originalPrice: 24.00,
-    image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
-    dietary: ['halal', 'chef-special', 'gf'],
+    id: 'tiffin-mater-paneer',
+    name: 'Mater Paneer (Daily / Sunday Special)',
+    tagline: 'Daily Favorite • Fresh cottage cheese & sweet peas in spiced tomato gravy',
+    category: 'tiffins',
+    description: 'Soft fresh cottage cheese cubes and sweet garden peas simmered in a luscious onion-tomato gravy with roasted kasuri methi and garam masala. Served with 3 fresh rotis and basmati rice.',
+    price: 10.00,
+    image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'halal', 'chef-special'],
     isPopular: true,
     isChefSpecial: true,
-    calories: '860 kcal',
-    serves: '1 - 2 People',
+    calories: '670 kcal',
+    serves: '1 Person',
     customizable: true,
-    defaultSpice: 'Medium'
-  },
-  {
-    id: 'biryani-royal-nizam-veg',
-    name: 'Royal Shahi Paneer & Veg Biryani',
-    tagline: 'Fragrant garden vegetables & golden paneer',
-    category: 'biryani',
-    description: 'Layers of fragrant basmati rice with marinated paneer cubes, french beans, carrots, green peas, roasted cashews, fried onions, and kewra water. Served with cooling cucumber raita.',
-    price: 19.90,
-    image: 'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg', 'halal', 'gf'],
-    isPopular: false,
-    calories: '740 kcal',
-    serves: '1 - 2 People',
-    customizable: true,
-    defaultSpice: 'Medium'
+    defaultSpice: 'Medium',
+    includedTiers: ['3 Hot Butter Rotis', 'Mater Paneer Curry', 'Jeera Basmati Rice', 'Cucumber Raita']
   },
 
-  // DESSERTS & SWEET TREATS
+  // ============================================================================
+  // 2. SPECIAL (Specialities & Curries)
+  // ============================================================================
   {
-    id: 'dessert-gulab-jamun-cheesecake',
-    name: 'Gulab Jamun Baked Cheesecake',
-    tagline: 'Our signature East-meets-West dessert',
-    category: 'desserts',
-    description: 'Creamy New York style vanilla baked cheesecake with embedded warm cardamon-scented gulab jamun dumplings on a spiced biscuit crumb, topped with crushed pistachios & edible rose petals.',
-    price: 10.90,
-    image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&q=80',
+    id: 'special-baingan-bharta',
+    name: 'Baingan Bharta (Eggplant)',
+    tagline: 'Special • Clay-oven smoked eggplant mashed with peas, tomatoes & ginger',
+    category: 'tiffins',
+    description: 'Smoky fire-roasted whole eggplant slow-cooked with fresh ginger, garlic, tomatoes, green peas, and green chilies. Rich in rustic Punjabi flavors, served with 3 hot butter rotis.',
+    price: 12.50,
+    image: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=800&q=80',
+    dietary: ['vegan', 'veg', 'halal', 'chef-special'],
+    isPopular: true,
+    isChefSpecial: true,
+    calories: '530 kcal',
+    serves: '1 - 2 People',
+    customizable: true,
+    defaultSpice: 'Medium',
+    includedTiers: ['3 Hot Butter Rotis', 'Smoky Baingan Bharta', 'Basmati Rice', 'Pickle & Salad']
+  },
+  {
+    id: 'special-paneer-burji',
+    name: 'Paneer Burji',
+    tagline: 'Special • Fresh crumbled paneer sautéed with onions, bell peppers & royal spices',
+    category: 'tiffins',
+    description: 'Hand-crumbled fresh cottage cheese wok-tossed with finely chopped onions, juicy tomatoes, green capsicum, turmeric, and fresh herbs. Served with 3 warm butter rotis or parathas.',
+    price: 13.50,
+    image: 'https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'halal', 'chef-special'],
+    isPopular: true,
+    isChefSpecial: true,
+    calories: '680 kcal | 28g Protein',
+    serves: '1 - 2 People',
+    customizable: true,
+    defaultSpice: 'Kiwi Hot',
+    includedTiers: ['3 Layered Parathas / Rotis', 'Spiced Paneer Burji', 'Kachumber Salad', 'Mint Chutney']
+  },
+  {
+    id: 'special-sahi-paneer',
+    name: 'Sahi Paneer',
+    tagline: 'Special • Velvety cashew, cream & cardamom gravy with tender paneer',
+    category: 'tiffins',
+    description: 'Tender paneer cubes simmered in a silken, royal sauce made with soaked cashews, fresh cream, saffron, and aromatic whole spices. Served with 3 hot butter naans or basmati pilaf.',
+    price: 13.50,
+    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'halal', 'chef-special'],
+    isPopular: true,
+    isChefSpecial: true,
+    calories: '720 kcal',
+    serves: '1 - 2 People',
+    customizable: true,
+    defaultSpice: 'Mild',
+    includedTiers: ['3 Butter Naans / Rotis', 'Royal Sahi Paneer', 'Saffron Basmati Rice', 'Sweet Treat']
+  },
+  {
+    id: 'special-green-soya-beans',
+    name: 'Green Soya Beans',
+    tagline: 'Special • Fresh tender green soya beans simmered in protein-rich masala',
+    category: 'tiffins',
+    description: 'Nutritious fresh green soya beans (Hara Chana / Edamame) simmered in a spiced tomato, ginger, garlic, and cumin gravy. High in natural plant-based protein, served with 3 rotis and rice.',
+    price: 12.00,
+    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80',
+    dietary: ['vegan', 'veg', 'halal'],
+    isPopular: false,
+    calories: '540 kcal | 26g Protein',
+    serves: '1 - 2 People',
+    customizable: true,
+    defaultSpice: 'Medium',
+    includedTiers: ['3 Wholewheat Rotis', 'Green Soya Bean Curry', 'Steamed Rice', 'Salad']
+  },
+
+  // ============================================================================
+  // 3. WEEKEND SPECIAL & POPULAR EXTRAS
+  // ============================================================================
+  {
+    id: 'weekend-indian-style-kulcha',
+    name: 'Indian Style Kulcha',
+    tagline: 'Weekend Special • Clay-oven crisped stuffed bread served with spiced chana & tamarind dip',
+    category: 'starters',
+    description: 'Authentic crispy, layered Amritsari kulcha stuffed with spiced potatoes, onions, and pomegranate seeds, topped with desi butter. Served with tangy Punjabi chole and pickled onions.',
+    price: 11.90,
+    image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80',
     dietary: ['veg', 'chef-special'],
     isPopular: true,
     isChefSpecial: true,
-    calories: '420 kcal',
-    serves: '1 Person'
+    calories: '580 kcal',
+    serves: '1 - 2 People',
+    customizable: true
   },
   {
-    id: 'dessert-molten-lava-cake',
-    name: 'Warm Belgian Chocolate Lava Cake',
-    tagline: 'Gooey decadent molten chocolate core',
+    id: 'weekend-chai-and-churi',
+    name: 'Chai and Churi',
+    tagline: 'Weekend Special • Steaming spiced masala chai paired with warm desi ghee sweet churi',
     category: 'desserts',
-    description: 'Rich dark chocolate sponge with a warm flowing liquid fudge centre, served with a cup of NZ vanilla bean ice cream.',
+    description: 'Traditional Punjabi soul food: freshly rolled hot rotis hand-crushed with pure desi ghee and raw jaggery/shakkar, served alongside a piping hot cup of spiced cardamom ginger karak chai.',
     price: 9.90,
-    image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80',
     dietary: ['veg'],
     isPopular: true,
-    calories: '460 kcal',
+    isChefSpecial: true,
+    calories: '490 kcal',
     serves: '1 Person'
   },
   {
-    id: 'dessert-mango-kulfi-pot',
-    name: 'Royal Alphonso Mango Kulfi Pot',
-    tagline: 'Traditional slow-reduced frozen dairy dessert',
-    category: 'desserts',
-    description: 'Silky frozen Indian ice cream made from slow simmered milk infused with real Alphonso mango pulp, saffron, cardamom, and almond slivers in a traditional earthen pot.',
-    price: 7.90,
-    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg', 'gf'],
-    isPopular: false,
-    calories: '280 kcal',
-    serves: '1 Person'
+    id: 'weekend-dahi-bhalla',
+    name: 'Dahi Bhalla',
+    tagline: 'Weekend Special • Soft lentil dumplings in chilled spiced yogurt with sweet & mint chutneys',
+    category: 'starters',
+    description: 'Melt-in-mouth fluffy lentil dumplings immersed in velvety chilled sweetened yogurt, drizzled with tangy tamarind dates chutney, zesty mint chutney, roasted cumin, and crunchy sev.',
+    price: 9.90,
+    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'halal'],
+    isPopular: true,
+    calories: '380 kcal',
+    serves: '1 - 2 People'
   },
   {
-    id: 'dessert-pistachio-rasmalai',
-    name: 'Saffron & Pistachio Rasmalai (2 pcs)',
-    tagline: 'Delicate milk dumplings in saffron cream',
-    category: 'desserts',
-    description: 'Soft, spongy cottage cheese patties soaked in luscious thickened saffron and green cardamom milk, garnished with toasted pistachios.',
-    price: 8.50,
-    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg', 'gf'],
-    isPopular: false,
-    calories: '310 kcal',
-    serves: '1 Person'
+    id: 'weekend-allo-takki',
+    name: 'Allo Takki',
+    tagline: 'Weekend Special • Golden shallow-fried spiced potato patties with chole & chutneys',
+    category: 'starters',
+    description: 'Two golden-brown crisp spiced potato cutlets topped with warm chickpea curry, whipped spiced yogurt, tamarind chutney, mint chutney, ginger juliennes, and fresh coriander.',
+    price: 9.90,
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'halal'],
+    isPopular: true,
+    calories: '420 kcal',
+    serves: '1 - 2 People'
+  },
+  {
+    id: 'special-gym-meal',
+    name: 'Gym Meal (High Protein)',
+    tagline: 'Fitness Special • Clean protein bowl with paneer/soya, spiced beans, quinoa & greens',
+    category: 'tiffins',
+    description: 'Designed for fitness enthusiasts: 42g clean protein bowl featuring grilled spiced paneer or soya chunks, steamed green edamame beans, sautéed broccoli, brown basmati / quinoa pilaf, and mint yogurt dressing.',
+    price: 14.50,
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'gf', 'halal', 'chef-special'],
+    isPopular: true,
+    calories: '520 kcal | 42g Protein',
+    serves: '1 Person',
+    customizable: true,
+    defaultSpice: 'Medium',
+    includedTiers: ['Grilled Spiced Paneer / Soya', 'Steamed Edamame & Broccoli', 'Quinoa Brown Rice Blend', 'Mint Protein Dressing']
   },
 
-  // BEVERAGES & LASSIS
+  // ============================================================================
+  // 4. BEVERAGES & SWEETS
+  // ============================================================================
   {
-    id: 'drink-alphonso-mango-lassi',
-    name: 'Velvety Alphonso Mango Lassi (400ml)',
-    tagline: 'Chilled creamy yogurt smoothie with pure mango',
+    id: 'drink-masala-chai',
+    name: 'Desi Masala Karak Chai',
+    tagline: 'Warming ginger, green cardamom & cinnamon brewed tea',
+    category: 'drinks',
+    description: 'Traditional Punjabi black tea simmered with freshly crushed ginger, green cardamom pods, cinnamon bark, and creamy whole milk.',
+    price: 4.50,
+    image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80',
+    dietary: ['veg', 'gf'],
+    isPopular: true,
+    calories: '120 kcal',
+    serves: '1 Cup'
+  },
+  {
+    id: 'drink-mango-lassi',
+    name: 'Alphonso Mango Lassi (400ml)',
+    tagline: 'Chilled creamy yogurt smoothie with pure mango pulp',
     category: 'drinks',
     description: 'Handcrafted with creamy whole milk yogurt, premium Indian Alphonso mango puree, a dash of cardamom, and garnished with roasted pistachios.',
-    price: 6.90,
+    price: 5.90,
     image: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80',
     dietary: ['veg', 'gf'],
     isPopular: true,
     calories: '240 kcal',
-    serves: '1 Person'
+    serves: '1 Bottle'
   },
   {
-    id: 'drink-rose-cardamom-lassi',
-    name: 'Royal Rose & Cardamom Lassi',
-    tagline: 'Fragrant sweet yogurt refresher',
+    id: 'drink-sweet-lassi',
+    name: 'Patiala Sweet Lassi (400ml)',
+    tagline: 'Classic Punjabi thick churned sweet lassi with malai',
     category: 'drinks',
-    description: 'Refreshing yogurt cooler flavored with organic Damascus rose syrup and crushed cardamoms.',
-    price: 6.50,
+    description: 'Thick hand-churned sweet yogurt drink flavored with rosewater, green cardamom, and topped with fresh clotted cream (malai).',
+    price: 5.50,
     image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80',
     dietary: ['veg', 'gf'],
     isPopular: false,
-    calories: '210 kcal',
-    serves: '1 Person'
-  },
-  {
-    id: 'drink-masala-chai-flask',
-    name: 'Freshly Brewed Masala Chai Flask',
-    tagline: 'Warming ginger, cardamom & cinnamon tea',
-    category: 'drinks',
-    description: 'Traditional Assam CTC black tea simmered with fresh crushed ginger, green cardamom pods, cinnamon, and whole milk. Serves 2 cups.',
-    price: 5.90,
-    image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80',
-    dietary: ['veg', 'gf'],
-    isPopular: true,
-    calories: '150 kcal',
-    serves: '2 Cups'
-  },
-  {
-    id: 'drink-nz-craft-soda',
-    name: 'NZ Artisan Organic Feijoa Soda',
-    tagline: 'Crisp sparkling local fruit soda',
-    category: 'drinks',
-    description: 'Crafted locally in New Zealand using real organic feijoa juice and lightly sparkling artesian spring water.',
-    price: 5.50,
-    image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80',
-    dietary: ['vegan', 'veg', 'gf'],
-    isPopular: false,
-    calories: '95 kcal',
-    serves: '1 Can (330ml)'
+    calories: '220 kcal',
+    serves: '1 Bottle'
   }
 ];
 
 export const COMBO_DEALS: ComboDeal[] = [
   {
     id: 'deal-lunch-tiffin-express',
-    title: 'Weekday Tiffin Express Lunch',
+    title: 'Daily Regular Tiffin Feast Combo',
     badge: 'NZD $15.90 ONLY',
-    tagline: 'The ultimate lunchtime power deal',
+    tagline: 'The ultimate wholesome lunch deal',
     price: 15.90,
-    originalPrice: 23.50,
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
+    originalPrice: 20.40,
+    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
     serves: '1 Person',
     itemsIncluded: [
-      '1x Homestyle Tiffin Box or Paratha Curry Set',
-      '1x Chilled Mango Lassi or NZ Craft Soda',
-      '1x Sweet Treat (Warm Gulab Jamun)'
+      '1x Daily Regular Tiffin of the Day (Kadhi/Chana/Daal/Shalgam/Pakora/Allo/Paneer)',
+      '1x Chilled Alphonso Mango Lassi or Sweet Lassi',
+      '1x Crispy Papadum & Spiced Chutney Pot'
     ],
-    description: 'Perfect for office lunches or a quick wholesome midday meal. Available Monday to Friday 11:30 AM to 3:00 PM.'
+    description: 'Perfect for office lunches or an authentic homestyle midday meal. Available Monday to Sunday 11:00 AM to 3:00 PM.'
   },
   {
-    id: 'deal-tiffin-and-pizza-duo',
-    title: 'The Tiffin & Pizza Duo Feast',
-    badge: 'SAVE 25%',
-    tagline: 'Best of both worlds for two',
-    price: 39.90,
-    originalPrice: 53.00,
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
-    serves: '2 - 3 People',
+    id: 'deal-special-curry-duo',
+    title: 'Punjabi Speciality Duo Feast',
+    badge: 'SAVE 20%',
+    tagline: 'Choice of Sahi Paneer or Paneer Burji for two',
+    price: 28.90,
+    originalPrice: 36.00,
+    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
+    serves: '2 People',
     itemsIncluded: [
-      '1x Large Gourmet / Fusion Pizza of Choice',
-      '1x Royal 4-Tier Gourmet Tiffin or Dum Biryani',
-      '1x Cheesy Garlic Naan Sticks (8 pcs) with Dip',
-      '2x Cold Drinks (Lassi or Soda)'
+      '1x Special Curry (Sahi Paneer or Paneer Burji or Baingan Bharta)',
+      '1x Regular Daal Tadka or Kala Chana Curry',
+      '6x Hot Butter Rotis / Phulkas & Jeera Rice',
+      '2x Cold Mango Lassis'
     ],
-    description: 'Cannot decide between a comforting hot curry tiffin and a sizzling artisanal pizza? Get both with sides and drinks!'
+    description: 'A generous feast for two featuring our richest chef specials with warm rotis, fragrant rice, and refreshing lassis.'
   },
   {
-    id: 'deal-family-mega-banquet',
-    title: 'Grand Family Feast & Treats',
-    badge: 'FAMILY COMBO',
-    tagline: 'Feeds 4 to 6 people generously',
-    price: 69.90,
-    originalPrice: 94.50,
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80',
-    serves: '4 - 6 People',
+    id: 'deal-weekend-chaat-kulcha-party',
+    title: 'Weekend Kulcha & Chaat Party',
+    badge: 'WEEKEND POPULAR',
+    tagline: 'Feeds 3 to 4 people generously',
+    price: 44.90,
+    originalPrice: 58.50,
+    image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80',
+    serves: '3 - 4 People',
     itemsIncluded: [
-      '2x Large Gourmet Artisanal Pizzas',
-      '1x Hyderabadi Dum Chicken or Veg Biryani',
-      '1x Royal Samosa Chaat Platter',
-      '1x Stuffed Cheesy Garlic Naan-Sticks',
-      '2x Gulab Jamun Cheesecakes or Lava Cakes',
-      '1x 1.5L Beverage of Choice'
+      '2x Indian Style Amritsari Kulcha with Chole',
+      '1x Royal Dahi Bhalla Platter',
+      '1x Crispy Allo Takki Chaat',
+      '2x Chai and Churi Delicacy Sets'
     ],
-    description: 'The ultimate weekend family gathering package loaded with entrees, mains, pizzas, and indulgent desserts.'
+    description: 'The ultimate weekend family gathering package loaded with stuffed kulchas, street chaat, and sweet desi ghee churi.'
   }
 ];
 
@@ -615,66 +495,66 @@ export const PROMO_COUPONS: PromoCoupon[] = [
   },
   {
     code: 'TIFFIN5',
-    description: '$5.00 off on any tiffin or pizza order over $30',
+    description: '$5.00 off on any order over $30',
     discountType: 'fixed',
     discountValue: 5.00,
     minOrder: 30
   },
   {
     code: 'FEAST20',
-    description: '20% off on family orders over $60',
+    description: '20% off on family orders over $50',
     discountType: 'percentage',
     discountValue: 20,
-    minOrder: 60
+    minOrder: 50
   }
 ];
 
 export const WEEKLY_SUBSCRIPTION_PLANS: WeeklySubscriptionPlan[] = [
   {
     id: 'sub-5-day-lunch',
-    title: '5-Day Weekday Lunch Pass',
+    title: '5-Day Daily Regular Tiffin Pass',
     mealsPerWeek: 5,
-    pricePerMeal: 15.50,
-    weeklyTotal: 77.50,
-    badge: 'MOST POPULAR FOR OFFICE',
-    description: 'Hot gourmet tiffin delivered directly to your office desk or home every Monday to Friday between 11:45 AM and 1:00 PM.',
+    pricePerMeal: 10.00,
+    weeklyTotal: 50.00,
+    badge: 'MOST POPULAR',
+    description: 'Hot authentic homestyle tiffin (Kadhi Pakora, Black Chana, Daal Tadka, Shalgam Mater, Aloo Pakora) delivered fresh Monday to Friday.',
     features: [
-      'Rotated daily menu with 5 unique authentic menus every week',
-      'Hot thermal dabba insulation keeps food steaming hot',
-      'Pause, skip days or cancel anytime via online dashboard',
-      'Zero delivery fee for central Auckland business zones'
+      'Authentic daily rotating menu straight from our kitchen schedule',
+      'Includes 3 rotis, daily curry, steamed basmati rice & pickle',
+      'Pause, skip days or cancel anytime via dashboard',
+      'Zero delivery fee for Auckland & Christchurch central areas'
     ],
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80'
+    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: 'sub-7-day-dinner',
-    title: '7-Day Complete Dinner Plan',
+    title: '7-Day Complete Tiffin Plan (Mon - Sun)',
     mealsPerWeek: 7,
-    pricePerMeal: 16.90,
-    weeklyTotal: 118.30,
-    badge: 'SAVE $30 / WEEK',
-    description: 'Never worry about dinner cooking or cleaning. 7 healthy, nourishing homestyle meals delivered fresh between 6:00 PM and 7:30 PM.',
+    pricePerMeal: 10.00,
+    weeklyTotal: 70.00,
+    badge: 'FULL WEEK PASS',
+    description: 'Enjoy a complete week of delicious home-cooked meals including Saturday Allo Jeera and Sunday Mater Paneer feasts.',
     features: [
-      'Complete balanced meal: 4 Rotis, 2 Curries (Dal + Sabzi/Chicken), Rice & Salad',
-      'Customizable dietary preferences (Strict Veg, Halal, Jain, Keto)',
-      'Free weekend dessert treat included every Saturday',
-      'Eco-friendly returnable stainless steel tiffins'
+      'Complete 7-day culinary variety without cooking or dishwashing',
+      'Includes Weekend Specials & Sunday Mater Paneer',
+      'Free weekend Masala Karak Chai included every Saturday',
+      'Eco-friendly thermal insulated tiffins'
     ],
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80'
+    image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: 'sub-student-flex',
-    title: 'Student & Youth Flexible Pass (3 Days)',
+    title: 'Student & Youth 3-Day Pass',
     mealsPerWeek: 3,
-    pricePerMeal: 14.50,
-    weeklyTotal: 43.50,
-    description: 'Pick any 3 days of the week for hearty comforting food that fuels your study sessions without breaking the bank.',
+    pricePerMeal: 10.00,
+    weeklyTotal: 30.00,
+    description: 'Pick any 3 days of the week for wholesome, affordable comfort food.',
     features: [
-      'Huge portions with extra rotis and rice',
-      'Pick any 3 days (Mon-Sun)',
-      'Free soft drink can with every tiffin delivery'
+      'Generous portions with extra phulkas and rice',
+      'Pick any 3 days (Mon - Sun)',
+      'Free cup of Masala Chai with every tiffin delivery'
     ],
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80'
+    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
@@ -710,38 +590,36 @@ export const INITIAL_ORDERS: PlacedOrder[] = [
         receiptRef: 'WC-994182-NZ',
         authCode: 'AUTH-OK-9921'
       },
-      tipAmount: 4.00,
+      tipAmount: 3.00,
       allergyNotice: 'No peanuts / strict nut allergy please'
     },
     items: [
       {
-        cartItemId: 'item-p1-1',
-        menuItem: MENU_ITEMS[0], // Butter Chicken Supreme Pizza
+        cartItemId: 'item-t1-1',
+        menuItem: MENU_ITEMS[0], // Kadhi Pakora (Monday Special)
         customization: {
-          size: 'Jumbo 15"',
-          crust: 'Cheese-Burst Stuffed Crust (+NZD $4.50)',
-          spiceLevel: 'Kiwi Hot'
+          spiceLevel: 'Medium'
         },
-        unitPrice: 32.40,
-        quantity: 1,
-        totalPrice: 32.40
+        unitPrice: 10.00,
+        quantity: 2,
+        totalPrice: 20.00
       },
       {
         cartItemId: 'item-d1-2',
-        menuItem: MENU_ITEMS[14], // Royal Mango Kesar Lassi
-        unitPrice: 7.50,
+        menuItem: MENU_ITEMS[17], // Alphonso Mango Lassi
+        unitPrice: 5.90,
         quantity: 2,
-        totalPrice: 15.00
+        totalPrice: 11.80
       }
     ],
-    subtotal: 47.40,
+    subtotal: 31.80,
     deliveryFee: 4.99,
     discount: 5.00,
     appliedCoupon: 'TIFFIN5',
-    tip: 4.00,
-    gstAmount: 7.71,
-    totalAmount: 51.39,
-    estimatedDeliveryTime: '30-40 mins',
+    tip: 3.00,
+    gstAmount: 4.54,
+    totalAmount: 34.79,
+    estimatedDeliveryTime: '25-35 mins',
     status: 'received',
     store: STORE_LOCATIONS[0]
   },
@@ -774,32 +652,31 @@ export const INITIAL_ORDERS: PlacedOrder[] = [
     },
     items: [
       {
-        cartItemId: 'item-t1-1',
-        menuItem: MENU_ITEMS[4], // Royal Maharaja 5-Tier Tiffin
+        cartItemId: 'item-t1-2',
+        menuItem: MENU_ITEMS[9], // Sahi Paneer
         customization: {
-          tiffinMealChoice: 'Paneer Butter Masala + Dal Makhani + Garlic Naan',
-          spiceLevel: 'Medium'
+          spiceLevel: 'Mild'
         },
-        unitPrice: 24.90,
+        unitPrice: 13.50,
         quantity: 2,
-        totalPrice: 49.80
+        totalPrice: 27.00
       },
       {
         cartItemId: 'item-s1-1',
-        menuItem: MENU_ITEMS[8], // Crispy Onion & Spinach Bhaji Bites
-        unitPrice: 10.90,
+        menuItem: MENU_ITEMS[11], // Indian Style Kulcha
+        unitPrice: 11.90,
         quantity: 1,
-        totalPrice: 10.90
+        totalPrice: 11.90
       }
     ],
-    subtotal: 60.70,
-    deliveryFee: 0.00, // free over $60
-    discount: 9.11,
+    subtotal: 38.90,
+    deliveryFee: 4.99,
+    discount: 5.84,
     appliedCoupon: 'WELCOME15',
     tip: 3.00,
-    gstAmount: 8.19,
-    totalAmount: 54.59,
-    estimatedDeliveryTime: '25-35 mins',
+    gstAmount: 5.35,
+    totalAmount: 41.05,
+    estimatedDeliveryTime: '20-30 mins',
     status: 'kitchen',
     store: STORE_LOCATIONS[1]
   },
@@ -816,7 +693,7 @@ export const INITIAL_ORDERS: PlacedOrder[] = [
       suburb: 'Takapuna',
       city: 'Auckland',
       postcode: '0622',
-      deliveryNotes: 'Pickup at counter counter by Priya',
+      deliveryNotes: 'Pickup at counter by Priya',
       orderMode: 'pickup',
       storeId: 'takapuna',
       deliveryTimeType: 'asap',
@@ -827,35 +704,33 @@ export const INITIAL_ORDERS: PlacedOrder[] = [
         receiptRef: 'POLI-ASB-8831'
       },
       tipAmount: 2.00,
-      allergyNotice: 'Gluten free base preferred for pizza'
+      allergyNotice: 'Strict vegetarian'
     },
     items: [
       {
-        cartItemId: 'item-p2-1',
-        menuItem: MENU_ITEMS[1], // Tandoori Paneer Tikka Gourmet Pizza
+        cartItemId: 'item-t3-1',
+        menuItem: MENU_ITEMS[8], // Paneer Burji
         customization: {
-          size: 'Large 12"',
-          crust: 'Gluten-Free Base (+NZD $4.00)',
-          spiceLevel: 'Indian Fire 🔥'
+          spiceLevel: 'Kiwi Hot'
         },
-        unitPrice: 28.90,
+        unitPrice: 13.50,
         quantity: 1,
-        totalPrice: 28.90
+        totalPrice: 13.50
       },
       {
-        cartItemId: 'item-d2-1',
-        menuItem: MENU_ITEMS[12], // Warm Gulab Jamun Sundae
-        unitPrice: 9.50,
+        cartItemId: 'item-d3-1',
+        menuItem: MENU_ITEMS[13], // Dahi Bhalla
+        unitPrice: 9.90,
         quantity: 1,
-        totalPrice: 9.50
+        totalPrice: 9.90
       }
     ],
-    subtotal: 38.40,
+    subtotal: 23.40,
     deliveryFee: 0.00,
     discount: 0.00,
     tip: 2.00,
-    gstAmount: 6.06,
-    totalAmount: 40.40,
+    gstAmount: 3.31,
+    totalAmount: 25.40,
     estimatedDeliveryTime: '15 mins',
     status: 'packed',
     store: STORE_LOCATIONS[2]
@@ -880,48 +755,39 @@ export const INITIAL_ORDERS: PlacedOrder[] = [
       paymentMethod: 'afterpay_nz',
       paymentGatewayDetails: {
         gateway: 'Afterpay NZ (4x Installments)',
-        installmentAmount: 16.72,
+        installmentAmount: 8.75,
         receiptRef: 'AP-NZ-660192'
       },
-      tipAmount: 3.50,
+      tipAmount: 2.00,
       allergyNotice: ''
     },
     items: [
       {
-        cartItemId: 'item-p4-1',
-        menuItem: MENU_ITEMS[3], // Smoky Lamb Rogan Josh Pizza
+        cartItemId: 'item-t4-1',
+        menuItem: MENU_ITEMS[6], // Mater Paneer
         customization: {
-          size: 'Jumbo 15"',
-          crust: 'Garlic Butter Infused Crust (+NZD $2.50)',
-          spiceLevel: 'Kiwi Hot'
+          spiceLevel: 'Medium'
         },
-        unitPrice: 32.40,
-        quantity: 1,
-        totalPrice: 32.40
-      },
-      {
-        cartItemId: 'item-b1-1',
-        menuItem: MENU_ITEMS[10], // Hyderabadi Dum Biryani Feast
-        unitPrice: 21.90,
-        quantity: 1,
-        totalPrice: 21.90
-      },
-      {
-        cartItemId: 'item-d1-3',
-        menuItem: MENU_ITEMS[14], // Royal Mango Kesar Lassi
-        unitPrice: 7.50,
+        unitPrice: 10.00,
         quantity: 2,
-        totalPrice: 15.00
+        totalPrice: 20.00
+      },
+      {
+        cartItemId: 'item-s4-1',
+        menuItem: MENU_ITEMS[14], // Allo Takki
+        unitPrice: 9.90,
+        quantity: 1,
+        totalPrice: 9.90
       }
     ],
-    subtotal: 69.30,
-    deliveryFee: 0.00,
+    subtotal: 29.90,
+    deliveryFee: 4.99,
     discount: 5.00,
     appliedCoupon: 'TIFFIN5',
-    tip: 3.50,
-    gstAmount: 10.17,
-    totalAmount: 67.80,
-    estimatedDeliveryTime: 'Arriving in 8 mins',
+    tip: 2.00,
+    gstAmount: 4.16,
+    totalAmount: 31.89,
+    estimatedDeliveryTime: 'Arriving in 5 mins',
     status: 'on_the_way',
     store: STORE_LOCATIONS[4]
   },
@@ -947,24 +813,24 @@ export const INITIAL_ORDERS: PlacedOrder[] = [
         gateway: 'Apple Pay NZ / Visa DPS',
         receiptRef: 'APL-DPS-100234'
       },
-      tipAmount: 2.50,
+      tipAmount: 2.00,
       allergyNotice: 'Vegan meal option'
     },
     items: [
       {
         cartItemId: 'item-t2-1',
-        menuItem: MENU_ITEMS[5], // Homestyle Daily 4-Tier Tiffin (Vegan)
-        unitPrice: 19.90,
+        menuItem: MENU_ITEMS[1], // Black Chana (Vegan)
+        unitPrice: 10.00,
         quantity: 2,
-        totalPrice: 39.80
+        totalPrice: 20.00
       }
     ],
-    subtotal: 39.80,
+    subtotal: 20.00,
     deliveryFee: 5.49,
     discount: 0.00,
-    tip: 2.50,
-    gstAmount: 7.17,
-    totalAmount: 47.79,
+    tip: 2.00,
+    gstAmount: 3.59,
+    totalAmount: 27.49,
     estimatedDeliveryTime: 'Delivered',
     status: 'delivered',
     store: STORE_LOCATIONS[3]
@@ -996,26 +862,26 @@ export const INITIAL_ORDERS: PlacedOrder[] = [
     },
     items: [
       {
-        cartItemId: 'item-p3-1',
-        menuItem: MENU_ITEMS[2], // Paneer & Chicken Fusion Half & Half
-        unitPrice: 26.90,
+        cartItemId: 'item-g1-1',
+        menuItem: MENU_ITEMS[15], // Gym Meal (High Protein)
+        unitPrice: 14.50,
         quantity: 1,
-        totalPrice: 26.90
+        totalPrice: 14.50
       },
       {
-        cartItemId: 'item-d3-1',
-        menuItem: MENU_ITEMS[13], // Pistachio Kulfi Gelato Tub
-        unitPrice: 8.50,
-        quantity: 2,
-        totalPrice: 17.00
+        cartItemId: 'item-c1-1',
+        menuItem: MENU_ITEMS[12], // Chai and Churi
+        unitPrice: 9.90,
+        quantity: 1,
+        totalPrice: 9.90
       }
     ],
-    subtotal: 43.90,
+    subtotal: 24.40,
     deliveryFee: 0.00,
     discount: 0.00,
     tip: 1.00,
-    gstAmount: 6.74,
-    totalAmount: 44.90,
+    gstAmount: 3.31,
+    totalAmount: 25.40,
     estimatedDeliveryTime: 'Delivered',
     status: 'delivered',
     store: STORE_LOCATIONS[5]
@@ -1036,8 +902,8 @@ export const INITIAL_CUSTOMERS: CustomerRecord[] = [
     firstOrderDate: '2025-11-12',
     lastOrderDate: '2026-08-31',
     isVIP: true,
-    favoriteItems: ['Royal Maharaja 5-Tier Tiffin', 'Butter Chicken Supreme Pizza'],
-    notes: 'Loyal corporate lunch customer. Prefers mild spice.'
+    favoriteItems: ['Sahi Paneer', 'Indian Style Kulcha', 'Mater Paneer'],
+    notes: 'Loyal corporate lunch customer. Loves mild spice.'
   },
   {
     id: 'cust-2',
@@ -1052,7 +918,7 @@ export const INITIAL_CUSTOMERS: CustomerRecord[] = [
     firstOrderDate: '2026-02-14',
     lastOrderDate: '2026-08-31',
     isVIP: false,
-    favoriteItems: ['Tandoori Paneer Tikka Gourmet Pizza', 'Royal Mango Kesar Lassi'],
+    favoriteItems: ['Kadhi Pakora', 'Alphonso Mango Lassi'],
     notes: 'Strict peanut allergy.'
   },
   {
@@ -1068,7 +934,7 @@ export const INITIAL_CUSTOMERS: CustomerRecord[] = [
     firstOrderDate: '2025-08-01',
     lastOrderDate: '2026-08-31',
     isVIP: true,
-    favoriteItems: ['Homestyle Daily 4-Tier Tiffin', 'Gluten-Free Pizza Base'],
+    favoriteItems: ['Paneer Burji', 'Dahi Bhalla', 'Kadhi Pakora'],
     notes: 'Weekly subscriber for Takapuna clinic staff.'
   },
   {
@@ -1084,7 +950,7 @@ export const INITIAL_CUSTOMERS: CustomerRecord[] = [
     firstOrderDate: '2026-04-20',
     lastOrderDate: '2026-08-31',
     isVIP: false,
-    favoriteItems: ['Smoky Lamb Rogan Josh Pizza', 'Hyderabadi Dum Biryani Feast'],
+    favoriteItems: ['Mater Paneer', 'Allo Takki', 'Baingan Bharta'],
     notes: 'Family weekend orders, likes Kiwi Hot spice.'
   },
   {
@@ -1100,7 +966,7 @@ export const INITIAL_CUSTOMERS: CustomerRecord[] = [
     firstOrderDate: '2026-01-10',
     lastOrderDate: '2026-08-31',
     isVIP: true,
-    favoriteItems: ['Vegan Delight Tiffin', 'Onion Bhaji Bites'],
+    favoriteItems: ['Black Chana (Tuesday Special)', 'Shalgam Mater'],
     notes: 'Always orders 100% Vegan.'
   },
   {
@@ -1116,7 +982,7 @@ export const INITIAL_CUSTOMERS: CustomerRecord[] = [
     firstOrderDate: '2026-05-18',
     lastOrderDate: '2026-08-31',
     isVIP: false,
-    favoriteItems: ['Half & Half Pizza Studio', 'Pistachio Kulfi Gelato'],
+    favoriteItems: ['Gym Meal (High Protein)', 'Chai and Churi'],
     notes: 'Christchurch regular, pickup customer.'
   }
 ];

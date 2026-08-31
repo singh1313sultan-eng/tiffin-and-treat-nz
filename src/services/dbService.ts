@@ -15,7 +15,7 @@ import {
 
 // Local storage cache keys for offline-first operation
 const LS_KEYS = {
-  MENU: 'tt_menu_items_v2',
+  MENU: 'tt_menu_items_v2026',
   ORDERS: 'tt_orders_v2',
   CUSTOMERS: 'tt_customers_v2',
   STORES: 'tt_stores_v2',
