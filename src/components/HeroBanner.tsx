@@ -275,17 +275,17 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               {/* Floating Badge 1: Half & Half Pizza Interactive CTA */}
               <div 
                 onClick={onOpenHalfAndHalf}
-                className="absolute -bottom-6 -left-4 sm:-left-6 bg-white p-3.5 rounded-2xl shadow-xl border border-[#E8E0D2] flex items-center gap-3 cursor-pointer hover:border-[#E06D53] hover:shadow-2xl transition-all group max-w-xs"
+                className="absolute -bottom-3 left-2 sm:-bottom-6 sm:-left-6 bg-white p-2.5 sm:p-3.5 rounded-2xl shadow-xl border border-[#E8E0D2] flex items-center gap-2.5 sm:gap-3 cursor-pointer hover:border-[#E06D53] hover:shadow-2xl transition-all group max-w-[85%] sm:max-w-xs"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <Layers className="w-5 h-5" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                  <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
                   <div className="text-xs font-bold text-[#1E1B18] group-hover:text-[#E06D53] transition-colors flex items-center gap-1">
                     <span>Half & Half Pizza Builder</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>
-                  <div className="text-[11px] text-[#7A7063]">
+                  <div className="text-[10px] sm:text-[11px] text-[#7A7063]">
                     Two flavors on one large pizza base
                   </div>
                 </div>
@@ -294,14 +294,14 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               {/* Floating Badge 2: Weekly Tiffin Subscriptions */}
               <div 
                 onClick={() => onScrollToCategory('subscription')}
-                className="absolute -top-4 -right-2 sm:-right-4 bg-[#211E1B] text-white p-3 rounded-2xl shadow-xl border border-neutral-700 flex items-center gap-2.5 cursor-pointer hover:bg-neutral-900 transition-all"
+                className="absolute -top-3 right-2 sm:-top-4 sm:-right-4 bg-[#211E1B] text-white p-2 sm:p-3 rounded-2xl shadow-xl border border-neutral-700 flex items-center gap-2 sm:gap-2.5 cursor-pointer hover:bg-neutral-900 transition-all"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#E06D53] text-white flex items-center justify-center font-bold text-xs">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#E06D53] text-white flex items-center justify-center font-bold text-[11px] sm:text-xs">
                   5-Day
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white">Office Lunch Pass</div>
-                  <div className="text-[10px] text-amber-300 font-semibold">$15.50 / meal delivered</div>
+                  <div className="text-[11px] sm:text-xs font-bold text-white">Office Lunch Pass</div>
+                  <div className="text-[9px] sm:text-[10px] text-amber-300 font-semibold">$15.50 / meal delivered</div>
                 </div>
               </div>
 
