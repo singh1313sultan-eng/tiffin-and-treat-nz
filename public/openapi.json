@@ -1,0 +1,404 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Tiffin & Treat NZ - Operations & Storefront REST API",
+    "description": "Comprehensive REST API for Tiffin & Treat NZ, powering homestyle daily tiffins, artisanal pizzas, Kitchen KDS dispatch, customer CRM, and New Zealand payment gateways (Online EFTPOS, Windcave, POLi, Afterpay, Zip).",
+    "version": "2.0.0",
+    "contact": {
+      "name": "Tiffin & Treat Engineering",
+      "email": "api-support@tiffintreat.co.nz",
+      "url": "https://tiffintreat.co.nz"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    },
+    {
+      "url": "https://api.tiffintreat.co.nz",
+      "description": "Production Cloud Gateway"
+    }
+  ],
+  "tags": [
+    { "name": "Authentication", "description": "Customer and Staff authentication endpoints with role-based access" },
+    { "name": "Menu & Stock", "description": "Gourmet dishes catalog, inventory controls, and instant sold-out toggling" },
+    { "name": "Orders & KDS", "description": "Live order placement, kitchen pipeline progression, and thermal docket generation" },
+    { "name": "Customer CRM", "description": "Patron profiles, loyalty spend (LTV), address management, and VIP status" },
+    { "name": "Branch Operations", "description": "Auckland & Christchurch store hubs, operating hours, and rush-hour prep times" },
+    { "name": "NZ Payment Gateways", "description": "Simulated processing for Online EFTPOS, Windcave, POLi, Afterpay, and Zip" }
+  ],
+  "paths": {
+    "/api/auth/customer/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Customer Sign In",
+        "description": "Authenticates a customer via email or NZ mobile number. Returns 404 if the account is not found.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["emailOrPhone", "password"],
+                "properties": {
+                  "emailOrPhone": { "type": "string", "example": "sarah.jenkins@gmail.com" },
+                  "password": { "type": "string", "example": "password123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthSuccessResponse" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Missing email/phone" },
+          "401": { "description": "Unauthorized - Incorrect password" },
+          "404": { "description": "Not Found - Account does not exist. Prompt user to register." }
+        }
+      }
+    },
+    "/api/auth/customer/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Customer Registration",
+        "description": "Registers a new customer account with delivery address and dietary preferences. Rejects duplicate emails/phones with 409.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterPayload" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Customer registered successfully" },
+          "400": { "description": "Validation failed on fields" },
+          "409": { "description": "Conflict - Customer with this email or mobile phone already exists" }
+        }
+      }
+    },
+    "/api/auth/admin/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Staff & Manager Security Authorization",
+        "description": "Authenticates staff members with 4-digit security PIN or password for branch manager console access.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["emailOrId", "pin"],
+                "properties": {
+                  "emailOrId": { "type": "string", "example": "manager@tiffintreat.co.nz" },
+                  "pin": { "type": "string", "example": "8899" },
+                  "role": { "type": "string", "enum": ["Store General Manager", "Head Chef & Kitchen Lead", "Dispatch Supervisor"] },
+                  "storeId": { "type": "string", "example": "all" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Staff authenticated with authorized permissions" },
+          "401": { "description": "Access Denied - Invalid Security PIN or Passcode" },
+          "404": { "description": "Staff ID not recognized" }
+        }
+      }
+    },
+    "/api/menu": {
+      "get": {
+        "tags": ["Menu & Stock"],
+        "summary": "Get Menu Catalog",
+        "description": "Returns full list of available tiffins, pizzas, biryanis, sides, and desserts.",
+        "responses": {
+          "200": {
+            "description": "Array of menu items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/MenuItem" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Menu & Stock"],
+        "summary": "Add New Dish",
+        "description": "Adds a new dish to the restaurant menu.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MenuItem" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Dish added successfully" }
+        }
+      }
+    },
+    "/api/menu/{id}/sold-out": {
+      "patch": {
+        "tags": ["Menu & Stock"],
+        "summary": "Toggle Sold Out Status",
+        "description": "Instantly toggles dish stock availability across all customer storefronts in real time.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["isSoldOut"],
+                "properties": {
+                  "isSoldOut": { "type": "boolean", "example": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Item stock updated" },
+          "404": { "description": "Item not found" }
+        }
+      }
+    },
+    "/api/menu/{id}/price": {
+      "patch": {
+        "tags": ["Menu & Stock"],
+        "summary": "Update Dish Price",
+        "description": "Updates retail pricing in NZD.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["price"],
+                "properties": {
+                  "price": { "type": "number", "example": 24.50 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Price updated successfully" }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": ["Orders & KDS"],
+        "summary": "List Live Orders",
+        "description": "Fetches all online orders with real-time status and branch filtering.",
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string" } },
+          { "name": "storeId", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of placed orders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/PlacedOrder" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Orders & KDS"],
+        "summary": "Place Online Order",
+        "description": "Submits a customer order to the kitchen KDS board and triggers real-time sound chimes.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlacedOrder" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Order placed and sent to kitchen dispatch" }
+        }
+      }
+    },
+    "/api/orders/{id}/status": {
+      "patch": {
+        "tags": ["Orders & KDS"],
+        "summary": "Update Order Status",
+        "description": "Moves order through kitchen progression: received -> kitchen -> packed -> on_the_way -> delivered.",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["received", "kitchen", "packed", "on_the_way", "delivered", "cancelled"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Order status transitioned successfully" }
+        }
+      }
+    },
+    "/api/customers": {
+      "get": {
+        "tags": ["Customer CRM"],
+        "summary": "List Customer Directory",
+        "description": "Retrieves registered patrons, order counts, and lifetime NZD spend.",
+        "responses": {
+          "200": {
+            "description": "Customer directory array",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CustomerRecord" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stores": {
+      "get": {
+        "tags": ["Branch Operations"],
+        "summary": "List Store Locations",
+        "description": "Returns Auckland & Christchurch branch hubs with operational status and delivery zones.",
+        "responses": {
+          "200": {
+            "description": "Array of branch store locations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/StoreLocation" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "user": { "$ref": "#/components/schemas/CustomerRecord" },
+          "token": { "type": "string", "example": "jwt-tt-cust-101-1772445890" },
+          "message": { "type": "string", "example": "Welcome back, Sarah Jenkins!" }
+        }
+      },
+      "RegisterPayload": {
+        "type": "object",
+        "required": ["name", "email", "phone", "primaryAddress", "suburb", "city"],
+        "properties": {
+          "name": { "type": "string", "example": "Jessica Taylor" },
+          "email": { "type": "string", "example": "jessica.taylor@gmail.com" },
+          "phone": { "type": "string", "example": "021 884 9231" },
+          "password": { "type": "string", "example": "SecureKiwi123!" },
+          "primaryAddress": { "type": "string", "example": "182 Ponsonby Road" },
+          "apartmentUnit": { "type": "string", "example": "Apt 2A" },
+          "suburb": { "type": "string", "example": "Ponsonby" },
+          "city": { "type": "string", "example": "Auckland" },
+          "postcode": { "type": "string", "example": "1011" },
+          "dietaryPreferences": { "type": "array", "items": { "type": "string" }, "example": ["halal", "nut-free"] }
+        }
+      },
+      "CustomerRecord": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "cust-101" },
+          "name": { "type": "string", "example": "Sarah Jenkins" },
+          "email": { "type": "string", "example": "sarah.jenkins@gmail.com" },
+          "phone": { "type": "string", "example": "021 884 9231" },
+          "primaryAddress": { "type": "string", "example": "142 Ponsonby Road, Apt 4B" },
+          "suburb": { "type": "string", "example": "Ponsonby" },
+          "city": { "type": "string", "example": "Auckland" },
+          "totalOrders": { "type": "integer", "example": 14 },
+          "totalSpent": { "type": "number", "example": 492.50 },
+          "firstOrderDate": { "type": "string", "example": "2026-02-12" },
+          "lastOrderDate": { "type": "string", "example": "2026-08-30" },
+          "isVIP": { "type": "boolean", "example": true }
+        }
+      },
+      "MenuItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "tif-1" },
+          "name": { "type": "string", "example": "Royal Butter Chicken Dabba Meal" },
+          "category": { "type": "string", "example": "tiffins" },
+          "description": { "type": "string", "example": "Tender free-range chicken simmered in rich makhani gravy with cumin basmati rice and butter naan." },
+          "price": { "type": "number", "example": 22.90 },
+          "image": { "type": "string" },
+          "dietary": { "type": "array", "items": { "type": "string" }, "example": ["halal"] },
+          "calories": { "type": "string", "example": "680 kcal" },
+          "isSoldOut": { "type": "boolean", "example": false }
+        }
+      },
+      "PlacedOrder": {
+        "type": "object",
+        "properties": {
+          "orderId": { "type": "string", "example": "order-1772445892" },
+          "orderNumber": { "type": "string", "example": "TT-892105" },
+          "createdAt": { "type": "string", "example": "12:45 PM" },
+          "subtotal": { "type": "number", "example": 68.40 },
+          "gstAmount": { "type": "number", "example": 8.92 },
+          "totalAmount": { "type": "number", "example": 68.40 },
+          "status": { "type": "string", "enum": ["received", "kitchen", "packed", "on_the_way", "delivered", "cancelled"] }
+        }
+      },
+      "StoreLocation": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "akl-ponsonby" },
+          "name": { "type": "string", "example": "Tiffin & Treat Ponsonby" },
+          "suburb": { "type": "string", "example": "Ponsonby" },
+          "city": { "type": "string", "example": "Auckland" },
+          "phone": { "type": "string", "example": "09 376 8920" },
+          "pickupTime": { "type": "string", "example": "15-20 min" },
+          "deliveryTime": { "type": "string", "example": "30-45 min" },
+          "isOpen": { "type": "boolean", "example": true }
+        }
+      }
+    }
+  }
+}

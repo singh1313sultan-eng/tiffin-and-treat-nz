@@ -1,0 +1,6 @@
+{
+  "name": "Tiffin and Treat | Gourmet Tiffins, Artisanal Pizzas & Treats NZ",
+  "description": "Order delicious homestyle tiffin meal boxes, gourmet fusion pizzas, sides, and sweet treats for delivery & pickup across New Zealand with tiffintreat.co.nz.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
