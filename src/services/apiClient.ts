@@ -21,8 +21,20 @@ import {
 // Registered Staff Accounts for Production Security
 export const REGISTERED_STAFF_ACCOUNTS = [
   {
+    id: 'staff-gm-9876',
+    email: '9876777416',
+    phone: '9876777416',
+    pin: 'orbit',
+    password: 'orbit',
+    name: 'Store General Manager',
+    role: 'Store General Manager' as const,
+    badgeId: '9876777416',
+    storeId: 'all'
+  },
+  {
     id: 'staff-101',
     email: 'manager@tiffintreat.co.nz',
+    phone: '0218849200',
     pin: '8899',
     password: 'admin',
     name: 'Aarav Sharma',
@@ -33,6 +45,7 @@ export const REGISTERED_STAFF_ACCOUNTS = [
   {
     id: 'staff-102',
     email: 'chef.rakesh@tiffintreat.co.nz',
+    phone: '0218849201',
     pin: '5544',
     password: 'chef',
     name: 'Chef Rakesh Nair',
@@ -43,6 +56,7 @@ export const REGISTERED_STAFF_ACCOUNTS = [
   {
     id: 'staff-103',
     email: 'dispatch@tiffintreat.co.nz',
+    phone: '0218849202',
     pin: '1122',
     password: 'driver',
     name: 'Tamati Williams',
@@ -325,11 +339,12 @@ export const apiAdminLogin = async (
   const staff = REGISTERED_STAFF_ACCOUNTS.find(s => 
     s.email.toLowerCase() === query || 
     s.badgeId.toLowerCase() === query ||
-    s.name.toLowerCase().includes(query)
+    (s.phone && s.phone.replace(/\s+/g, '') === query.replace(/\s+/g, '')) ||
+    s.id.toLowerCase() === query
   );
 
-  // If staff not found and not a recognized staff format
-  if (!staff && !query.includes('tiffintreat.co.nz') && !query.includes('admin') && !query.includes('manager')) {
+  // If staff not found
+  if (!staff) {
     throw {
       status: 404,
       code: 'STAFF_NOT_FOUND',
@@ -338,12 +353,12 @@ export const apiAdminLogin = async (
   }
 
   // Validate PIN / Passcode
-  const validPins = [staff?.pin, staff?.password, '8899', 'admin123', 'admin', '5544', '1122'].filter(Boolean);
+  const validPins = [staff.pin, staff.password].filter(Boolean);
   if (!validPins.includes(pin)) {
     throw {
       status: 401,
       code: 'INVALID_STAFF_PIN',
-      message: `Access Denied: Incorrect Security PIN or password for ${staff?.name || role}. Please check your credentials.`
+      message: `Access Denied: Incorrect Security PIN or password for ${staff.name}. Please check your credentials.`
     } as ApiErrorResponse;
   }
 

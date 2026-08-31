@@ -130,15 +130,15 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
             </select>
           </div>
 
-          {/* Email / Badge ID */}
+          {/* Email / Badge ID / Login ID */}
           <div className="space-y-1">
-            <label className="text-neutral-300 font-bold">Staff Email or Employee Badge ID</label>
+            <label className="text-neutral-300 font-bold">Staff Login ID / Mobile / Email</label>
             <div className="relative">
               <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type="text"
                 required
-                placeholder="e.g. manager@tiffintreat.co.nz or NZ-MGR-8821"
+                placeholder="e.g. 9876777416 or manager@tiffintreat.co.nz"
                 value={emailOrId}
                 onChange={(e) => setEmailOrId(e.target.value)}
                 className="w-full bg-[#141210] border border-neutral-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#E06D53]"
@@ -146,15 +146,15 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
             </div>
           </div>
 
-          {/* Manager PIN / Passcode */}
+          {/* Manager PIN / Password */}
           <div className="space-y-1">
-            <label className="text-neutral-300 font-bold">Manager Security Passcode / 4-Digit PIN</label>
+            <label className="text-neutral-300 font-bold">Password / Security PIN</label>
             <div className="relative">
               <Key className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
-                placeholder="Enter 4-digit security PIN"
+                placeholder="Enter password (e.g. orbit)"
                 value={passwordOrPin}
                 onChange={(e) => setPasswordOrPin(e.target.value)}
                 className="w-full bg-[#141210] border border-neutral-700 rounded-xl pl-10 pr-10 py-2.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-[#E06D53]"
