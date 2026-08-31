@@ -24,7 +24,9 @@ import {
   Ban,
   ShoppingBag,
   ExternalLink,
-  Store
+  Store,
+  LayoutList,
+  LayoutGrid
 } from 'lucide-react';
 
 interface AdminLiveOrdersProps {
@@ -40,6 +42,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
   onUpdateOrderStatus,
   onCancelOrder
 }) => {
+  const [viewMode, setViewMode] = useState<'list' | 'tile'>('list');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('active');
   const [selectedStoreFilter, setSelectedStoreFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -115,21 +118,21 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-800 border border-purple-200">
             <Truck className="w-3.5 h-3.5 text-purple-600" />
-            Out for Delivery / En Route
+            Out for Delivery
           </span>
         );
       case 'delivered':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-            Delivered / Completed
+            Completed
           </span>
         );
       case 'cancelled':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-800 border border-rose-200">
             <Ban className="w-3.5 h-3.5 text-rose-600" />
-            Cancelled / Refunded
+            Cancelled
           </span>
         );
     }
@@ -146,7 +149,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Filter Bar & Search */}
+      {/* Top Filter Bar, Search & View Switcher */}
       <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           
@@ -170,19 +173,51 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
             )}
           </div>
 
-          {/* Store Location Filter */}
-          <div className="flex items-center gap-2">
-            <Store className="w-4 h-4 text-neutral-500" />
-            <select
-              value={selectedStoreFilter}
-              onChange={(e) => setSelectedStoreFilter(e.target.value)}
-              className="bg-[#FAF7F2] border border-[#D9CFBF] text-[#1E1B18] rounded-2xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-[#E06D53] shadow-2xs font-medium"
-            >
-              <option value="all">All Store Branches ({stores.length})</option>
-              {stores.map(s => (
-                <option key={s.id} value={s.id}>{s.name}</option>
-              ))}
-            </select>
+          <div className="flex items-center gap-3">
+            {/* View Mode Toggle: List (default) vs Tile */}
+            <div className="flex items-center bg-[#FAF7F2] p-1 rounded-2xl border border-[#D9CFBF] text-xs">
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className={`px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  viewMode === 'list'
+                    ? 'bg-[#E06D53] text-white shadow-xs'
+                    : 'text-[#706658] hover:text-[#1E1B18]'
+                }`}
+                title="List View (Default)"
+              >
+                <LayoutList className="w-3.5 h-3.5" />
+                <span>List</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('tile')}
+                className={`px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  viewMode === 'tile'
+                    ? 'bg-[#E06D53] text-white shadow-xs'
+                    : 'text-[#706658] hover:text-[#1E1B18]'
+                }`}
+                title="Tile / Grid View"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Tile</span>
+              </button>
+            </div>
+
+            {/* Store Location Filter */}
+            <div className="flex items-center gap-2">
+              <Store className="w-4 h-4 text-neutral-500" />
+              <select
+                value={selectedStoreFilter}
+                onChange={(e) => setSelectedStoreFilter(e.target.value)}
+                className="bg-[#FAF7F2] border border-[#D9CFBF] text-[#1E1B18] rounded-2xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-[#E06D53] shadow-2xs font-medium"
+              >
+                <option value="all">All Store Branches ({stores.length})</option>
+                {stores.map(s => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
         </div>
@@ -221,7 +256,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
         </div>
       </div>
 
-      {/* Orders Grid / Cards */}
+      {/* Orders Content View */}
       {filteredOrders.length === 0 ? (
         <div className="bg-white border border-[#E8E0D2] rounded-3xl p-16 text-center space-y-3 shadow-xs">
           <div className="w-14 h-14 rounded-2xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center mx-auto">
@@ -232,7 +267,232 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
             No orders match the selected status filter or search keywords. New incoming orders will appear here automatically.
           </p>
         </div>
+      ) : viewMode === 'list' ? (
+        /* LIST VIEW (DEFAULT) */
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl overflow-hidden shadow-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-[#1E1B18]">
+              <thead className="bg-[#F5EFE6] text-[#5A5043] uppercase text-[10px] tracking-wider border-b border-[#E8E0D2]">
+                <tr>
+                  <th className="py-3.5 px-4 font-bold">Order # & Store</th>
+                  <th className="py-3.5 px-4 font-bold">Customer & Mode</th>
+                  <th className="py-3.5 px-4 font-bold">Items & Details</th>
+                  <th className="py-3.5 px-4 font-bold">Total & Payment</th>
+                  <th className="py-3.5 px-4 font-bold text-center">Status</th>
+                  <th className="py-3.5 px-4 font-bold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#EBE3D5]">
+                {filteredOrders.map((order) => {
+                  const hasAllergy = !!order.customerDetails.allergyNotice;
+                  const hasNotes = !!order.customerDetails.deliveryNotes;
+                  const totalItemsCount = order.items.reduce((s, i) => s + i.quantity, 0);
+
+                  return (
+                    <tr key={order.orderId} className="hover:bg-[#FAF7F2] transition-colors">
+                      
+                      {/* Order # & Store */}
+                      <td className="py-4 px-4 align-top">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-sm font-extrabold text-[#1E1B18]">
+                              #{order.orderNumber}
+                            </span>
+                            <span className="text-[#8C8275] text-[11px] flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {getTimeAgo(order.createdAt)}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-[#E06D53] font-semibold">
+                            {order.store.name}
+                          </div>
+                          <div className="text-[10px] text-[#706658]">
+                            Target: {order.estimatedDeliveryTime}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Customer & Mode */}
+                      <td className="py-4 px-4 align-top space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
+                            order.customerDetails.orderMode === 'delivery' 
+                              ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                              : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          }`}>
+                            {order.customerDetails.orderMode === 'delivery' ? '🚗 Delivery' : '🏪 Pickup'}
+                          </span>
+                          <span className="font-bold text-[#1E1B18]">{order.customerDetails.name}</span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 text-[11px]">
+                          <a 
+                            href={`tel:${order.customerDetails.phone}`} 
+                            className="text-[#5A5043] hover:text-[#1E1B18] inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded-lg border border-[#E8E0D2]"
+                          >
+                            <Phone className="w-3 h-3 text-[#E06D53]" />
+                            {order.customerDetails.phone}
+                          </a>
+                        </div>
+
+                        {order.customerDetails.orderMode === 'delivery' && (
+                          <div className="text-[#706658] text-[11px] flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-[#8C8275] shrink-0" />
+                            <span className="line-clamp-1">{order.customerDetails.address}, {order.customerDetails.suburb}</span>
+                          </div>
+                        )}
+
+                        {hasAllergy && (
+                          <div className="text-[10px] text-rose-700 font-bold bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md flex items-center gap-1 w-fit">
+                            <AlertTriangle className="w-3 h-3 text-rose-600" />
+                            <span>Allergy: {order.customerDetails.allergyNotice}</span>
+                          </div>
+                        )}
+
+                        {hasNotes && (
+                          <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md italic line-clamp-1">
+                            Notes: "{order.customerDetails.deliveryNotes}"
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Items & Customizations */}
+                      <td className="py-4 px-4 align-top">
+                        <div className="space-y-1.5 max-w-xs">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#8C8275]">
+                            {totalItemsCount} {totalItemsCount === 1 ? 'item' : 'items'}
+                          </span>
+                          <div className="space-y-1">
+                            {order.items.map((item, idx) => (
+                              <div key={idx} className="text-xs">
+                                <div className="font-semibold text-[#1E1B18] flex items-center gap-1.5">
+                                  <span className="w-4 h-4 rounded bg-[#E06D53]/15 text-[#E06D53] text-[10px] font-bold flex items-center justify-center">
+                                    {item.quantity}x
+                                  </span>
+                                  <span>{item.menuItem.name}</span>
+                                </div>
+                                {item.customization && (
+                                  <div className="text-[10px] text-[#706658] pl-5.5 space-x-1">
+                                    {item.customization.size && <span>• Size: {item.customization.size}</span>}
+                                    {item.customization.spiceLevel && <span className="text-orange-700 font-medium">• Spice: {item.customization.spiceLevel}</span>}
+                                    {item.customization.crust && <span>• Crust: {item.customization.crust}</span>}
+                                    {item.customization.tiffinMealChoice && <span>• {item.customization.tiffinMealChoice}</span>}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Total & Payment */}
+                      <td className="py-4 px-4 align-top">
+                        <div className="space-y-1">
+                          <div className="font-mono text-sm font-bold text-emerald-700">
+                            ${order.totalAmount.toFixed(2)}
+                          </div>
+                          <div className="text-[10px] text-[#706658] font-medium">
+                            {order.customerDetails.paymentGatewayDetails?.gateway || order.customerDetails.paymentMethod}
+                          </div>
+                          <div className="text-[9px] font-mono text-[#8C8275]">
+                            Ref: {order.customerDetails.paymentGatewayDetails?.receiptRef || 'Direct'}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Status Badge */}
+                      <td className="py-4 px-4 align-top text-center">
+                        <div className="inline-block">
+                          {getStatusBadge(order.status)}
+                        </div>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-4 px-4 align-top text-right">
+                        <div className="flex flex-col items-end gap-1.5">
+                          {/* Status Transition Button */}
+                          {order.status === 'received' && (
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => onCancelOrder(order.orderId)}
+                                className="py-1 px-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-[11px] font-semibold border border-rose-200 transition-all cursor-pointer"
+                              >
+                                Reject
+                              </button>
+                              <button
+                                onClick={() => onUpdateOrderStatus(order.orderId, 'kitchen')}
+                                className="py-1.5 px-3 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+                              >
+                                <ChefHat className="w-3.5 h-3.5" />
+                                <span>Prep</span>
+                              </button>
+                            </div>
+                          )}
+
+                          {order.status === 'kitchen' && (
+                            <button
+                              onClick={() => onUpdateOrderStatus(order.orderId, 'packed')}
+                              className="py-1.5 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+                            >
+                              <Package className="w-3.5 h-3.5" />
+                              <span>Mark Ready</span>
+                            </button>
+                          )}
+
+                          {order.status === 'packed' && (
+                            <button
+                              onClick={() => onUpdateOrderStatus(order.orderId, 'on_the_way')}
+                              className="py-1.5 px-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+                            >
+                              <Truck className="w-3.5 h-3.5" />
+                              <span>{order.customerDetails.orderMode === 'delivery' ? 'Dispatch' : 'Pickup Ready'}</span>
+                            </button>
+                          )}
+
+                          {order.status === 'on_the_way' && (
+                            <button
+                              onClick={() => onUpdateOrderStatus(order.orderId, 'delivered')}
+                              className="py-1.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>Complete</span>
+                            </button>
+                          )}
+
+                          {order.status === 'delivered' && (
+                            <span className="text-emerald-700 text-[11px] font-bold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                              <CheckCircle2 className="w-3 h-3" />
+                              Done
+                            </span>
+                          )}
+
+                          {order.status === 'cancelled' && (
+                            <span className="text-rose-700 text-[11px] font-bold flex items-center gap-1 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200">
+                              <Ban className="w-3 h-3" />
+                              Cancelled
+                            </span>
+                          )}
+
+                          {/* Docket Button */}
+                          <button
+                            onClick={() => setInspectingOrder(order)}
+                            className="py-1 px-2.5 bg-white hover:bg-[#FAF7F2] text-[#5A5043] hover:text-[#1E1B18] rounded-xl text-[11px] font-semibold flex items-center gap-1 border border-[#D9CFBF] transition-all cursor-pointer shadow-2xs"
+                          >
+                            <Printer className="w-3 h-3 text-[#706658]" />
+                            <span>Docket</span>
+                          </button>
+                        </div>
+                      </td>
+
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       ) : (
+        /* TILE / GRID VIEW */
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
           {filteredOrders.map((order) => {
             const hasAllergy = !!order.customerDetails.allergyNotice;
