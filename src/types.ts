@@ -44,15 +44,9 @@ export interface MenuItem {
   calories?: string;
   serves?: string;
   customizable?: boolean;
-  supportsHalfHalf?: boolean;
   defaultSpice?: SpiceLevel;
   includedTiers?: string[]; // for tiffins (e.g. 3 rotis, paneer, dal, rice, sweet)
   isSoldOut?: boolean;
-}
-
-export interface HalfHalfSelection {
-  leftHalf: MenuItem;
-  rightHalf: MenuItem;
 }
 
 export interface CartCustomization {
@@ -60,11 +54,6 @@ export interface CartCustomization {
   crust?: PizzaCrust;
   spiceLevel?: SpiceLevel;
   selectedToppings?: { name: string; price: number }[];
-  halfHalf?: {
-    isHalfHalf: boolean;
-    leftName: string;
-    rightName: string;
-  };
   tiffinMealChoice?: string; // e.g. "Butter Chicken + Yellow Tadka Dal"
   specialInstructions?: string;
 }

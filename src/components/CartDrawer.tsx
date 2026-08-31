@@ -211,11 +211,6 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         {cartItem.customization?.tiffinMealChoice && (
                           <div className="truncate">Choice: <span className="font-medium text-[#1E1B18]">{cartItem.customization.tiffinMealChoice}</span></div>
                         )}
-                        {cartItem.customization?.halfHalf?.isHalfHalf && (
-                          <div className="text-[10px] text-blue-700 font-medium">
-                            {cartItem.customization.halfHalf.leftName} + {cartItem.customization.halfHalf.rightName}
-                          </div>
-                        )}
                         {cartItem.customization?.selectedToppings && cartItem.customization.selectedToppings.length > 0 && (
                           <div className="text-[10px] text-[#5A5043] truncate">
                             + {cartItem.customization.selectedToppings.map(t => t.name).join(', ')}

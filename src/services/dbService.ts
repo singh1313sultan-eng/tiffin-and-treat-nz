@@ -69,7 +69,6 @@ export const dbFetchMenuItems = async (): Promise<MenuItem[]> => {
           calories: row.calories || undefined,
           serves: row.serves || undefined,
           customizable: row.customizable ?? true,
-          supportsHalfHalf: row.supports_half_half ?? false,
           isSoldOut: row.is_sold_out || false
         }));
         setLocalStorageData(LS_KEYS.MENU, formatted);

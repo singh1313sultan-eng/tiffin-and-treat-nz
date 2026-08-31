@@ -124,11 +124,6 @@ export const MenuCard: React.FC<MenuCardProps> = ({
           {/* Dietary Badges */}
           <div className="flex flex-wrap gap-1">
             {item.dietary.map((d) => getDietaryBadge(d))}
-            {item.supportsHalfHalf && (
-              <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200 flex items-center gap-1">
-                <Layers className="w-3 h-3" /> Half & Half
-              </span>
-            )}
           </div>
 
           {/* Title & Tagline */}

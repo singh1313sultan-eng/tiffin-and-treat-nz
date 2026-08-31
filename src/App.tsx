@@ -56,7 +56,6 @@ import { HeroBanner } from './components/HeroBanner';
 import { MenuFilterBar } from './components/MenuFilterBar';
 import { MenuCard } from './components/MenuCard';
 import { ItemCustomizerModal } from './components/ItemCustomizerModal';
-import { HalfAndHalfBuilderModal } from './components/HalfAndHalfBuilderModal';
 import { OrderTypeSelectorModal } from './components/OrderTypeSelectorModal';
 import { DealsSection } from './components/DealsSection';
 import { WeeklySubscriptionSection } from './components/WeeklySubscriptionSection';
@@ -139,7 +138,6 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
   const [customizingItem, setCustomizingItem] = useState<MenuItem | null>(null);
-  const [isHalfAndHalfOpen, setIsHalfAndHalfOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
   const [isCateringOpen, setIsCateringOpen] = useState(false);
@@ -637,7 +635,6 @@ export default function App() {
           showToast(`Delivery area updated to ${addr}`);
         }}
         onOpenStoreSelector={() => setIsStoreSelectorOpen(true)}
-        onOpenHalfAndHalf={() => setIsHalfAndHalfOpen(true)}
         onScrollToCategory={scrollToCategory}
       />
 
@@ -667,32 +664,6 @@ export default function App() {
           />
         ) : (
           <>
-            {/* Quick Half & Half Promo Bar */}
-            <div className="bg-gradient-to-r from-[#211E1B] to-[#38322B] rounded-3xl p-5 sm:p-6 text-white flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl border border-neutral-700">
-              <div className="flex items-center gap-4 text-center md:text-left">
-                <div className="w-12 h-12 rounded-2xl bg-[#E06D53] text-white flex items-center justify-center shrink-0">
-                  <Layers className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="font-serif font-bold text-lg sm:text-xl">
-                    Craving Two Flavors at Once?
-                  </div>
-                  <div className="text-xs text-neutral-300">
-                    Create a customized Half & Half pizza with two independent toppings and recipes.
-                  </div>
-                </div>
-              </div>
-
-              <button
-                id="app-open-half-half-btn"
-                onClick={() => setIsHalfAndHalfOpen(true)}
-                className="py-2.5 px-5 bg-[#E06D53] hover:bg-[#D45E44] text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer shrink-0"
-              >
-                <span>Launch Half & Half Studio</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
             {/* Menu Cards Grid */}
             {filteredMenuItems.length === 0 ? (
               <div className="py-20 text-center space-y-3 bg-white rounded-3xl border border-[#E8E0D2]">
@@ -799,12 +770,6 @@ export default function App() {
         isOpen={isCustomizerOpen}
         onClose={() => setIsCustomizerOpen(false)}
         item={customizingItem}
-        onAddToCart={handleAddToCart}
-      />
-
-      <HalfAndHalfBuilderModal
-        isOpen={isHalfAndHalfOpen}
-        onClose={() => setIsHalfAndHalfOpen(false)}
         onAddToCart={handleAddToCart}
       />
 

@@ -89,7 +89,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
   const [formServes, setFormServes] = useState('1 person');
   const [formIsChefSpecial, setFormIsChefSpecial] = useState(false);
   const [formIsPopular, setFormIsPopular] = useState(false);
-  const [formSupportsHalfHalf, setFormSupportsHalfHalf] = useState(false);
 
   // Filtered menu list
   const filteredItems = useMemo(() => {
@@ -137,7 +136,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
     setFormServes('1 person');
     setFormIsChefSpecial(false);
     setFormIsPopular(false);
-    setFormSupportsHalfHalf(false);
     setEditingItem(null);
     setIsAddModalOpen(true);
   };
@@ -156,7 +154,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
     setFormServes(item.serves || '1 person');
     setFormIsChefSpecial(!!item.isChefSpecial);
     setFormIsPopular(!!item.isPopular);
-    setFormSupportsHalfHalf(!!item.supportsHalfHalf);
     setIsAddModalOpen(true);
   };
 
@@ -179,8 +176,7 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
         calories: formCalories.trim() || undefined,
         serves: formServes.trim() || undefined,
         isChefSpecial: formIsChefSpecial,
-        isPopular: formIsPopular,
-        supportsHalfHalf: formSupportsHalfHalf
+        isPopular: formIsPopular
       };
       onUpdateItem(updated);
     } else {
@@ -198,7 +194,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
         serves: formServes.trim() || '1 person',
         isChefSpecial: formIsChefSpecial,
         isPopular: formIsPopular,
-        supportsHalfHalf: formSupportsHalfHalf,
         customizable: formCategory === 'pizzas' || formCategory === 'tiffins'
       };
       onAddItem(newItem);
@@ -668,18 +663,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                   />
                   <span>Popular / Best Seller</span>
                 </label>
-
-                {formCategory === 'pizzas' && (
-                  <label className="flex items-center gap-2 cursor-pointer font-medium text-[#1E1B18]">
-                    <input
-                      type="checkbox"
-                      checked={formSupportsHalfHalf}
-                      onChange={(e) => setFormSupportsHalfHalf(e.target.checked)}
-                      className="w-4 h-4 accent-[#E06D53] rounded"
-                    />
-                    <span>Available in Half & Half Studio</span>
-                  </label>
-                )}
               </div>
 
               {/* Submit Buttons */}

@@ -20,7 +20,6 @@ interface HeroBannerProps {
   deliveryAddress: string;
   onSetDeliveryAddress: (address: string) => void;
   onOpenStoreSelector: () => void;
-  onOpenHalfAndHalf: () => void;
   onScrollToCategory: (category: string) => void;
 }
 
@@ -31,7 +30,6 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   deliveryAddress,
   onSetDeliveryAddress,
   onOpenStoreSelector,
-  onOpenHalfAndHalf,
   onScrollToCategory
 }) => {
   const [addressInput, setAddressInput] = useState(deliveryAddress || '');
@@ -272,9 +270,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                 </div>
               </div>
 
-              {/* Floating Badge 1: Half & Half Pizza Interactive CTA */}
+              {/* Floating Badge 1: Daily Homestyle Tiffins CTA */}
               <div 
-                onClick={onOpenHalfAndHalf}
+                onClick={() => onScrollToCategory('tiffins')}
                 className="absolute -bottom-3 left-2 sm:-bottom-6 sm:-left-6 bg-white p-2.5 sm:p-3.5 rounded-2xl shadow-xl border border-[#E8E0D2] flex items-center gap-2.5 sm:gap-3 cursor-pointer hover:border-[#E06D53] hover:shadow-2xl transition-all group max-w-[85%] sm:max-w-xs"
               >
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -282,11 +280,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                 </div>
                 <div>
                   <div className="text-xs font-bold text-[#1E1B18] group-hover:text-[#E06D53] transition-colors flex items-center gap-1">
-                    <span>Half & Half Pizza Builder</span>
+                    <span>Daily Regular Tiffins</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>
                   <div className="text-[10px] sm:text-[11px] text-[#7A7063]">
-                    Two flavors on one large pizza base
+                    Rotating daily curries from NZD $10.00
                   </div>
                 </div>
               </div>
