@@ -92,43 +92,43 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
     switch (status) {
       case 'received':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse">
-            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
             New Order Received
           </span>
         );
       case 'kitchen':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-500/20 text-orange-400 border border-orange-500/30">
-            <ChefHat className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-800 border border-orange-200">
+            <ChefHat className="w-3.5 h-3.5 text-orange-600" />
             In Kitchen (Prep)
           </span>
         );
       case 'packed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
-            <Package className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200">
+            <Package className="w-3.5 h-3.5 text-blue-600" />
             Packed / Ready
           </span>
         );
       case 'on_the_way':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">
-            <Truck className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-800 border border-purple-200">
+            <Truck className="w-3.5 h-3.5 text-purple-600" />
             Out for Delivery / En Route
           </span>
         );
       case 'delivered':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
             Delivered / Completed
           </span>
         );
       case 'cancelled':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
-            <Ban className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-800 border border-rose-200">
+            <Ban className="w-3.5 h-3.5 text-rose-600" />
             Cancelled / Refunded
           </span>
         );
@@ -147,7 +147,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Filter Bar & Search */}
-      <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-4">
+      <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           
           {/* Search box */}
@@ -158,12 +158,12 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
               placeholder="Search by Order # (e.g. TT-892105), customer name, phone or item..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#181614] border border-neutral-700 text-white rounded-2xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:border-[#E06D53] placeholder-neutral-500"
+              className="w-full bg-[#FAF7F2] border border-[#D9CFBF] text-[#1E1B18] rounded-2xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:border-[#E06D53] placeholder-[#8C8275] shadow-2xs"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -172,11 +172,11 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
 
           {/* Store Location Filter */}
           <div className="flex items-center gap-2">
-            <Store className="w-4 h-4 text-neutral-400" />
+            <Store className="w-4 h-4 text-neutral-500" />
             <select
               value={selectedStoreFilter}
               onChange={(e) => setSelectedStoreFilter(e.target.value)}
-              className="bg-[#181614] border border-neutral-700 text-white rounded-2xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-[#E06D53]"
+              className="bg-[#FAF7F2] border border-[#D9CFBF] text-[#1E1B18] rounded-2xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-[#E06D53] shadow-2xs font-medium"
             >
               <option value="all">All Store Branches ({stores.length})</option>
               {stores.map(s => (
@@ -204,15 +204,15 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
               onClick={() => setSelectedStatusFilter(tab.id)}
               className={`px-4 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer border ${
                 selectedStatusFilter === tab.id
-                  ? 'bg-[#E06D53] text-white border-[#E06D53] shadow-lg shadow-[#E06D53]/20'
-                  : 'bg-[#181614] text-neutral-400 hover:text-white border-neutral-800 hover:border-neutral-700'
+                  ? 'bg-[#E06D53] text-white border-[#E06D53] shadow-sm'
+                  : 'bg-[#FAF7F2] text-[#706658] hover:text-[#1E1B18] border-[#E8E0D2] hover:border-[#D9CFBF]'
               }`}
             >
               <span>{tab.label}</span>
               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                 selectedStatusFilter === tab.id
                   ? 'bg-white/20 text-white'
-                  : 'bg-neutral-800 text-neutral-300'
+                  : 'bg-[#EBE3D5] text-[#5A5043]'
               }`}>
                 {tab.count}
               </span>
@@ -223,12 +223,12 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
 
       {/* Orders Grid / Cards */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-16 text-center space-y-3">
-          <div className="w-14 h-14 rounded-2xl bg-neutral-800 text-neutral-400 flex items-center justify-center mx-auto">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-16 text-center space-y-3 shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center mx-auto">
             <ShoppingBag className="w-7 h-7" />
           </div>
-          <h3 className="text-white font-serif font-bold text-lg">No orders found</h3>
-          <p className="text-neutral-400 text-xs max-w-md mx-auto">
+          <h3 className="text-[#1E1B18] font-serif font-bold text-lg">No orders found</h3>
+          <p className="text-[#706658] text-xs max-w-md mx-auto">
             No orders match the selected status filter or search keywords. New incoming orders will appear here automatically.
           </p>
         </div>
@@ -241,29 +241,29 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
             return (
               <div 
                 key={order.orderId}
-                className="bg-[#24211D] border border-neutral-800 hover:border-neutral-700 rounded-3xl p-5 shadow-xl space-y-4 transition-all relative overflow-hidden"
+                className="bg-white border border-[#E8E0D2] hover:border-[#D4C8B5] rounded-3xl p-5 shadow-xs hover:shadow-md space-y-4 transition-all relative overflow-hidden"
               >
                 {/* Header with Order # and Status */}
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2.5">
-                      <span className="font-mono text-base font-extrabold text-white">
+                      <span className="font-mono text-base font-extrabold text-[#1E1B18]">
                         #{order.orderNumber}
                       </span>
                       <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
                         order.customerDetails.orderMode === 'delivery' 
-                          ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                          : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                       }`}>
                         {order.customerDetails.orderMode === 'delivery' ? '🚗 Delivery' : '🏪 Pickup'}
                       </span>
-                      <span className="text-neutral-400 text-xs flex items-center gap-1">
+                      <span className="text-[#8C8275] text-xs flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {getTimeAgo(order.createdAt)}
                       </span>
                     </div>
 
-                    <div className="text-xs text-neutral-400 mt-1 flex items-center gap-2">
+                    <div className="text-xs text-[#706658] mt-1 flex items-center gap-2">
                       <span className="text-[#E06D53] font-semibold">{order.store.name}</span>
                       <span>•</span>
                       <span>Target: {order.estimatedDeliveryTime}</span>
@@ -274,29 +274,29 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                 </div>
 
                 {/* Customer Banner */}
-                <div className="bg-[#181614] rounded-2xl p-3 border border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                <div className="bg-[#FAF7F2] rounded-2xl p-3 border border-[#E8E0D2] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
                   <div className="space-y-0.5">
-                    <div className="font-bold text-white flex items-center gap-2">
+                    <div className="font-bold text-[#1E1B18] flex items-center gap-2">
                       <span>{order.customerDetails.name}</span>
                       <a 
                         href={`tel:${order.customerDetails.phone}`} 
-                        className="text-neutral-400 hover:text-white inline-flex items-center gap-1 text-[11px] bg-neutral-800 px-2 py-0.5 rounded-lg"
+                        className="text-[#5A5043] hover:text-[#1E1B18] inline-flex items-center gap-1 text-[11px] bg-white px-2 py-0.5 rounded-lg border border-[#E8E0D2]"
                       >
                         <Phone className="w-3 h-3 text-[#E06D53]" />
                         {order.customerDetails.phone}
                       </a>
                     </div>
                     {order.customerDetails.orderMode === 'delivery' && (
-                      <div className="text-neutral-400 text-[11px] flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-neutral-500 shrink-0" />
+                      <div className="text-[#706658] text-[11px] flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-[#8C8275] shrink-0" />
                         <span>{order.customerDetails.address}, {order.customerDetails.suburb}</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="text-right sm:border-l sm:border-neutral-800 sm:pl-3 w-full sm:w-auto flex sm:flex-col justify-between sm:justify-center items-center sm:items-end">
-                    <span className="text-[10px] uppercase font-bold text-neutral-500">Total NZD</span>
-                    <span className="font-mono text-sm font-bold text-emerald-400">
+                  <div className="text-right sm:border-l sm:border-[#E8E0D2] sm:pl-3 w-full sm:w-auto flex sm:flex-col justify-between sm:justify-center items-center sm:items-end">
+                    <span className="text-[10px] uppercase font-bold text-[#8C8275]">Total NZD</span>
+                    <span className="font-mono text-sm font-bold text-emerald-600">
                       ${order.totalAmount.toFixed(2)}
                     </span>
                   </div>
@@ -304,8 +304,8 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
 
                 {/* Allergy / Delivery Alert if exists */}
                 {hasAllergy && (
-                  <div className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-rose-300">
-                    <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3 flex items-start gap-2.5 text-xs text-rose-800">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold">ALLERGY WARNING: </span>
                       <span>{order.customerDetails.allergyNotice}</span>
@@ -314,24 +314,24 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                 )}
 
                 {hasNotes && (
-                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-2.5 text-[11px] text-amber-200">
-                    <span className="font-bold text-amber-400">Special Notes: </span>
+                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-2.5 text-[11px] text-amber-800">
+                    <span className="font-bold text-amber-900">Special Notes: </span>
                     <span>{order.customerDetails.deliveryNotes}</span>
                   </div>
                 )}
 
                 {/* Items Summary */}
-                <div className="space-y-2 pt-1 border-t border-neutral-800">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+                <div className="space-y-2 pt-1 border-t border-[#EBE3D5]">
+                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#706658]">
                     Order Items ({order.items.reduce((s, i) => s + i.quantity, 0)})
                   </div>
                   
                   <div className="space-y-2">
                     {order.items.map((item, idx) => (
-                      <div key={idx} className="bg-[#181614] rounded-xl p-2.5 border border-neutral-800/80 flex items-start justify-between gap-3 text-xs">
+                      <div key={idx} className="bg-[#FAF7F2] rounded-xl p-2.5 border border-[#E8E0D2] flex items-start justify-between gap-3 text-xs">
                         <div className="space-y-1">
-                          <div className="font-semibold text-white flex items-center gap-2">
-                            <span className="w-5 h-5 rounded-md bg-[#E06D53]/20 text-[#E06D53] text-[11px] font-bold flex items-center justify-center">
+                          <div className="font-semibold text-[#1E1B18] flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-md bg-[#E06D53]/15 text-[#E06D53] text-[11px] font-bold flex items-center justify-center">
                               {item.quantity}x
                             </span>
                             <span>{item.menuItem.name}</span>
@@ -339,27 +339,27 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
 
                           {/* Customization specifics */}
                           {item.customization && (
-                            <div className="text-[11px] text-neutral-400 pl-7 space-y-0.5">
+                            <div className="text-[11px] text-[#706658] pl-7 space-y-0.5">
                               {item.customization.size && (
-                                <div>Size: <span className="text-neutral-200">{item.customization.size}</span></div>
+                                <div>Size: <span className="text-[#1E1B18] font-medium">{item.customization.size}</span></div>
                               )}
                               {item.customization.crust && (
-                                <div>Crust: <span className="text-neutral-200">{item.customization.crust}</span></div>
+                                <div>Crust: <span className="text-[#1E1B18] font-medium">{item.customization.crust}</span></div>
                               )}
                               {item.customization.spiceLevel && (
-                                <div>Spice: <span className="text-orange-400 font-bold">{item.customization.spiceLevel}</span></div>
+                                <div>Spice: <span className="text-orange-600 font-bold">{item.customization.spiceLevel}</span></div>
                               )}
                               {item.customization.tiffinMealChoice && (
-                                <div>Tiffin Curries: <span className="text-neutral-200">{item.customization.tiffinMealChoice}</span></div>
+                                <div>Tiffin Curries: <span className="text-[#1E1B18] font-medium">{item.customization.tiffinMealChoice}</span></div>
                               )}
                               {item.customization.specialInstructions && (
-                                <div className="text-amber-300 italic">"{item.customization.specialInstructions}"</div>
+                                <div className="text-amber-800 italic">"{item.customization.specialInstructions}"</div>
                               )}
                             </div>
                           )}
                         </div>
 
-                        <span className="font-mono text-neutral-300 font-semibold text-xs">
+                        <span className="font-mono text-[#3D372E] font-semibold text-xs">
                           ${item.totalPrice.toFixed(2)}
                         </span>
                       </div>
@@ -368,18 +368,18 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                 </div>
 
                 {/* Payment Gateway badge */}
-                <div className="flex items-center justify-between text-[11px] text-neutral-400 bg-neutral-900/60 px-3 py-2 rounded-xl">
-                  <span>Payment: <strong className="text-neutral-200">{order.customerDetails.paymentGatewayDetails?.gateway || order.customerDetails.paymentMethod}</strong></span>
-                  <span className="font-mono text-[10px] text-neutral-500">Ref: {order.customerDetails.paymentGatewayDetails?.receiptRef || 'Direct'}</span>
+                <div className="flex items-center justify-between text-[11px] text-[#706658] bg-[#F5EFE6] px-3 py-2 rounded-xl border border-[#E8E0D2]">
+                  <span>Payment: <strong className="text-[#1E1B18]">{order.customerDetails.paymentGatewayDetails?.gateway || order.customerDetails.paymentMethod}</strong></span>
+                  <span className="font-mono text-[10px] text-[#8C8275]">Ref: {order.customerDetails.paymentGatewayDetails?.receiptRef || 'Direct'}</span>
                 </div>
 
                 {/* Action Controls & Stepper */}
-                <div className="pt-2 border-t border-neutral-800 flex flex-wrap items-center justify-between gap-2">
+                <div className="pt-2 border-t border-[#EBE3D5] flex flex-wrap items-center justify-between gap-2">
                   <button
                     onClick={() => setInspectingOrder(order)}
-                    className="py-2 px-3 bg-[#181614] hover:bg-neutral-800 text-neutral-300 hover:text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-neutral-700 transition-all cursor-pointer"
+                    className="py-2 px-3 bg-white hover:bg-[#FAF7F2] text-[#5A5043] hover:text-[#1E1B18] rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-[#D9CFBF] transition-all cursor-pointer shadow-2xs"
                   >
-                    <Printer className="w-3.5 h-3.5 text-neutral-400" />
+                    <Printer className="w-3.5 h-3.5 text-[#706658]" />
                     <span>Kitchen Docket</span>
                   </button>
 
@@ -388,13 +388,13 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                       <>
                         <button
                           onClick={() => onCancelOrder(order.orderId)}
-                          className="py-2 px-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl text-xs font-semibold border border-rose-500/30 transition-all cursor-pointer"
+                          className="py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-semibold border border-rose-200 transition-all cursor-pointer"
                         >
                           Reject / Cancel
                         </button>
                         <button
                           onClick={() => onUpdateOrderStatus(order.orderId, 'kitchen')}
-                          className="py-2 px-4 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-orange-600/20 transition-all cursor-pointer"
+                          className="py-2 px-4 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-orange-600/20 transition-all cursor-pointer"
                         >
                           <ChefHat className="w-3.5 h-3.5" />
                           <span>Start Kitchen Prep</span>
@@ -405,7 +405,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                     {order.status === 'kitchen' && (
                       <button
                         onClick={() => onUpdateOrderStatus(order.orderId, 'packed')}
-                        className="py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-blue-600/20 transition-all cursor-pointer"
+                        className="py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all cursor-pointer"
                       >
                         <Package className="w-3.5 h-3.5" />
                         <span>Mark Packed & Ready</span>
@@ -415,7 +415,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                     {order.status === 'packed' && (
                       <button
                         onClick={() => onUpdateOrderStatus(order.orderId, 'on_the_way')}
-                        className="py-2 px-4 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-purple-600/20 transition-all cursor-pointer"
+                        className="py-2 px-4 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-purple-600/20 transition-all cursor-pointer"
                       >
                         <Truck className="w-3.5 h-3.5" />
                         <span>{order.customerDetails.orderMode === 'delivery' ? 'Dispatch with Driver' : 'Customer Ready for Pickup'}</span>
@@ -425,7 +425,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                     {order.status === 'on_the_way' && (
                       <button
                         onClick={() => onUpdateOrderStatus(order.orderId, 'delivered')}
-                        className="py-2 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+                        className="py-2 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>Mark Order Completed</span>
@@ -433,14 +433,14 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                     )}
 
                     {order.status === 'delivered' && (
-                      <span className="text-emerald-400 text-xs font-bold flex items-center gap-1">
+                      <span className="text-emerald-700 text-xs font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
                         <CheckCircle2 className="w-4 h-4" />
                         Order Completed
                       </span>
                     )}
 
                     {order.status === 'cancelled' && (
-                      <span className="text-rose-400 text-xs font-bold flex items-center gap-1">
+                      <span className="text-rose-700 text-xs font-bold flex items-center gap-1 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200">
                         <Ban className="w-4 h-4" />
                         Cancelled
                       </span>

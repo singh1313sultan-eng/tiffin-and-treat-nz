@@ -60,21 +60,21 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-[#1C1A17] text-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-neutral-700 space-y-6 animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-[#FAF7F2] text-[#1E1B18] rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-[#E8E0D2] space-y-6 animate-in zoom-in-95 duration-200">
         
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E06D53] to-amber-600 flex items-center justify-center text-white shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E06D53] to-amber-600 flex items-center justify-center text-white shadow-lg shadow-[#E06D53]/20">
               <ChefHat className="w-6 h-6" />
             </div>
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-800 text-neutral-300 text-[10px] font-bold uppercase tracking-wider border border-neutral-700">
-                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#854D0E] text-[10px] font-bold uppercase tracking-wider border border-[#FDE68A]">
+                <ShieldCheck className="w-3 h-3 text-emerald-600" />
                 <span>Restricted Staff Portal</span>
               </div>
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-white mt-1">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#1E1B18] mt-1">
                 Store Manager & Kitchen Login
               </h2>
             </div>
@@ -82,7 +82,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 text-neutral-400 hover:text-white rounded-xl hover:bg-neutral-800 transition-colors"
+            className="p-2 text-neutral-400 hover:text-black rounded-xl hover:bg-neutral-200 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -90,8 +90,8 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
         {/* Security Alert Note */}
         {errorMsg && (
-          <div className="p-3 rounded-2xl bg-rose-500/20 text-rose-300 text-xs font-semibold border border-rose-500/30 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+          <div className="p-3 rounded-2xl bg-rose-50 text-rose-800 text-xs font-semibold border border-rose-200 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -100,13 +100,13 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           
           {/* Branch Station */}
           <div className="space-y-1">
-            <label className="text-neutral-300 font-bold">Select Branch Location</label>
+            <label className="text-[#3D372E] font-bold">Select Branch Location</label>
             <div className="relative">
               <Store className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
               <select
                 value={selectedBranch}
                 onChange={(e) => setSelectedBranch(e.target.value)}
-                className="w-full bg-[#141210] border border-neutral-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#E06D53]"
+                className="w-full bg-white border border-[#D9CFBF] rounded-xl pl-10 pr-4 py-2.5 text-xs text-[#1E1B18] focus:outline-none focus:border-[#E06D53] shadow-xs"
               >
                 <option value="all">All NZ Hubs (Central Admin & Financials)</option>
                 {stores.map(s => (
@@ -118,11 +118,11 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
           {/* Role selector */}
           <div className="space-y-1">
-            <label className="text-neutral-300 font-bold">Staff Role Authorization</label>
+            <label className="text-[#3D372E] font-bold">Staff Role Authorization</label>
             <select
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value as any)}
-              className="w-full bg-[#141210] border border-neutral-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#E06D53]"
+              className="w-full bg-white border border-[#D9CFBF] rounded-xl px-3.5 py-2.5 text-xs text-[#1E1B18] focus:outline-none focus:border-[#E06D53] shadow-xs"
             >
               <option value="Store General Manager">👑 Store General Manager (Full Access)</option>
               <option value="Head Chef & Kitchen Lead">👨‍🍳 Head Chef & Kitchen Lead (KDS & Menu)</option>
@@ -132,7 +132,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
 
           {/* Email / Badge ID / Login ID */}
           <div className="space-y-1">
-            <label className="text-neutral-300 font-bold">Staff Login ID / Mobile / Email</label>
+            <label className="text-[#3D372E] font-bold">Staff Login ID / Mobile / Email</label>
             <div className="relative">
               <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
@@ -141,14 +141,14 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 placeholder="e.g. 9876777416 or manager@tiffintreat.co.nz"
                 value={emailOrId}
                 onChange={(e) => setEmailOrId(e.target.value)}
-                className="w-full bg-[#141210] border border-neutral-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#E06D53]"
+                className="w-full bg-white border border-[#D9CFBF] rounded-xl pl-10 pr-4 py-2.5 text-xs text-[#1E1B18] focus:outline-none focus:border-[#E06D53] shadow-xs"
               />
             </div>
           </div>
 
           {/* Manager PIN / Password */}
           <div className="space-y-1">
-            <label className="text-neutral-300 font-bold">Password / Security PIN</label>
+            <label className="text-[#3D372E] font-bold">Password / Security PIN</label>
             <div className="relative">
               <Key className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
@@ -157,12 +157,12 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
                 placeholder="Enter password (e.g. orbit)"
                 value={passwordOrPin}
                 onChange={(e) => setPasswordOrPin(e.target.value)}
-                className="w-full bg-[#141210] border border-neutral-700 rounded-xl pl-10 pr-10 py-2.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-[#E06D53]"
+                className="w-full bg-white border border-[#D9CFBF] rounded-xl pl-10 pr-10 py-2.5 text-xs text-[#1E1B18] font-mono font-bold focus:outline-none focus:border-[#E06D53] shadow-xs"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black cursor-pointer"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>

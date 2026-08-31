@@ -85,7 +85,7 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
     <div className="space-y-6">
       
       {/* Cloud Database & Realtime Sync Status Card */}
-      <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 sm:p-6 shadow-xl space-y-4">
+      <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-md ${
@@ -95,16 +95,16 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h4 className="font-serif font-bold text-base text-white">
+                <h4 className="font-serif font-bold text-base text-[#1E1B18]">
                   Cloud Database & Realtime Sync
                 </h4>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                  isCloudConnected ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                  isCloudConnected ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'
                 }`}>
                   {isCloudConnected ? '🟢 Supabase PostgreSQL Connected' : '🟡 Offline-First / Local Mode'}
                 </span>
               </div>
-              <p className="text-xs text-neutral-400 mt-0.5">
+              <p className="text-xs text-[#706658] mt-0.5">
                 {isCloudConnected 
                   ? `Connected to Supabase PostgreSQL database at ${supabaseInfo.url}`
                   : 'Operating in high-speed local mode. Ready to link to Supabase PostgreSQL in 2 steps.'}
@@ -117,7 +117,7 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
               href="/swagger"
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2 px-3.5 bg-[#E06D53] hover:bg-[#D45E44] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+              className="py-2 px-3.5 bg-[#E06D53] hover:bg-[#D45E44] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >
               <span>⚡ Swagger API Explorer</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -127,7 +127,7 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
               href="https://supabase.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2 px-3.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-neutral-700 transition-all cursor-pointer"
+              className="py-2 px-3.5 bg-white hover:bg-[#FAF7F2] text-[#5A5043] hover:text-[#1E1B18] rounded-xl text-xs font-semibold flex items-center gap-1.5 border border-[#D9CFBF] transition-all cursor-pointer shadow-2xs"
             >
               <span>Supabase</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -137,32 +137,32 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
 
         {/* Status Breakdown & Guide */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="bg-[#181614] rounded-2xl p-3.5 border border-neutral-800 space-y-1">
-            <div className="text-[10px] font-bold uppercase text-neutral-400">Database Engine</div>
-            <div className="font-bold text-white">PostgreSQL 15+ with RLS</div>
-            <div className="text-[11px] text-neutral-500">Orders, Menu, Customers, Branches</div>
+          <div className="bg-[#FAF7F2] rounded-2xl p-3.5 border border-[#E8E0D2] space-y-1">
+            <div className="text-[10px] font-bold uppercase text-[#8C8275]">Database Engine</div>
+            <div className="font-bold text-[#1E1B18]">PostgreSQL 15+ with RLS</div>
+            <div className="text-[11px] text-[#706658]">Orders, Menu, Customers, Branches</div>
           </div>
 
-          <div className="bg-[#181614] rounded-2xl p-3.5 border border-neutral-800 space-y-1">
-            <div className="text-[10px] font-bold uppercase text-neutral-400">Live KDS WebSockets</div>
-            <div className="font-bold text-emerald-400">Realtime Replication Active</div>
-            <div className="text-[11px] text-neutral-500">Instant kitchen dockets & chimes</div>
+          <div className="bg-[#FAF7F2] rounded-2xl p-3.5 border border-[#E8E0D2] space-y-1">
+            <div className="text-[10px] font-bold uppercase text-[#8C8275]">Live KDS WebSockets</div>
+            <div className="font-bold text-emerald-700">Realtime Replication Active</div>
+            <div className="text-[11px] text-[#706658]">Instant kitchen dockets & chimes</div>
           </div>
 
-          <div className="bg-[#181614] rounded-2xl p-3.5 border border-neutral-800 space-y-1">
-            <div className="text-[10px] font-bold uppercase text-neutral-400">SQL Schema Script</div>
-            <div className="font-bold text-amber-400">supabase/schema.sql</div>
-            <div className="text-[11px] text-neutral-500">Includes seed menu, stores & GST</div>
+          <div className="bg-[#FAF7F2] rounded-2xl p-3.5 border border-[#E8E0D2] space-y-1">
+            <div className="text-[10px] font-bold uppercase text-[#8C8275]">SQL Schema Script</div>
+            <div className="font-bold text-amber-800">supabase/schema.sql</div>
+            <div className="text-[11px] text-[#706658]">Includes seed menu, stores & GST</div>
           </div>
         </div>
 
         {!isCloudConnected && (
-          <div className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-700 space-y-2 text-xs">
-            <div className="font-bold text-white flex items-center gap-2">
-              <Key className="w-4 h-4 text-amber-400" />
+          <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8E0D2] space-y-2 text-xs">
+            <div className="font-bold text-[#1E1B18] flex items-center gap-2">
+              <Key className="w-4 h-4 text-amber-600" />
               <span>How to connect your live Supabase cloud database:</span>
             </div>
-            <ol className="list-decimal list-inside space-y-1 text-neutral-300 text-[11px]">
+            <ol className="list-decimal list-inside space-y-1 text-[#706658] text-[11px]">
               <li>Create a free PostgreSQL project on <strong>https://supabase.com</strong>.</li>
               <li>Go to <strong>SQL Editor</strong> and run the provided <code>supabase/schema.sql</code> script to build all tables & seed data.</li>
               <li>Copy your <strong>Project URL</strong> and <strong>anon key</strong> into the <code>.env</code> file.</li>
@@ -172,13 +172,13 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
       </div>
 
       {/* Global Store Broadcast Announcement Banner */}
-      <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-3">
+      <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-3">
         <div className="flex items-center justify-between">
-          <h4 className="font-serif font-bold text-base text-white flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-400" />
+          <h4 className="font-serif font-bold text-base text-[#1E1B18] flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-amber-500" />
             <span>Storefront Top Announcement Banner</span>
           </h4>
-          <span className="text-xs text-neutral-400">Broadcasts live across customer storefront</span>
+          <span className="text-xs text-[#706658]">Broadcasts live across customer storefront</span>
         </div>
 
         <form onSubmit={handleSaveBanner} className="flex flex-col sm:flex-row gap-3">
@@ -187,11 +187,11 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
             value={bannerInput}
             onChange={(e) => setBannerInput(e.target.value)}
             placeholder="e.g. Free Gulab Jamun Sundae on all orders over NZD $45 this weekend!"
-            className="flex-1 bg-[#181614] border border-neutral-700 rounded-2xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#E06D53]"
+            className="flex-1 bg-[#FAF7F2] border border-[#D9CFBF] rounded-2xl px-4 py-2.5 text-xs text-[#1E1B18] focus:outline-none focus:border-[#E06D53] shadow-2xs"
           />
           <button
             type="submit"
-            className="py-2.5 px-5 bg-[#E06D53] hover:bg-[#D45E44] text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#E06D53]/20 shrink-0"
+            className="py-2.5 px-5 bg-[#E06D53] hover:bg-[#D45E44] text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-[#E06D53]/20 shrink-0"
           >
             {bannerSaved ? (
               <>
@@ -209,14 +209,14 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
       </div>
 
       {/* Audio & Alert Preferences */}
-      <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl flex items-center justify-between">
+      <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-neutral-800 text-[#E06D53] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center">
             {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </div>
           <div>
-            <div className="font-bold text-sm text-white">Kitchen Order Audio Chime</div>
-            <div className="text-xs text-neutral-400">Play notification chime when a new online customer order is received</div>
+            <div className="font-bold text-sm text-[#1E1B18]">Kitchen Order Audio Chime</div>
+            <div className="text-xs text-[#706658]">Play notification chime when a new online customer order is received</div>
           </div>
         </div>
 
@@ -224,8 +224,8 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
           onClick={onToggleSound}
           className={`py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
             soundEnabled
-              ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-              : 'bg-neutral-800 text-neutral-400 border-neutral-700'
+              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+              : 'bg-[#FAF7F2] text-[#706658] border-[#D9CFBF]'
           }`}
         >
           {soundEnabled ? 'Chime ON' : 'Muted'}
@@ -235,31 +235,31 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
       {/* Branch Operations & Opening Hours Controls */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="font-serif font-bold text-base text-white flex items-center gap-2">
+          <h4 className="font-serif font-bold text-base text-[#1E1B18] flex items-center gap-2">
             <Store className="w-4 h-4 text-[#E06D53]" />
             <span>NZ Branch Hub Operations & Prep Times</span>
           </h4>
-          <span className="text-xs text-neutral-400">{stores.length} Locations</span>
+          <span className="text-xs text-[#706658]">{stores.length} Locations</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {stores.map((store) => (
             <div 
               key={store.id}
-              className={`bg-[#24211D] border rounded-3xl p-5 shadow-xl space-y-4 transition-all ${
+              className={`bg-white border rounded-3xl p-5 shadow-xs space-y-4 transition-all ${
                 store.isOpen 
-                  ? 'border-neutral-800 hover:border-neutral-700' 
-                  : 'border-rose-900/40 bg-neutral-900/40 opacity-75'
+                  ? 'border-[#E8E0D2] hover:border-[#D4C8B5]' 
+                  : 'border-rose-200 bg-rose-50/40 opacity-80'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-0.5">
-                  <div className="font-serif font-bold text-base text-white flex items-center gap-2">
+                  <div className="font-serif font-bold text-base text-[#1E1B18] flex items-center gap-2">
                     <span>{store.name}</span>
-                    <span className="text-[11px] text-neutral-400 font-sans font-normal">({store.suburb})</span>
+                    <span className="text-[11px] text-[#706658] font-sans font-normal">({store.suburb})</span>
                   </div>
-                  <div className="text-xs text-neutral-400 flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-neutral-500 shrink-0" />
+                  <div className="text-xs text-[#706658] flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-[#8C8275] shrink-0" />
                     <span>{store.address}</span>
                   </div>
                 </div>
@@ -269,8 +269,8 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
                   onClick={() => onToggleStoreStatus(store.id, !store.isOpen)}
                   className={`px-3 py-1.5 rounded-2xl text-xs font-bold flex items-center gap-1.5 border transition-all cursor-pointer ${
                     store.isOpen
-                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30'
-                      : 'bg-rose-500/20 text-rose-400 border-rose-500/30 hover:bg-rose-500/30'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                      : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
                   }`}
                 >
                   <Power className="w-3.5 h-3.5" />
@@ -279,27 +279,27 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
               </div>
 
               {/* Delivery and Pickup Times */}
-              <div className="bg-[#181614] rounded-2xl p-3.5 border border-neutral-800 text-xs space-y-2">
+              <div className="bg-[#FAF7F2] rounded-2xl p-3.5 border border-[#E8E0D2] text-xs space-y-2">
                 {editingStoreId === store.id ? (
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="text-[10px] text-neutral-400 font-bold uppercase">Pickup Estimate</label>
+                        <label className="text-[10px] text-[#706658] font-bold uppercase">Pickup Estimate</label>
                         <input
                           type="text"
                           value={editPickupTime}
                           onChange={(e) => setEditPickupTime(e.target.value)}
-                          className="w-full bg-[#24211D] border border-neutral-700 text-white rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#E06D53]"
+                          className="w-full bg-white border border-[#D9CFBF] text-[#1E1B18] rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#E06D53]"
                           placeholder="e.g. 15-20 mins"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] text-neutral-400 font-bold uppercase">Delivery Estimate</label>
+                        <label className="text-[10px] text-[#706658] font-bold uppercase">Delivery Estimate</label>
                         <input
                           type="text"
                           value={editDeliveryTime}
                           onChange={(e) => setEditDeliveryTime(e.target.value)}
-                          className="w-full bg-[#24211D] border border-neutral-700 text-white rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#E06D53]"
+                          className="w-full bg-white border border-[#D9CFBF] text-[#1E1B18] rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#E06D53]"
                           placeholder="e.g. 35-45 mins"
                         />
                       </div>
@@ -308,7 +308,7 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => setEditingStoreId(null)}
-                        className="py-1 px-3 bg-neutral-800 text-neutral-300 rounded-lg text-[11px]"
+                        className="py-1 px-3 bg-[#EBE3D5] text-[#1E1B18] rounded-lg text-[11px] font-semibold"
                       >
                         Cancel
                       </button>
@@ -323,11 +323,11 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
                 ) : (
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <div className="text-neutral-300 flex items-center gap-2">
-                        <Clock className="w-3.5 h-3.5 text-neutral-500" />
+                      <div className="text-[#1E1B18] flex items-center gap-2">
+                        <Clock className="w-3.5 h-3.5 text-[#8C8275]" />
                         <span>Pickup: <strong>{store.pickupTime}</strong> • Delivery: <strong>{store.deliveryTime}</strong></span>
                       </div>
-                      <div className="text-[11px] text-neutral-500">
+                      <div className="text-[11px] text-[#706658]">
                         Min Order: ${store.minOrder.toFixed(2)} • Standard Delivery Fee: ${store.deliveryFee.toFixed(2)}
                       </div>
                     </div>
@@ -343,7 +343,7 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
               </div>
 
               {/* Hours & Contact */}
-              <div className="flex items-center justify-between text-[11px] text-neutral-400 pt-1">
+              <div className="flex items-center justify-between text-[11px] text-[#706658] pt-1">
                 <span>Hours: {store.hours}</span>
                 <span className="font-mono">{store.phone}</span>
               </div>
@@ -353,15 +353,15 @@ export const AdminStoreSettings: React.FC<AdminStoreSettingsProps> = ({
       </div>
 
       {/* Reset Simulation Data */}
-      <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <div className="font-bold text-sm text-white">Reset Demo Orders & Stock</div>
-          <div className="text-xs text-neutral-400">Restore all initial mock orders, customer profiles and menu pricing defaults</div>
+          <div className="font-bold text-sm text-[#1E1B18]">Reset Demo Orders & Stock</div>
+          <div className="text-xs text-[#706658]">Restore all initial mock orders, customer profiles and menu pricing defaults</div>
         </div>
 
         <button
           onClick={onResetDemoData}
-          className="py-2.5 px-4 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white rounded-2xl text-xs font-semibold flex items-center gap-2 border border-neutral-700 transition-all cursor-pointer shrink-0"
+          className="py-2.5 px-4 bg-[#FAF7F2] hover:bg-white text-[#5A5043] hover:text-[#1E1B18] rounded-2xl text-xs font-semibold flex items-center gap-2 border border-[#D9CFBF] transition-all cursor-pointer shrink-0 shadow-2xs"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Reload Initial Mock Data</span>

@@ -143,7 +143,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
   const activeOrdersCount = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#141210] text-neutral-100 flex flex-col overflow-hidden animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 bg-[#FAF7F2] text-[#1E1B18] flex flex-col overflow-hidden animate-in fade-in duration-200">
       
       {/* Admin Toast Alert */}
       {adminToast && (
@@ -154,55 +154,55 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
       )}
 
       {/* Top Console Navigation Bar */}
-      <header className="bg-[#1C1A17] border-b border-neutral-800 px-4 sm:px-6 py-3.5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shrink-0 shadow-lg">
+      <header className="bg-white border-b border-[#E8E0D2] px-4 sm:px-6 py-3.5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shrink-0 shadow-xs">
         
         {/* Left: Brand & Return */}
         <div className="flex items-center gap-4">
           <button
             onClick={onClose}
-            className="py-2 px-3 bg-[#282420] hover:bg-neutral-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 border border-neutral-700 transition-all cursor-pointer group"
+            className="py-2 px-3 bg-[#FAF0ED] hover:bg-[#F0D5CD] text-[#E06D53] rounded-xl text-xs font-bold flex items-center gap-1.5 border border-[#F0D5CD] transition-all cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
             <span>Storefront</span>
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E06D53] to-amber-600 flex items-center justify-center text-white shadow-md">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E06D53] to-amber-600 flex items-center justify-center text-white shadow-md shadow-[#E06D53]/20">
               <ChefHat className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-serif font-bold text-sm sm:text-base text-white flex items-center gap-2">
+              <div className="font-serif font-bold text-sm sm:text-base text-[#1E1B18] flex items-center gap-2">
                 <span>Tiffin & Treat NZ</span>
-                <span className="text-[10px] font-sans font-extrabold uppercase tracking-wider bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded-md border border-neutral-700">
+                <span className="text-[10px] font-sans font-extrabold uppercase tracking-wider bg-[#FAF0ED] text-[#E06D53] px-2 py-0.5 rounded-md border border-[#F0D5CD]">
                   Manager Portal
                 </span>
               </div>
-              <div className="text-[11px] text-neutral-400 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <div className="text-[11px] text-[#706658] flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>Live NZ System Online</span>
                 <span>•</span>
-                <span className="font-mono text-neutral-300">{currentTime}</span>
+                <span className="font-mono text-[#3D372E] font-semibold">{currentTime}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Center: Tabs */}
-        <nav className="flex items-center gap-1.5 bg-[#141210] p-1.5 rounded-2xl border border-neutral-800 overflow-x-auto scrollbar-none">
+        <nav className="flex items-center gap-1.5 bg-[#F5EFE6] p-1.5 rounded-2xl border border-[#E8E0D2] overflow-x-auto scrollbar-none">
           
           {/* Orders / KDS */}
           <button
             onClick={() => setActiveTab('orders')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
               activeTab === 'orders'
-                ? 'bg-[#E06D53] text-white shadow-md'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#E06D53] text-white shadow-sm'
+                : 'text-[#706658] hover:text-[#1E1B18] hover:bg-white/60'
             }`}
           >
             <ChefHat className="w-3.5 h-3.5" />
             <span>Live Orders</span>
             {activeOrdersCount > 0 && (
-              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
                 activeTab === 'orders' ? 'bg-white text-[#E06D53]' : 'bg-[#E06D53] text-white'
               }`}>
                 {activeOrdersCount}
@@ -215,13 +215,13 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
             onClick={() => setActiveTab('menu')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
               activeTab === 'menu'
-                ? 'bg-[#E06D53] text-white shadow-md'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#E06D53] text-white shadow-sm'
+                : 'text-[#706658] hover:text-[#1E1B18] hover:bg-white/60'
             }`}
           >
             <UtensilsCrossed className="w-3.5 h-3.5" />
             <span>Menu & Stock</span>
-            <span className="text-[10px] text-neutral-500 font-mono">({menuItems.length})</span>
+            <span className="text-[10px] text-[#A89E91] font-mono">({menuItems.length})</span>
           </button>
 
           {/* Financials & GST */}
@@ -229,8 +229,8 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
             onClick={() => setActiveTab('financials')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
               activeTab === 'financials'
-                ? 'bg-[#E06D53] text-white shadow-md'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#E06D53] text-white shadow-sm'
+                : 'text-[#706658] hover:text-[#1E1B18] hover:bg-white/60'
             }`}
           >
             <DollarSign className="w-3.5 h-3.5" />
@@ -242,13 +242,13 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
             onClick={() => setActiveTab('customers')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
               activeTab === 'customers'
-                ? 'bg-[#E06D53] text-white shadow-md'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#E06D53] text-white shadow-sm'
+                : 'text-[#706658] hover:text-[#1E1B18] hover:bg-white/60'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
             <span>Customer CRM</span>
-            <span className="text-[10px] text-neutral-500 font-mono">({customers.length})</span>
+            <span className="text-[10px] text-[#A89E91] font-mono">({customers.length})</span>
           </button>
 
           {/* Store Settings */}
@@ -256,8 +256,8 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
             onClick={() => setActiveTab('settings')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
               activeTab === 'settings'
-                ? 'bg-[#E06D53] text-white shadow-md'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-[#E06D53] text-white shadow-sm'
+                : 'text-[#706658] hover:text-[#1E1B18] hover:bg-white/60'
             }`}
           >
             <Settings className="w-3.5 h-3.5" />
@@ -269,11 +269,11 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
         {/* Right: Staff Info, Sound toggle and Close */}
         <div className="flex items-center justify-end gap-2.5">
           {currentAdmin && (
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-[#282420] rounded-xl border border-neutral-700 text-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-[#FAF7F2] rounded-xl border border-[#E8E0D2] text-xs">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <div className="flex flex-col text-left">
-                <span className="font-bold text-white leading-tight">{currentAdmin.name}</span>
-                <span className="text-[10px] text-neutral-400 leading-tight">{currentAdmin.role}</span>
+                <span className="font-bold text-[#1E1B18] leading-tight">{currentAdmin.name}</span>
+                <span className="text-[10px] text-[#706658] leading-tight">{currentAdmin.role}</span>
               </div>
             </div>
           )}
@@ -283,7 +283,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
               setSoundEnabled(!soundEnabled);
               showAdminToast(soundEnabled ? 'Kitchen chime muted' : 'Kitchen chime activated');
             }}
-            className="p-2 bg-[#282420] hover:bg-neutral-700 text-neutral-300 hover:text-white rounded-xl border border-neutral-700 transition-all cursor-pointer"
+            className="p-2 bg-white hover:bg-[#FAF7F2] text-[#5A5043] hover:text-[#1E1B18] rounded-xl border border-[#E8E0D2] transition-all cursor-pointer shadow-2xs"
             title={soundEnabled ? 'Mute Chime' : 'Unmute Chime'}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-[#E06D53]" /> : <VolumeX className="w-4 h-4" />}
@@ -294,7 +294,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
               onAdminLogout();
               onClose();
             }}
-            className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/30 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+            className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl border border-rose-200 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
             title="Lock & Logout Admin Session"
           >
             <LogOut className="w-4 h-4" />
@@ -303,7 +303,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 bg-[#282420] hover:bg-neutral-700 text-neutral-300 hover:text-white rounded-xl border border-neutral-700 transition-all cursor-pointer"
+            className="p-2 bg-white hover:bg-[#FAF7F2] text-[#5A5043] hover:text-[#1E1B18] rounded-xl border border-[#E8E0D2] transition-all cursor-pointer shadow-2xs"
             title="Close Manager Console"
           >
             <X className="w-4 h-4" />

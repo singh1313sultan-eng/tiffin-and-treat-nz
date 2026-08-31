@@ -161,29 +161,29 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
     <div className="space-y-6">
       
       {/* Top Header & Export Action */}
-      <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+      <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-white font-serif font-bold text-lg flex items-center gap-2">
+          <h3 className="text-[#1E1B18] font-serif font-bold text-lg flex items-center gap-2">
             <span>Financial Accountability & GST Statement</span>
-            <span className="text-[10px] uppercase font-bold bg-[#E06D53]/20 text-[#E06D53] border border-[#E06D53]/30 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] uppercase font-bold bg-[#FAF0ED] text-[#E06D53] border border-[#F0D5CD] px-2 py-0.5 rounded-full">
               NZD ($)
             </span>
           </h3>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-[#706658]">
             Real-time accounting ledger including New Zealand 15% Goods & Services Tax (GST No: 124-889-102).
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center bg-[#181614] rounded-2xl p-1 border border-neutral-800 text-xs">
+          <div className="flex items-center bg-[#FAF7F2] rounded-2xl p-1 border border-[#E8E0D2] text-xs">
             {(['today', 'week', 'month', 'all'] as const).map(t => (
               <button
                 key={t}
                 onClick={() => setTimeRange(t)}
                 className={`px-3 py-1.5 rounded-xl capitalize font-semibold transition-all cursor-pointer ${
                   timeRange === t 
-                    ? 'bg-[#E06D53] text-white shadow-md' 
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-[#E06D53] text-white shadow-sm' 
+                    : 'text-[#706658] hover:text-[#1E1B18]'
                 }`}
               >
                 {t === 'today' ? 'Today' : t === 'week' ? '7 Days' : t === 'month' ? '30 Days' : 'All Time'}
@@ -193,7 +193,7 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
 
           <button
             onClick={handleExportCSV}
-            className="py-2.5 px-4 bg-white text-black hover:bg-neutral-200 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-lg transition-all cursor-pointer shrink-0"
+            className="py-2.5 px-4 bg-[#FAF0ED] text-[#E06D53] hover:bg-[#E06D53] hover:text-white border border-[#F0D5CD] rounded-2xl text-xs font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer shrink-0"
           >
             <Download className="w-4 h-4" />
             <span>Export CSV</span>
@@ -205,66 +205,66 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Gross Revenue */}
-        <div className="bg-gradient-to-br from-[#24211D] to-[#2e2924] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-2">
-          <div className="flex items-center justify-between text-neutral-400 text-xs">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-[#706658] text-xs">
             <span className="font-semibold uppercase tracking-wider">Gross Sales (Incl. GST)</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-mono text-3xl font-extrabold text-white">
+          <div className="font-mono text-3xl font-extrabold text-[#1E1B18]">
             ${metrics.totalGross.toFixed(2)}
           </div>
-          <div className="text-[11px] text-emerald-400 flex items-center gap-1 font-semibold">
+          <div className="text-[11px] text-emerald-700 flex items-center gap-1 font-semibold">
             <ArrowUpRight className="w-3.5 h-3.5" />
             <span>{metrics.orderCount} completed transactions</span>
           </div>
         </div>
 
         {/* NZ 15% GST Breakdown */}
-        <div className="bg-gradient-to-br from-[#24211D] to-[#2e2924] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-2">
-          <div className="flex items-center justify-between text-neutral-400 text-xs">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-[#706658] text-xs">
             <span className="font-semibold uppercase tracking-wider">NZ GST (15% Included)</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-200">
               <Percent className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-mono text-3xl font-extrabold text-amber-400">
+          <div className="font-mono text-3xl font-extrabold text-amber-800">
             ${metrics.gstCollected.toFixed(2)}
           </div>
-          <div className="text-[11px] text-neutral-400">
+          <div className="text-[11px] text-[#706658]">
             IRD Tax Provision (3/23 of Gross)
           </div>
         </div>
 
         {/* Net Sales ex-GST */}
-        <div className="bg-gradient-to-br from-[#24211D] to-[#2e2924] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-2">
-          <div className="flex items-center justify-between text-neutral-400 text-xs">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-[#706658] text-xs">
             <span className="font-semibold uppercase tracking-wider">Net Sales (Excl. GST)</span>
-            <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-200">
               <Receipt className="w-4 h-4" />
             </div>
           </div>
-          <div className="font-mono text-3xl font-extrabold text-blue-400">
+          <div className="font-mono text-3xl font-extrabold text-blue-800">
             ${metrics.netRevenueExGst.toFixed(2)}
           </div>
-          <div className="text-[11px] text-neutral-400">
+          <div className="text-[11px] text-[#706658]">
             Business core net revenue
           </div>
         </div>
 
         {/* Average Order Value (AOV) */}
-        <div className="bg-gradient-to-br from-[#24211D] to-[#2e2924] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-2">
-          <div className="flex items-center justify-between text-neutral-400 text-xs">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-[#706658] text-xs">
             <span className="font-semibold uppercase tracking-wider">Avg Order Value (AOV)</span>
-            <div className="w-8 h-8 rounded-xl bg-[#E06D53]/20 text-[#E06D53] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center border border-[#F0D5CD]">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
           <div className="font-mono text-3xl font-extrabold text-[#E06D53]">
             ${metrics.aov.toFixed(2)}
           </div>
-          <div className="text-[11px] text-neutral-400">
+          <div className="text-[11px] text-[#706658]">
             Avg basket size across stores
           </div>
         </div>
@@ -273,34 +273,34 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
 
       {/* Secondary Financial Indicators */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-4 flex items-center justify-between">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-4 flex items-center justify-between shadow-xs">
           <div>
-            <div className="text-xs text-neutral-400 font-semibold">Delivery Fees Collected</div>
-            <div className="font-mono text-xl font-bold text-white mt-0.5">
+            <div className="text-xs text-[#706658] font-semibold">Delivery Fees Collected</div>
+            <div className="font-mono text-xl font-bold text-[#1E1B18] mt-0.5">
               ${metrics.totalDeliveryFees.toFixed(2)}
             </div>
           </div>
-          <div className="text-xs text-neutral-500 font-mono">Courier offset</div>
+          <div className="text-xs text-[#8C8275] font-mono">Courier offset</div>
         </div>
 
-        <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-4 flex items-center justify-between">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-4 flex items-center justify-between shadow-xs">
           <div>
-            <div className="text-xs text-neutral-400 font-semibold">Staff Tips (100% to Team)</div>
-            <div className="font-mono text-xl font-bold text-amber-400 mt-0.5">
+            <div className="text-xs text-[#706658] font-semibold">Staff Tips (100% to Team)</div>
+            <div className="font-mono text-xl font-bold text-amber-700 mt-0.5">
               ${metrics.totalTips.toFixed(2)}
             </div>
           </div>
-          <div className="text-xs text-neutral-500 font-mono">Kitchen pool</div>
+          <div className="text-xs text-[#8C8275] font-mono">Kitchen pool</div>
         </div>
 
-        <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-4 flex items-center justify-between">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-4 flex items-center justify-between shadow-xs">
           <div>
-            <div className="text-xs text-neutral-400 font-semibold">Promotional Discounts</div>
-            <div className="font-mono text-xl font-bold text-rose-400 mt-0.5">
+            <div className="text-xs text-[#706658] font-semibold">Promotional Discounts</div>
+            <div className="font-mono text-xl font-bold text-rose-700 mt-0.5">
               -${metrics.totalDiscounts.toFixed(2)}
             </div>
           </div>
-          <div className="text-xs text-neutral-500 font-mono">Coupons redeemed</div>
+          <div className="text-xs text-[#8C8275] font-mono">Coupons redeemed</div>
         </div>
       </div>
 
@@ -308,31 +308,31 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* NZ Payment Gateways Distribution */}
-        <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-4">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="font-serif font-bold text-base text-white flex items-center gap-2">
+            <h4 className="font-serif font-bold text-base text-[#1E1B18] flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-[#E06D53]" />
               <span>NZ Payment Gateways & Banking</span>
             </h4>
-            <span className="text-xs text-neutral-400">{paymentBreakdown.length} Methods Active</span>
+            <span className="text-xs text-[#706658]">{paymentBreakdown.length} Methods Active</span>
           </div>
 
           <div className="space-y-3.5">
             {paymentBreakdown.map((gw) => (
               <div key={gw.key} className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 text-white font-semibold">
+                  <div className="flex items-center gap-2 text-[#1E1B18] font-semibold">
                     <span>{gw.icon}</span>
                     <span>{gw.label}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-neutral-400 text-[11px]">{gw.count} orders</span>
-                    <span className="font-mono font-bold text-white">${gw.total.toFixed(2)}</span>
+                    <span className="text-[#706658] text-[11px]">{gw.count} orders</span>
+                    <span className="font-mono font-bold text-[#1E1B18]">${gw.total.toFixed(2)}</span>
                   </div>
                 </div>
 
                 {/* Progress bar */}
-                <div className="w-full h-2 bg-[#181614] rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-[#FAF7F2] rounded-full overflow-hidden border border-[#E8E0D2]">
                   <div 
                     className="h-full bg-gradient-to-r from-[#E06D53] to-amber-500 rounded-full transition-all duration-500"
                     style={{ width: `${Math.max(gw.percent, 3)}%` }}
@@ -344,31 +344,31 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
         </div>
 
         {/* Store Location Breakdown */}
-        <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-4">
+        <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="font-serif font-bold text-base text-white flex items-center gap-2">
+            <h4 className="font-serif font-bold text-base text-[#1E1B18] flex items-center gap-2">
               <Store className="w-4 h-4 text-[#E06D53]" />
               <span>Revenue by Store Branch</span>
             </h4>
-            <span className="text-xs text-neutral-400">{stores.length} Hubs</span>
+            <span className="text-xs text-[#706658]">{stores.length} Hubs</span>
           </div>
 
           <div className="space-y-3.5">
             {storeBreakdown.map((sb) => (
               <div key={sb.store.id} className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <div className="text-white font-semibold flex items-center gap-1.5">
+                  <div className="text-[#1E1B18] font-semibold flex items-center gap-1.5">
                     <span>{sb.store.name}</span>
-                    <span className="text-[10px] text-neutral-400">({sb.store.suburb})</span>
+                    <span className="text-[10px] text-[#706658]">({sb.store.suburb})</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-neutral-400 text-[11px]">{sb.count} orders</span>
-                    <span className="font-mono font-bold text-white">${sb.total.toFixed(2)}</span>
+                    <span className="text-[#706658] text-[11px]">{sb.count} orders</span>
+                    <span className="font-mono font-bold text-[#1E1B18]">${sb.total.toFixed(2)}</span>
                   </div>
                 </div>
 
                 {/* Progress bar */}
-                <div className="w-full h-2 bg-[#181614] rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-[#FAF7F2] rounded-full overflow-hidden border border-[#E8E0D2]">
                   <div 
                     className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500"
                     style={{ width: `${Math.max(sb.percent, 3)}%` }}
@@ -382,24 +382,24 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
       </div>
 
       {/* Top Performing Dishes */}
-      <div className="bg-[#24211D] border border-neutral-800 rounded-3xl p-5 shadow-xl space-y-4">
-        <h4 className="font-serif font-bold text-base text-white flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-400" />
+      <div className="bg-white border border-[#E8E0D2] rounded-3xl p-5 shadow-xs space-y-4">
+        <h4 className="font-serif font-bold text-base text-[#1E1B18] flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-amber-500" />
           <span>Top 5 Revenue Generating Dishes</span>
         </h4>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {topItems.map((item, idx) => (
-            <div key={idx} className="bg-[#181614] rounded-2xl p-3 border border-neutral-800 space-y-2">
+            <div key={idx} className="bg-[#FAF7F2] rounded-2xl p-3 border border-[#E8E0D2] space-y-2">
               <div className="text-[10px] font-bold uppercase text-[#E06D53] tracking-wider">
                 Rank #{idx + 1}
               </div>
-              <div className="font-bold text-white text-xs line-clamp-1">
+              <div className="font-bold text-[#1E1B18] text-xs line-clamp-1">
                 {item.name}
               </div>
-              <div className="flex items-center justify-between text-[11px] pt-1 border-t border-neutral-800">
-                <span className="text-neutral-400">{item.quantity} sold</span>
-                <span className="font-mono font-bold text-emerald-400">${item.revenue.toFixed(2)}</span>
+              <div className="flex items-center justify-between text-[11px] pt-1 border-t border-[#E8E0D2]">
+                <span className="text-[#706658]">{item.quantity} sold</span>
+                <span className="font-mono font-bold text-emerald-700">${item.revenue.toFixed(2)}</span>
               </div>
             </div>
           ))}
