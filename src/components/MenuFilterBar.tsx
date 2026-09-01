@@ -45,8 +45,40 @@ export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({
   onSelectCategory,
   itemCount
 }) => {
+  const [headerHeight, setHeaderHeight] = React.useState<number>(112);
+
+  React.useEffect(() => {
+    const updateHeaderHeight = () => {
+      const headerEl = document.getElementById('main-header');
+      if (headerEl) {
+        setHeaderHeight(headerEl.offsetHeight);
+      }
+    };
+
+    updateHeaderHeight();
+    window.addEventListener('resize', updateHeaderHeight);
+
+    let ro: ResizeObserver | null = null;
+    const headerEl = document.getElementById('main-header');
+    if (headerEl && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        updateHeaderHeight();
+      });
+      ro.observe(headerEl);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateHeaderHeight);
+      if (ro) ro.disconnect();
+    };
+  }, []);
+
   return (
-    <div id="menu-filter-bar" className="sticky top-20 z-30 bg-[#FAF7F2]/95 backdrop-blur-md py-3.5 border-b border-[#E8E0D2] shadow-xs">
+    <div 
+      id="menu-filter-bar" 
+      style={{ top: `${headerHeight}px` }}
+      className="sticky z-30 bg-[#FAF7F2]/95 backdrop-blur-md py-3 sm:py-3.5 border-b border-[#E8E0D2] shadow-sm transition-[top] duration-150"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         
         {/* Categories Scrollable Row */}
