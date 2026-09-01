@@ -63,21 +63,7 @@ export const broadcastMenuUpdate = () => {
 // ==============================================================================
 
 export const dbFetchMenuItems = async (): Promise<MenuItem[]> => {
-  // 1. First priority: Fetch from REST API endpoint
-  try {
-    const apiRes = await fetch('/api/menu');
-    if (apiRes.ok) {
-      const data = await apiRes.json();
-      if (Array.isArray(data) && data.length > 0) {
-        setLocalStorageData(LS_KEYS.MENU, data);
-        return data;
-      }
-    }
-  } catch (e) {
-    console.warn('[API] /api/menu not reachable, checking cloud database', e);
-  }
-
-  // 2. Second priority: Fetch from Supabase Cloud DB
+  // 1. Primary Source of Truth: Supabase Cloud Database
   if (isSupabaseConfigured() && supabase) {
     try {
       const { data, error } = await supabase
@@ -121,9 +107,34 @@ export const dbFetchMenuItems = async (): Promise<MenuItem[]> => {
         return formatted;
       }
     } catch (e) {
-      console.warn('[Supabase] Failed to fetch menu items from cloud, using cache', e);
+      console.warn('[Supabase] Failed to fetch menu items from cloud, checking fallback', e);
     }
   }
+
+  // 2. Secondary fallback: Local REST API endpoint or static JSON
+  try {
+    const apiRes = await fetch('/api/menu');
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setLocalStorageData(LS_KEYS.MENU, data);
+        return data;
+      }
+    }
+  } catch (e) {
+    console.warn('[API] /api/menu not reachable, checking static data', e);
+  }
+
+  try {
+    const staticRes = await fetch('/data/menu.json');
+    if (staticRes.ok) {
+      const data = await staticRes.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setLocalStorageData(LS_KEYS.MENU, data);
+        return data;
+      }
+    }
+  } catch (e) {}
 
   return getLocalStorageData(LS_KEYS.MENU, MENU_ITEMS);
 };
