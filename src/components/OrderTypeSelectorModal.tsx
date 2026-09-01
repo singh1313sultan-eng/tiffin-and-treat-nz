@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { OrderMode, StoreLocation } from '../types';
 import { STORE_LOCATIONS, NZ_SUBURBS_LIST } from '../data/mockData';
+import { GoogleMapLocationPicker } from './GoogleMapLocationPicker';
 
 interface OrderTypeSelectorModalProps {
   isOpen: boolean;
@@ -36,8 +37,6 @@ export const OrderTypeSelectorModal: React.FC<OrderTypeSelectorModalProps> = ({
   onSelectDeliveryAddress
 }) => {
   const [activeTab, setActiveTab] = useState<OrderMode>(currentMode);
-  const [addressQuery, setAddressQuery] = useState(deliveryAddress || '');
-  const [selectedSuburb, setSelectedSuburb] = useState(deliveryAddress || 'Auckland CBD');
   const [storeSearchQuery, setStoreSearchQuery] = useState('');
 
   if (!isOpen) return null;
@@ -48,17 +47,6 @@ export const OrderTypeSelectorModal: React.FC<OrderTypeSelectorModalProps> = ({
     store.city.toLowerCase().includes(storeSearchQuery.toLowerCase())
   );
 
-  const handleApplyDelivery = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (addressQuery.trim()) {
-      onSelectDeliveryAddress(addressQuery.trim());
-    } else {
-      onSelectDeliveryAddress(selectedSuburb);
-    }
-    onSelectMode('delivery');
-    onClose();
-  };
-
   const handleSelectStorePickup = (store: StoreLocation) => {
     onSelectStore(store);
     onSelectMode('pickup');
@@ -67,7 +55,7 @@ export const OrderTypeSelectorModal: React.FC<OrderTypeSelectorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-[#E8E0D2] overflow-hidden">
+      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-[#E8E0D2] overflow-hidden">
         
         {/* Modal Header */}
         <div className="p-5 sm:p-6 border-b border-[#EBE3D5] flex items-center justify-between bg-[#FAF7F2]">
@@ -81,7 +69,7 @@ export const OrderTypeSelectorModal: React.FC<OrderTypeSelectorModalProps> = ({
           </div>
           <button 
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-white border border-[#E2D8C9] flex items-center justify-center text-[#706658] hover:text-[#1E1B18] hover:bg-[#F2ECE1] transition-colors"
+            className="w-9 h-9 rounded-full bg-white border border-[#E2D8C9] flex items-center justify-center text-[#706658] hover:text-[#1E1B18] hover:bg-[#F2ECE1] transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -120,68 +108,17 @@ export const OrderTypeSelectorModal: React.FC<OrderTypeSelectorModalProps> = ({
         {/* Tab Content */}
         <div className="p-4 sm:p-6 pt-2 overflow-y-auto flex-1">
           {activeTab === 'delivery' ? (
-            <div className="space-y-5">
-              <form onSubmit={handleApplyDelivery} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#5A5043] mb-1.5">
-                    Delivery Address or Suburb in NZ
-                  </label>
-                  <div className="relative">
-                    <MapPin className="w-4 h-4 text-[#E06D53] absolute left-3.5 top-1/2 -translate-y-1/2" />
-                    <input
-                      id="modal-delivery-address-input"
-                      type="text"
-                      placeholder="e.g. 142 Ponsonby Rd, Ponsonby, Auckland"
-                      value={addressQuery}
-                      onChange={(e) => setAddressQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-[#FAF7F2] border border-[#E2D8C9] rounded-xl text-sm text-[#1E1B18] focus:outline-none focus:border-[#E06D53]"
-                      autoFocus
-                    />
-                  </div>
-                </div>
-
-                {/* Popular Suburbs Quick Chips */}
-                <div>
-                  <label className="block text-xs font-semibold text-[#7A7063] mb-2">
-                    Popular Delivery Areas:
-                  </label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {NZ_SUBURBS_LIST.slice(0, 10).map((suburb) => (
-                      <button
-                        key={suburb}
-                        type="button"
-                        onClick={() => {
-                          setAddressQuery(suburb);
-                          setSelectedSuburb(suburb);
-                        }}
-                        className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all cursor-pointer ${
-                          addressQuery.includes(suburb) || selectedSuburb === suburb
-                            ? 'bg-[#E06D53] text-white border-[#E06D53]'
-                            : 'bg-[#FAF7F2] text-[#5A5043] border-[#E8E0D2] hover:border-[#D9CFBF]'
-                        }`}
-                      >
-                        {suburb}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-start gap-2.5 text-xs text-amber-900">
-                  <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-                  <div>
-                    <strong>Fast Thermal Delivery:</strong> We pack every order in heat-retaining thermal dabbas to guarantee piping-hot delivery. Standard delivery fee is NZD $4.99 (Free over $60).
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  id="modal-confirm-delivery-btn"
-                  className="w-full py-3.5 px-4 bg-[#E06D53] hover:bg-[#D45E44] text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Truck className="w-4 h-4" />
-                  <span>Start Delivery Order</span>
-                </button>
-              </form>
+            <div className="space-y-4">
+              <GoogleMapLocationPicker
+                initialAddress={deliveryAddress}
+                onAddressConfirmed={(formattedAddress) => {
+                  onSelectDeliveryAddress(formattedAddress);
+                  onSelectMode('delivery');
+                  onClose();
+                }}
+                onCancel={onClose}
+                buttonLabel="Confirm Address & Start Delivery Order"
+              />
             </div>
           ) : (
             <div className="space-y-4">

@@ -14,7 +14,12 @@ import {
   Store as StoreIcon, 
   DollarSign, 
   Lock,
-  AlertTriangle
+  AlertTriangle,
+  Navigation,
+  Loader2,
+  ExternalLink,
+  Compass,
+  CheckCircle2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { 
@@ -28,6 +33,15 @@ import {
 } from '../types';
 import { NZPaymentGatewaySelector, NZ_BANKS } from './NZPaymentGatewaySelector';
 import { NZGatewayProcessorModal } from './NZGatewayProcessorModal';
+import {
+  CustomerLocationDetails,
+  detectCurrentCoordinates,
+  reverseGeocodeLatLng,
+  getGoogleMapsEmbedUrl,
+  getGoogleMapsDirectionsUrl,
+  getSavedCustomerLocation,
+  saveCustomerLocation
+} from '../services/locationService';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -61,14 +75,50 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [name, setName] = useState(currentCustomer ? currentCustomer.name : 'Sarah Jenkins');
   const [email, setEmail] = useState(currentCustomer ? currentCustomer.email : 'sarah.jenkins@gmail.com');
   const [phone, setPhone] = useState(currentCustomer ? currentCustomer.phone : '021 884 9231');
-  const [streetAddress, setStreetAddress] = useState(currentCustomer?.primaryAddress || deliveryAddress || '142 Ponsonby Road');
-  const [apartmentUnit, setApartmentUnit] = useState(currentCustomer?.apartmentUnit || 'Apt 4B');
-  const [suburb, setSuburb] = useState(currentCustomer?.suburb || selectedStore.suburb || 'Ponsonby');
-  const [city, setCity] = useState(currentCustomer?.city || selectedStore.city || 'Auckland');
-  const [postcode, setPostcode] = useState(currentCustomer?.postcode || '1011');
-  const [deliveryNotes, setDeliveryNotes] = useState('Leave on porch table, please don’t ring bell.');
+  const savedLoc = getSavedCustomerLocation();
+  const [streetAddress, setStreetAddress] = useState(savedLoc?.streetName || currentCustomer?.primaryAddress || deliveryAddress || '142 Ponsonby Road');
+  const [apartmentUnit, setApartmentUnit] = useState(savedLoc?.unit || currentCustomer?.apartmentUnit || '');
+  const [suburb, setSuburb] = useState(savedLoc?.suburb || currentCustomer?.suburb || selectedStore.suburb || 'Ponsonby');
+  const [city, setCity] = useState(savedLoc?.city || currentCustomer?.city || selectedStore.city || 'Auckland');
+  const [postcode, setPostcode] = useState(savedLoc?.postcode || currentCustomer?.postcode || '1011');
+  const [deliveryNotes, setDeliveryNotes] = useState(savedLoc?.deliveryNotes || 'Leave on porch table, please don’t ring bell.');
   const [timeType, setTimeType] = useState<'asap' | 'scheduled'>('asap');
   const [scheduledTime, setScheduledTime] = useState('Today at 6:30 PM');
+
+  // GPS Location states
+  const [isDetectingGPS, setIsDetectingGPS] = useState(false);
+  const [gpsSuccessNotice, setGpsSuccessNotice] = useState<string | null>(null);
+  const [showMapPreview, setShowMapPreview] = useState(false);
+
+  const handleCheckoutGPSDetect = async () => {
+    setIsDetectingGPS(true);
+    setGpsSuccessNotice(null);
+    try {
+      const pos = await detectCurrentCoordinates();
+      const details = await reverseGeocodeLatLng(pos.latitude, pos.longitude);
+      if (details.streetName || details.streetNumber) {
+        const full = [details.streetNumber, details.streetName].filter(Boolean).join(' ');
+        setStreetAddress(full);
+      }
+      if (details.suburb) setSuburb(details.suburb);
+      if (details.city) setCity(details.city);
+      if (details.postcode) setPostcode(details.postcode);
+
+      saveCustomerLocation({
+        ...details,
+        unit: apartmentUnit,
+        deliveryNotes
+      });
+
+      setGpsSuccessNotice(`📍 Location Detected: ${details.suburb}, ${details.city} (±${pos.accuracy}m)`);
+      setShowMapPreview(true);
+      setTimeout(() => setGpsSuccessNotice(null), 5000);
+    } catch (err: any) {
+      alert(err.message || 'Unable to access your GPS location.');
+    } finally {
+      setIsDetectingGPS(false);
+    }
+  };
   
   // NZ Payment Gateway States
   const [paymentMethod, setPaymentMethod] = useState<NZPaymentGatewayMethod>('online_eftpos');
@@ -93,7 +143,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const randomOrderNum = `TT-${Math.floor(100000 + Math.random() * 900000)}`;
     setPendingOrderNumber(randomOrderNum);
 
-    // If payment is Cash/EFTPOS at door, complete directly
     if (paymentMethod === 'cash_eftpos_delivery') {
       finalizeOrder(randomOrderNum, {
         gateway: orderMode === 'delivery' ? 'Cash / Mobile EFTPOS with Driver' : 'Pay at Counter Register',
@@ -103,7 +152,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       return;
     }
 
-    // Otherwise, open the interactive NZ Gateway Processor
     setIsGatewayProcessorOpen(true);
   };
 
@@ -138,32 +186,29 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       orderNumber: orderNum,
       createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       customerDetails,
-      items,
+      items: [...items],
+      orderMode,
+      store: selectedStore,
       subtotal,
-      deliveryFee,
       discount: discountAmount,
-      appliedCoupon,
+      couponCode: appliedCoupon,
+      deliveryFee,
       tip: tipAmount,
-      gstAmount,
-      totalAmount,
-      estimatedDeliveryTime: orderMode === 'delivery' ? '30 - 40 Mins' : '15 - 20 Mins',
-      status: 'received',
-      store: selectedStore
+      total: totalAmount,
+      gst: gstAmount,
+      status: 'pending',
+      paymentStatus: paymentMethod === 'cash_eftpos_delivery' ? 'pending' : 'paid',
+      estimatedDeliveryTime: timeType === 'asap' ? selectedStore.deliveryTime : scheduledTime
     };
 
     setTimeout(() => {
       setIsSubmitting(false);
-      setIsGatewayProcessorOpen(false);
-      try {
-        confetti({
-          particleCount: 90,
-          spread: 80,
-          origin: { y: 0.6 }
-        });
-      } catch (err) {
-        // Confetti fallback
-      }
       onOrderPlaced(placedOrder);
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
       onClose();
     }, 600);
   };
@@ -255,13 +300,76 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             </div>
 
-            {/* Section 2: Address / Location */}
+            {/* Section 2: Address / Location with Google Maps & GPS */}
             {orderMode === 'delivery' ? (
               <div className="space-y-3">
-                <div className="text-xs font-bold uppercase tracking-wider text-[#4A4237] flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-[#E06D53]" />
-                  <span>2. NZ Delivery Address</span>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#4A4237] flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-[#E06D53]" />
+                    <span>2. NZ Delivery Address</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowMapPreview(!showMapPreview)}
+                      className="text-[11px] font-bold text-[#706658] hover:text-[#E06D53] transition-colors cursor-pointer flex items-center gap-1"
+                    >
+                      <span>{showMapPreview ? 'Hide Map' : 'View Google Map'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleCheckoutGPSDetect}
+                      disabled={isDetectingGPS}
+                      className="px-2.5 py-1 rounded-lg bg-[#FAF0ED] hover:bg-[#F5E6E1] text-[#E06D53] border border-[#E06D53]/30 text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                    >
+                      {isDetectingGPS ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <span>Locating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Navigation className="w-3 h-3" />
+                          <span>Detect GPS</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
+
+                {gpsSuccessNotice && (
+                  <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2 animate-in fade-in">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{gpsSuccessNotice}</span>
+                  </div>
+                )}
+
+                {/* Embedded Google Map Preview (toggleable) */}
+                {showMapPreview && (
+                  <div className="relative rounded-2xl overflow-hidden border border-[#D9CFBF] shadow-sm bg-[#EBE3D5] animate-in fade-in zoom-in-95 duration-200">
+                    <div className="h-40 w-full relative">
+                      <iframe
+                        title="Checkout Google Map Preview"
+                        src={getGoogleMapsEmbedUrl(`${streetAddress}, ${suburb}, ${city}, New Zealand`, 16)}
+                        className="w-full h-full border-0"
+                        loading="lazy"
+                      />
+                      <div className="absolute top-2 right-2 z-10">
+                        <a
+                          href={getGoogleMapsDirectionsUrl(`${streetAddress}, ${suburb}, ${city}, New Zealand`)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-white/95 px-2 py-1 rounded-md text-[10px] font-bold text-neutral-800 shadow-sm border border-neutral-300 flex items-center gap-1 hover:text-[#E06D53]"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>Open in Google Maps</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                   <div className="sm:col-span-8">
@@ -283,6 +391,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       type="text"
                       value={apartmentUnit}
                       onChange={(e) => setApartmentUnit(e.target.value)}
+                      placeholder="e.g. Unit 4B"
                       className="w-full p-2.5 bg-[#FAF7F2] border border-[#E2D8C9] rounded-xl text-xs text-[#1E1B18] focus:outline-none focus:border-[#E06D53]"
                     />
                   </div>
@@ -327,9 +436,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <input
                       id="checkout-delivery-instructions"
                       type="text"
-                      placeholder="e.g. Leave on porch table, gate code 1234, call upon arrival"
                       value={deliveryNotes}
                       onChange={(e) => setDeliveryNotes(e.target.value)}
+                      placeholder="e.g. Leave on porch table, gate code 1234, call upon arrival"
                       className="w-full p-2.5 bg-[#FAF7F2] border border-[#E2D8C9] rounded-xl text-xs text-[#1E1B18] focus:outline-none focus:border-[#E06D53]"
                     />
                   </div>

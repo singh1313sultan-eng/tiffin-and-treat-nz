@@ -8,10 +8,17 @@ import {
   Layers, 
   Clock3, 
   CheckCircle2, 
-  Percent
+  Percent,
+  Navigation,
+  Loader2
 } from 'lucide-react';
 import { OrderMode, StoreLocation } from '../types';
 import { NZ_SUBURBS_LIST } from '../data/mockData';
+import { 
+  detectCurrentCoordinates, 
+  reverseGeocodeLatLng, 
+  saveCustomerLocation 
+} from '../services/locationService';
 
 interface HeroBannerProps {
   orderMode: OrderMode;
@@ -35,6 +42,23 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   const [addressInput, setAddressInput] = useState(deliveryAddress || '');
   const [filteredSuburbs, setFilteredSuburbs] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+
+  const handleHeroGPS = async () => {
+    setIsDetectingLocation(true);
+    try {
+      const pos = await detectCurrentCoordinates();
+      const details = await reverseGeocodeLatLng(pos.latitude, pos.longitude);
+      const chosen = [details.streetName, details.suburb, details.city].filter(Boolean).join(', ') || details.suburb;
+      setAddressInput(chosen);
+      onSetDeliveryAddress(chosen);
+      saveCustomerLocation(details);
+    } catch (err: any) {
+      alert(err.message || 'Unable to access your GPS location.');
+    } finally {
+      setIsDetectingLocation(false);
+    }
+  };
 
   const handleAddressChange = (text: string) => {
     setAddressInput(text);
@@ -143,12 +167,25 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                       <input
                         id="hero-delivery-suburb-input"
                         type="text"
-                        placeholder="Enter NZ suburb (e.g. Ponsonby, CBD)"
+                        placeholder="Enter NZ suburb or address..."
                         value={addressInput}
                         onChange={(e) => handleAddressChange(e.target.value)}
                         onFocus={() => { if (addressInput.length > 0) setShowDropdown(true); }}
-                        className="w-full pl-9 pr-3 py-2 sm:py-2.5 bg-[#FAF7F2] border border-[#E2D8C9] rounded-xl text-xs sm:text-sm text-[#1E1B18] placeholder-[#9E9486] focus:outline-none focus:border-[#E06D53] transition-colors"
+                        className="w-full pl-9 pr-9 py-2 sm:py-2.5 bg-[#FAF7F2] border border-[#E2D8C9] rounded-xl text-xs sm:text-sm text-[#1E1B18] placeholder-[#9E9486] focus:outline-none focus:border-[#E06D53] transition-colors"
                       />
+                      <button
+                        type="button"
+                        onClick={handleHeroGPS}
+                        disabled={isDetectingLocation}
+                        title="Auto-detect location with GPS"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#8C8275] hover:text-[#E06D53] transition-colors cursor-pointer"
+                      >
+                        {isDetectingLocation ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-[#E06D53]" />
+                        ) : (
+                          <Navigation className="w-4 h-4" />
+                        )}
+                      </button>
                     </div>
                     <button
                       type="submit"

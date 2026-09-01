@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { 
-  ShoppingBag, 
-  MapPin, 
-  Clock, 
-  Search, 
-  Sparkles, 
-  Menu as MenuIcon, 
-  X, 
-  PhoneCall, 
-  UtensilsCrossed, 
+import {
+  ShoppingBag,
+  MapPin,
+  Clock,
+  Search,
+  Sparkles,
+  Menu as MenuIcon,
+  X,
+  PhoneCall,
+  UtensilsCrossed,
   CalendarCheck,
   Flame,
   ChevronDown,
@@ -78,13 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="bg-[#211E1B] text-[#EDE6DA] text-xs py-1.5 px-3 sm:px-4 overflow-hidden">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center space-x-2 text-[11px] sm:text-xs truncate">
-            <span className="inline-flex items-center gap-1 font-medium text-[#E06D53] truncate">
-              <Sparkles className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">100% Halal & Free Range</span>
-            </span>
-            <span className="hidden md:inline text-neutral-400">•</span>
             <span className="hidden md:inline text-neutral-300 truncate">
-              Hot Thermal Dabba Delivery Across NZ
             </span>
           </div>
 
@@ -105,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            <button 
+            <button
               id="header-catering-btn"
               onClick={onOpenCatering}
               className="hover:text-[#E06D53] transition-colors cursor-pointer flex items-center gap-1 hidden sm:flex"
@@ -127,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Main navigation row */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
-          
+
           {/* Brand Logo & Tagline */}
           <div className="flex items-center gap-2 sm:gap-6 min-w-0">
             <a href="#" className="flex items-center gap-2 sm:gap-3 group shrink-0">
@@ -155,9 +149,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={onOpenStoreSelector}
               className="hidden lg:flex items-center gap-3 py-2 px-3.5 bg-white rounded-full border border-[#E8E0D2] shadow-xs hover:border-[#E06D53] hover:shadow-sm transition-all text-left group cursor-pointer"
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                orderMode === 'delivery' ? 'bg-[#E06D53]/10 text-[#E06D53]' : 'bg-[#3B82F6]/10 text-[#2563EB]'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${orderMode === 'delivery' ? 'bg-[#E06D53]/10 text-[#E06D53]' : 'bg-[#3B82F6]/10 text-[#2563EB]'
+                }`}>
                 <MapPin className="w-4 h-4" />
               </div>
               <div className="flex flex-col pr-1">
@@ -181,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center / Right controls */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            
+
             {/* Live Search trigger */}
             <div className="relative hidden md:block">
               {showSearchInput ? (
@@ -196,7 +189,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     autoFocus
                     className="w-full text-xs text-[#1E1B18] placeholder-[#9E9486] focus:outline-none"
                   />
-                  <button 
+                  <button
                     onClick={() => { setShowSearchInput(false); onSearchChange(''); }}
                     className="text-[#9E9486] hover:text-[#1E1B18] text-xs p-1"
                   >
@@ -443,14 +436,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>Call Orders / Support</span>
               </div>
               <div className="flex items-center gap-2 pt-0.5">
-                <a 
-                  href="tel:0212779279" 
+                <a
+                  href="tel:0212779279"
                   className="flex-1 py-1.5 px-2.5 bg-white border border-[#E2D8C9] rounded-lg text-center text-xs font-bold text-[#1E1B18] hover:border-[#E06D53] transition-colors"
                 >
                   0212779279
                 </a>
-                <a 
-                  href="tel:0277479279" 
+                <a
+                  href="tel:0277479279"
                   className="flex-1 py-1.5 px-2.5 bg-white border border-[#E2D8C9] rounded-lg text-center text-xs font-bold text-[#1E1B18] hover:border-[#E06D53] transition-colors"
                 >
                   0277479279
