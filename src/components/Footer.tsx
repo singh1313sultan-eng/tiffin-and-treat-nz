@@ -9,7 +9,8 @@ import {
   Heart, 
   Send, 
   Check,
-  UtensilsCrossed
+  UtensilsCrossed,
+  PhoneCall
 } from 'lucide-react';
 import { STORE_LOCATIONS } from '../data/mockData';
 import { StoreLocation } from '../types';
@@ -117,6 +118,30 @@ export const Footer: React.FC<FooterProps> = ({
               <div className="flex items-center gap-1 bg-[#292522] px-2.5 py-1 rounded-lg border border-[#3E3832]">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>NZ Food Safety Verified</span>
+              </div>
+            </div>
+
+            {/* Direct Phone Contact Section */}
+            <div className="pt-2 space-y-2 border-t border-[#2F2A25]">
+              <span className="text-[11px] font-bold text-neutral-300 uppercase tracking-wider block flex items-center gap-1.5">
+                <PhoneCall className="w-3.5 h-3.5 text-[#E06D53]" />
+                <span>Phone Orders & Inquiries:</span>
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <a 
+                  href="tel:0212779279" 
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25211D] hover:bg-[#E06D53] text-white rounded-xl border border-[#3E3832] transition-all font-bold text-xs shadow-xs"
+                >
+                  <Phone className="w-3 h-3 text-[#E06D53]" />
+                  <span>0212779279</span>
+                </a>
+                <a 
+                  href="tel:0277479279" 
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25211D] hover:bg-[#E06D53] text-white rounded-xl border border-[#3E3832] transition-all font-bold text-xs shadow-xs"
+                >
+                  <Phone className="w-3 h-3 text-[#E06D53]" />
+                  <span>0277479279</span>
+                </a>
               </div>
             </div>
           </div>

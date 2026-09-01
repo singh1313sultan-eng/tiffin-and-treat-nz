@@ -248,13 +248,24 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({
               </div>
             </div>
 
-            <a
-              href={`tel:${order.store.phone}`}
-              className="py-2 px-3 bg-white border border-[#E2D8C9] text-xs font-bold text-[#1E1B18] rounded-xl hover:bg-neutral-50 transition-colors flex items-center gap-1.5"
-            >
-              <Phone className="w-3.5 h-3.5 text-[#E06D53]" />
-              <span>Contact Store</span>
-            </a>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <a
+                href="tel:0212779279"
+                className="py-1.5 px-2.5 bg-white border border-[#E2D8C9] text-xs font-bold text-[#1E1B18] rounded-xl hover:border-[#E06D53] transition-colors flex items-center gap-1"
+                title="Call 0212779279"
+              >
+                <Phone className="w-3 h-3 text-[#E06D53]" />
+                <span>0212779279</span>
+              </a>
+              <a
+                href="tel:0277479279"
+                className="py-1.5 px-2.5 bg-white border border-[#E2D8C9] text-xs font-bold text-[#1E1B18] rounded-xl hover:border-[#E06D53] transition-colors flex items-center gap-1"
+                title="Call 0277479279"
+              >
+                <Phone className="w-3 h-3 text-[#E06D53]" />
+                <span>0277479279</span>
+              </a>
+            </div>
           </div>
 
           {/* Order items and NZ Payment Gateway Receipt */}

@@ -18,7 +18,7 @@ const LS_KEYS = {
   MENU: 'tt_menu_items_tnt_live_v3',
   ORDERS: 'tt_orders_v2',
   CUSTOMERS: 'tt_customers_v2',
-  STORES: 'tt_stores_v2',
+  STORES: 'tt_stores_v3',
   SETTINGS: 'tt_settings_v2'
 };
 
@@ -394,7 +394,8 @@ export const dbFetchStores = async (): Promise<StoreLocation[]> => {
           address: row.address,
           suburb: row.suburb,
           city: row.city,
-          phone: row.phone,
+          phone: row.phone || '0212779279',
+          secondaryPhone: '0277479279',
           email: row.email || 'orders@tiffintreat.co.nz',
           hours: row.opening_hours || row.hours || '11:00 AM - 10:30 PM (7 Days)',
           pickupTime: row.pickup_time || '15-20 min',

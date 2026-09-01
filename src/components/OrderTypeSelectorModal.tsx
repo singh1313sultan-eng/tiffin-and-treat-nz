@@ -241,7 +241,7 @@ export const OrderTypeSelectorModal: React.FC<OrderTypeSelectorModalProps> = ({
                             <span className="text-neutral-300">•</span>
                             <span className="flex items-center gap-1">
                               <Phone className="w-3.5 h-3.5 text-neutral-500" />
-                              {store.phone}
+                              <span>{store.phone}{store.secondaryPhone ? ` / ${store.secondaryPhone}` : ''}</span>
                             </span>
                           </div>
                         </div>

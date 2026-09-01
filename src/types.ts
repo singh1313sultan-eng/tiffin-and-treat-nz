@@ -81,6 +81,7 @@ export interface StoreLocation {
   city: string;
   address: string;
   phone: string;
+  secondaryPhone?: string;
   email: string;
   hours: string;
   pickupTime: string; // e.g. "15-20 min"

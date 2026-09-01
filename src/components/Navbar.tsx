@@ -114,13 +114,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               Corporate & Event Catering
             </button>
             <span className="text-neutral-500 hidden sm:inline">•</span>
-            <a 
-              href={`tel:${selectedStore.phone}`}
-              className="hover:text-[#E06D53] transition-colors flex items-center gap-1 hidden sm:flex"
-            >
-              <PhoneCall className="w-3 h-3 text-[#E06D53]" />
-              {selectedStore.phone}
-            </a>
+            <div className="items-center gap-1.5 hidden sm:flex text-neutral-300">
+              <PhoneCall className="w-3 h-3 text-[#E06D53] shrink-0" />
+              <a href="tel:0212779279" className="hover:text-[#E06D53] transition-colors font-medium">0212779279</a>
+              <span className="text-neutral-500">/</span>
+              <a href="tel:0277479279" className="hover:text-[#E06D53] transition-colors font-medium">0277479279</a>
+            </div>
           </div>
         </div>
       </div>
@@ -428,23 +427,36 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Catering & Parties</span>
             </button>
 
-            {hasActiveOrder ? (
+            {hasActiveOrder && (
               <button
                 onClick={() => { onOpenTracker(); setMobileMenuOpen(false); }}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800"
+                className="col-span-2 flex items-center justify-center gap-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold"
               >
                 <Clock className="w-4 h-4 text-emerald-600" />
-                <span>Live Tracker</span>
+                <span>View Live Order Tracker</span>
               </button>
-            ) : (
-              <a
-                href={`tel:${selectedStore.phone}`}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E8E0D2] text-[#3D372E]"
-              >
-                <PhoneCall className="w-4 h-4 text-[#E06D53]" />
-                <span>Call Store</span>
-              </a>
             )}
+
+            <div className="col-span-2 p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E8E0D2] flex flex-col gap-1">
+              <div className="text-[11px] font-bold text-[#7A7063] flex items-center gap-1.5 uppercase tracking-wider">
+                <PhoneCall className="w-3.5 h-3.5 text-[#E06D53]" />
+                <span>Call Orders / Support</span>
+              </div>
+              <div className="flex items-center gap-2 pt-0.5">
+                <a 
+                  href="tel:0212779279" 
+                  className="flex-1 py-1.5 px-2.5 bg-white border border-[#E2D8C9] rounded-lg text-center text-xs font-bold text-[#1E1B18] hover:border-[#E06D53] transition-colors"
+                >
+                  0212779279
+                </a>
+                <a 
+                  href="tel:0277479279" 
+                  className="flex-1 py-1.5 px-2.5 bg-white border border-[#E2D8C9] rounded-lg text-center text-xs font-bold text-[#1E1B18] hover:border-[#E06D53] transition-colors"
+                >
+                  0277479279
+                </a>
+              </div>
+            </div>
 
             <button
               onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
