@@ -126,17 +126,38 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
+        let compressed = dataUrl;
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
-          const compressed = canvas.toDataURL('image/jpeg', 0.85);
-          setFormImage(compressed);
-        } else {
-          setFormImage(dataUrl);
+          compressed = canvas.toDataURL('image/jpeg', 0.85);
         }
-        setUploadFileName(file.name);
-        setUploadSuccess(true);
-        setIsProcessingImage(false);
-        setTimeout(() => setUploadSuccess(false), 3000);
+
+        // Upload through backend REST API
+        fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: compressed, filename: file.name })
+        })
+          .then(res => res.json())
+          .then(resData => {
+            if (resData && resData.url) {
+              setFormImage(resData.url);
+            } else {
+              setFormImage(compressed);
+            }
+            setUploadFileName(file.name);
+            setUploadSuccess(true);
+            setIsProcessingImage(false);
+            setTimeout(() => setUploadSuccess(false), 3000);
+          })
+          .catch(err => {
+            console.warn('[API Upload] Fallback to compressed Data URL', err);
+            setFormImage(compressed);
+            setUploadFileName(file.name);
+            setUploadSuccess(true);
+            setIsProcessingImage(false);
+            setTimeout(() => setUploadSuccess(false), 3000);
+          });
       };
       img.onerror = () => {
         setFormImage(dataUrl);

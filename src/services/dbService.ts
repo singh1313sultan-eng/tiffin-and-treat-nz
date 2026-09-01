@@ -42,10 +42,42 @@ const setLocalStorageData = <T>(key: string, data: T) => {
 };
 
 // ==============================================================================
+// Broadcast channel for instantaneous cross-tab & component synchronization
+const menuBroadcastChannel = typeof window !== 'undefined' && typeof BroadcastChannel !== 'undefined' 
+  ? new BroadcastChannel('tnt_menu_sync') 
+  : null;
+
+export const broadcastMenuUpdate = () => {
+  try {
+    if (menuBroadcastChannel) {
+      menuBroadcastChannel.postMessage({ type: 'MENU_UPDATED', timestamp: Date.now() });
+    }
+  } catch {}
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('tnt-menu-updated'));
+  }
+};
+
+// ==============================================================================
 // 1. MENU ITEMS API
 // ==============================================================================
 
 export const dbFetchMenuItems = async (): Promise<MenuItem[]> => {
+  // 1. First priority: Fetch from REST API endpoint
+  try {
+    const apiRes = await fetch('/api/menu');
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setLocalStorageData(LS_KEYS.MENU, data);
+        return data;
+      }
+    }
+  } catch (e) {
+    console.warn('[API] /api/menu not reachable, checking cloud database', e);
+  }
+
+  // 2. Second priority: Fetch from Supabase Cloud DB
   if (isSupabaseConfigured() && supabase) {
     try {
       const { data, error } = await supabase
@@ -97,10 +129,22 @@ export const dbFetchMenuItems = async (): Promise<MenuItem[]> => {
 };
 
 export const dbAddMenuItem = async (item: MenuItem): Promise<void> => {
-  // Always update local cache
+  // Always update local cache for zero perceived latency
   const cached = getLocalStorageData<MenuItem[]>(LS_KEYS.MENU, MENU_ITEMS);
   setLocalStorageData(LS_KEYS.MENU, [item, ...cached.filter(i => i.id !== item.id)]);
 
+  // Push through REST API
+  try {
+    await fetch('/api/menu', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item)
+    });
+  } catch (e) {
+    console.warn('[API] Could not POST /api/menu', e);
+  }
+
+  // Push to Supabase Cloud DB
   if (isSupabaseConfigured() && supabase) {
     try {
       await supabase.from('menu_items').insert({
@@ -120,12 +164,27 @@ export const dbAddMenuItem = async (item: MenuItem): Promise<void> => {
       console.error('[Supabase] Failed to insert menu item to cloud', e);
     }
   }
+
+  broadcastMenuUpdate();
 };
 
 export const dbUpdateMenuItem = async (item: MenuItem): Promise<void> => {
+  // Always update local cache
   const cached = getLocalStorageData<MenuItem[]>(LS_KEYS.MENU, MENU_ITEMS);
   setLocalStorageData(LS_KEYS.MENU, cached.map(i => i.id === item.id ? item : i));
 
+  // Push through REST API
+  try {
+    await fetch(`/api/menu/${encodeURIComponent(item.id)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(item)
+    });
+  } catch (e) {
+    console.warn('[API] Could not PUT /api/menu', e);
+  }
+
+  // Push to Supabase Cloud DB
   if (isSupabaseConfigured() && supabase) {
     try {
       await supabase.from('menu_items').update({
@@ -144,11 +203,21 @@ export const dbUpdateMenuItem = async (item: MenuItem): Promise<void> => {
       console.error('[Supabase] Failed to update menu item in cloud', e);
     }
   }
+
+  broadcastMenuUpdate();
 };
 
 export const dbDeleteMenuItem = async (itemId: string): Promise<void> => {
   const cached = getLocalStorageData<MenuItem[]>(LS_KEYS.MENU, MENU_ITEMS);
   setLocalStorageData(LS_KEYS.MENU, cached.filter(i => i.id !== itemId));
+
+  try {
+    await fetch(`/api/menu/${encodeURIComponent(itemId)}`, {
+      method: 'DELETE'
+    });
+  } catch (e) {
+    console.warn('[API] Could not DELETE /api/menu', e);
+  }
 
   if (isSupabaseConfigured() && supabase) {
     try {
@@ -157,11 +226,23 @@ export const dbDeleteMenuItem = async (itemId: string): Promise<void> => {
       console.error('[Supabase] Failed to delete menu item from cloud', e);
     }
   }
+
+  broadcastMenuUpdate();
 };
 
 export const dbToggleMenuItemSoldOut = async (itemId: string, isSoldOut: boolean): Promise<void> => {
   const cached = getLocalStorageData<MenuItem[]>(LS_KEYS.MENU, MENU_ITEMS);
   setLocalStorageData(LS_KEYS.MENU, cached.map(i => i.id === itemId ? { ...i, isSoldOut } : i));
+
+  try {
+    await fetch(`/api/menu/${encodeURIComponent(itemId)}/sold-out`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isSoldOut })
+    });
+  } catch (e) {
+    console.warn('[API] Could not PATCH /api/menu/:id/sold-out', e);
+  }
 
   if (isSupabaseConfigured() && supabase) {
     try {
@@ -170,11 +251,23 @@ export const dbToggleMenuItemSoldOut = async (itemId: string, isSoldOut: boolean
       console.error('[Supabase] Failed to toggle sold out in cloud', e);
     }
   }
+
+  broadcastMenuUpdate();
 };
 
 export const dbQuickUpdatePrice = async (itemId: string, price: number): Promise<void> => {
   const cached = getLocalStorageData<MenuItem[]>(LS_KEYS.MENU, MENU_ITEMS);
   setLocalStorageData(LS_KEYS.MENU, cached.map(i => i.id === itemId ? { ...i, price } : i));
+
+  try {
+    await fetch(`/api/menu/${encodeURIComponent(itemId)}/price`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ price })
+    });
+  } catch (e) {
+    console.warn('[API] Could not PATCH /api/menu/:id/price', e);
+  }
 
   if (isSupabaseConfigured() && supabase) {
     try {
@@ -183,6 +276,8 @@ export const dbQuickUpdatePrice = async (itemId: string, price: number): Promise
       console.error('[Supabase] Failed to update price in cloud', e);
     }
   }
+
+  broadcastMenuUpdate();
 };
 
 // ==============================================================================

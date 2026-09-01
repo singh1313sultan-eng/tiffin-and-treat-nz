@@ -172,9 +172,25 @@ export default function App() {
       dbFetchMenuItems().then(setMenuItems);
     });
 
+    const handleMenuSync = () => {
+      dbFetchMenuItems().then(setMenuItems);
+    };
+
+    window.addEventListener('tnt-menu-updated', handleMenuSync);
+    const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('tnt_menu_sync') : null;
+    if (syncChannel) {
+      syncChannel.onmessage = (e) => {
+        if (e.data?.type === 'MENU_UPDATED') {
+          dbFetchMenuItems().then(setMenuItems);
+        }
+      };
+    }
+
     return () => {
       unsubOrders();
       unsubMenu();
+      window.removeEventListener('tnt-menu-updated', handleMenuSync);
+      if (syncChannel) syncChannel.close();
     };
   }, []);
 

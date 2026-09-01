@@ -384,8 +384,19 @@ export const apiAdminLogin = async (
 // ==============================================================================
 
 export const apiGetMenuItems = async (): Promise<MenuItem[]> => {
-  const cached = getStored<MenuItem[]>(DB_KEYS.MENU, MENU_ITEMS);
-  return cached;
+  try {
+    const res = await fetch('/api/menu');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setStored(DB_KEYS.MENU, data);
+        return data;
+      }
+    }
+  } catch (e) {
+    console.warn('[API] /api/menu fetch error', e);
+  }
+  return getStored<MenuItem[]>(DB_KEYS.MENU, MENU_ITEMS);
 };
 
 export const apiToggleSoldOut = async (itemId: string, isSoldOut: boolean): Promise<MenuItem> => {
@@ -398,6 +409,16 @@ export const apiToggleSoldOut = async (itemId: string, isSoldOut: boolean): Prom
 
   const updated: MenuItem = { ...target, isSoldOut };
   setStored(DB_KEYS.MENU, items.map(i => i.id === itemId ? updated : i));
+
+  try {
+    await fetch(`/api/menu/${encodeURIComponent(itemId)}/sold-out`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isSoldOut })
+    });
+  } catch (e) {
+    console.warn('[API] Error patching sold out', e);
+  }
 
   if (isSupabaseConfigured() && supabase) {
     await supabase.from('menu_items').update({ is_sold_out: isSoldOut }).eq('id', itemId);
@@ -420,6 +441,16 @@ export const apiUpdatePrice = async (itemId: string, price: number): Promise<Men
 
   const updated: MenuItem = { ...target, price };
   setStored(DB_KEYS.MENU, items.map(i => i.id === itemId ? updated : i));
+
+  try {
+    await fetch(`/api/menu/${encodeURIComponent(itemId)}/price`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ price })
+    });
+  } catch (e) {
+    console.warn('[API] Error patching price', e);
+  }
 
   if (isSupabaseConfigured() && supabase) {
     await supabase.from('menu_items').update({ price }).eq('id', itemId);
