@@ -68,6 +68,29 @@ function apiBackendPlugin(): Plugin {
           }
         }
 
+        // Direct Static Handler for /uploads/... to serve newly uploaded files immediately
+        if (url.startsWith('/uploads/')) {
+          const cleanPath = url.split('?')[0].replace(/^\/uploads\//, '');
+          const filePath = path.resolve(__dirname, 'public/uploads', cleanPath);
+          if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+            const ext = path.extname(filePath).toLowerCase();
+            const mimeTypes: Record<string, string> = {
+              '.jpg': 'image/jpeg',
+              '.jpeg': 'image/jpeg',
+              '.png': 'image/png',
+              '.webp': 'image/webp',
+              '.gif': 'image/gif',
+              '.avif': 'image/avif',
+              '.svg': 'image/svg+xml'
+            };
+            const contentType = mimeTypes[ext] || 'application/octet-stream';
+            res.setHeader('Content-Type', contentType);
+            res.setHeader('Cache-Control', 'public, max-age=86400');
+            res.statusCode = 200;
+            return fs.createReadStream(filePath).pipe(res);
+          }
+        }
+
         if (!url.startsWith('/api/')) {
           return next();
         }
