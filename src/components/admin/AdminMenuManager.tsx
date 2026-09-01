@@ -95,21 +95,27 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [isProcessingImage, setIsProcessingImage] = useState<boolean>(false);
 
-  // Client-side image upload & canvas compression
+  // Client-side image upload with instant 0ms preview & auto-compression
   const handleImageFileUpload = (file: File) => {
     if (!file.type.startsWith('image/')) {
       alert('Please upload a valid image file (JPEG, PNG, WEBP, etc.)');
       return;
     }
 
+    // 1. Instant 0ms local preview so user immediately sees their photo
+    const instantPreview = URL.createObjectURL(file);
+    setFormImage(instantPreview);
+    setUploadFileName(file.name);
     setIsProcessingImage(true);
+    setUploadSuccess(false);
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
       const img = new Image();
       img.onload = () => {
-        // High quality client-side canvas compression to max 1000px
-        const maxDim = 1000;
+        // High quality client-side canvas compression to max 1200px
+        const maxDim = 1200;
         let width = img.width;
         let height = img.height;
         if (width > maxDim || height > maxDim) {
@@ -129,7 +135,7 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
         let compressed = dataUrl;
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
-          compressed = canvas.toDataURL('image/jpeg', 0.85);
+          compressed = canvas.toDataURL('image/jpeg', 0.88);
         }
 
         // Upload through backend REST API
@@ -148,7 +154,7 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
             setUploadFileName(file.name);
             setUploadSuccess(true);
             setIsProcessingImage(false);
-            setTimeout(() => setUploadSuccess(false), 3000);
+            setTimeout(() => setUploadSuccess(false), 4000);
           })
           .catch(err => {
             console.warn('[API Upload] Fallback to compressed Data URL', err);
@@ -156,7 +162,6 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
             setUploadFileName(file.name);
             setUploadSuccess(true);
             setIsProcessingImage(false);
-            setTimeout(() => setUploadSuccess(false), 3000);
           });
       };
       img.onerror = () => {
@@ -580,16 +585,23 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
             
             <div className="flex items-center justify-between border-b border-[#E8E0D2] pb-4">
               <div>
-                <h3 className="font-serif font-bold text-xl text-[#1E1B18]">
-                  {editingItem ? 'Edit Dish Details' : 'Add New Dish to Menu'}
-                </h3>
-                <p className="text-xs text-[#706658]">
-                  Update pricing, dietary specifications, imagery, and description.
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-serif font-bold text-xl text-[#1E1B18]">
+                    {editingItem ? 'Edit Dish Details' : 'Add New Dish to Menu'}
+                  </h3>
+                  {editingItem && (
+                    <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-[#FAF0ED] text-[#E06D53] border border-[#F0D5CD]">
+                      {editingItem.name}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-[#706658] mt-0.5">
+                  {editingItem ? `Updating details and photo for "${editingItem.name}"` : 'Enter dish information, price, and upload photo.'}
                 </p>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="p-2 text-neutral-400 hover:text-black rounded-xl hover:bg-neutral-200 transition-colors"
+                className="p-2 text-neutral-400 hover:text-black rounded-xl hover:bg-neutral-200 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -754,6 +766,7 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                     <input 
                       type="file" 
                       ref={fileInputRef}
+                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
                           handleImageFileUpload(e.target.files[0]);
@@ -763,46 +776,113 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                       className="hidden"
                     />
 
-                    {/* Drag and drop zone */}
-                    <div
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      onClick={() => fileInputRef.current?.click()}
-                      className={`border-2 border-dashed rounded-2xl p-4 sm:p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
-                        isDragging
-                          ? 'border-[#E06D53] bg-[#FAF0ED] ring-4 ring-[#E06D53]/10'
-                          : 'border-[#D9CFBF] bg-[#FAF7F2] hover:bg-[#F5EFE6] hover:border-[#C4B7A2]'
-                      }`}
-                    >
-                      <div className="w-10 h-10 rounded-full bg-white shadow-2xs flex items-center justify-center text-[#E06D53]">
-                        {isProcessingImage ? (
-                          <RefreshCw className="w-5 h-5 animate-spin" />
-                        ) : (
-                          <Upload className="w-5 h-5" />
-                        )}
-                      </div>
+                    {formImage ? (
+                      /* High-Visibility Full Image Preview Container */
+                      <div className="relative rounded-2xl overflow-hidden border-2 border-[#E06D53] bg-neutral-900 shadow-md group">
+                        <img 
+                          src={formImage} 
+                          alt="Dish Preview" 
+                          className="w-full h-48 sm:h-56 object-cover transition-transform duration-300 group-hover:scale-102"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80';
+                          }}
+                        />
 
-                      <div className="space-y-0.5">
-                        <p className="text-xs font-bold text-[#1E1B18]">
-                          {isProcessingImage ? 'Optimizing image...' : 'Click to browse or drag & drop photo here'}
-                        </p>
-                        <p className="text-[11px] text-[#7A7063]">
-                          Supports JPEG, PNG, WEBP • Auto-compressed for fast loading
-                        </p>
-                      </div>
+                        {/* Top Badges */}
+                        <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10 pointer-events-none">
+                          <span className="px-3 py-1 rounded-full text-xs font-bold bg-black/75 text-white backdrop-blur-md shadow-sm">
+                            {formName || editingItem?.name || 'Dish Photo'}
+                          </span>
 
-                      {uploadFileName && (
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200 mt-1">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                          <span className="truncate max-w-xs">{uploadFileName}</span>
+                          {uploadSuccess ? (
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-600 text-white shadow-md flex items-center gap-1.5 animate-in fade-in zoom-in duration-200">
+                              <CheckCircle2 className="w-4 h-4" />
+                              <span>Photo Ready</span>
+                            </span>
+                          ) : isProcessingImage ? (
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-600 text-white shadow-md flex items-center gap-1.5">
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                              <span>Optimizing...</span>
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/95 text-neutral-800 backdrop-blur-md shadow-sm">
+                              Current Photo
+                            </span>
+                          )}
                         </div>
-                      )}
-                    </div>
+
+                        {/* Processing Spinner Overlay */}
+                        {isProcessingImage && (
+                          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex flex-col items-center justify-center gap-2 text-white z-20">
+                            <RefreshCw className="w-8 h-8 animate-spin text-[#E06D53]" />
+                            <span className="font-bold text-xs tracking-wide">Saving & Optimizing Photo...</span>
+                          </div>
+                        )}
+
+                        {/* Bottom Action Bar */}
+                        <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent flex items-center justify-between gap-2 z-10">
+                          <div className="text-white text-xs font-medium truncate drop-shadow-sm max-w-[60%]">
+                            {uploadFileName ? `Uploaded: ${uploadFileName}` : (formImage.startsWith('/uploads/') ? formImage.split('/').pop() : 'Direct Photo')}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => fileInputRef.current?.click()}
+                              className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-neutral-100 text-[#1E1B18] font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95"
+                            >
+                              <Upload className="w-3.5 h-3.5 text-[#E06D53]" />
+                              <span>Replace Photo</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFormImage('');
+                                setUploadFileName('');
+                              }}
+                              className="p-2 rounded-xl bg-white/20 hover:bg-rose-600 text-white transition-colors cursor-pointer"
+                              title="Remove Photo"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Drag and drop zone when no image is selected */
+                      <div
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onClick={() => fileInputRef.current?.click()}
+                        className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2.5 ${
+                          isDragging
+                            ? 'border-[#E06D53] bg-[#FAF0ED] ring-4 ring-[#E06D53]/10 scale-[0.99]'
+                            : 'border-[#D9CFBF] bg-[#FAF7F2] hover:bg-[#F5EFE6] hover:border-[#C4B7A2]'
+                        }`}
+                      >
+                        <div className="w-12 h-12 rounded-2xl bg-white shadow-2xs flex items-center justify-center text-[#E06D53]">
+                          {isProcessingImage ? (
+                            <RefreshCw className="w-6 h-6 animate-spin" />
+                          ) : (
+                            <Upload className="w-6 h-6" />
+                          )}
+                        </div>
+
+                        <div className="space-y-1">
+                          <p className="text-sm font-bold text-[#1E1B18]">
+                            {isProcessingImage ? 'Optimizing image...' : 'Click to browse or drag & drop photo here'}
+                          </p>
+                          <p className="text-xs text-[#7A7063]">
+                            Supports JPEG, PNG, WEBP • Fast auto-optimized preview
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   /* URL Input Mode */
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <input
                       type="url"
                       value={formImage}
@@ -810,55 +890,21 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                       placeholder="https://images.unsplash.com/..."
                       className="w-full bg-white border border-[#D9CFBF] rounded-xl px-3.5 py-2.5 text-[#1E1B18] text-xs focus:outline-none focus:border-[#E06D53] shadow-2xs font-mono"
                     />
-                    <p className="text-[10px] text-[#8C8275]">
-                      Paste any direct image link from Unsplash, Cloudinary, or web servers.
-                    </p>
-                  </div>
-                )}
-
-                {/* Live Preview Card */}
-                {formImage && (
-                  <div className="flex items-center gap-3 p-2.5 bg-white border border-[#E8E0D2] rounded-xl shadow-2xs">
-                    <img 
-                      src={formImage} 
-                      alt="Food preview" 
-                      className="w-14 h-14 rounded-lg object-cover border border-[#D9CFBF] shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E1B18]">
-                        <span>Live Preview</span>
-                        {uploadSuccess && (
-                          <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold animate-pulse">
-                            Uploaded!
-                          </span>
-                        )}
+                    {formImage && (
+                      <div className="relative rounded-xl overflow-hidden border border-[#E8E0D2] h-36 bg-neutral-100">
+                        <img 
+                          src={formImage} 
+                          alt="URL Preview" 
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80';
+                          }}
+                        />
+                        <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-black/75 text-white text-[10px] font-bold">
+                          URL Image Preview
+                        </div>
                       </div>
-                      <p className="text-[11px] text-[#7A7063] truncate">
-                        {formImage.startsWith('data:') ? 'Uploaded local image file (Base64 optimized)' : formImage}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="p-1.5 text-xs font-semibold text-[#E06D53] hover:bg-[#FAF0ED] rounded-lg transition-colors cursor-pointer"
-                        title="Upload new image"
-                      >
-                        <RefreshCw className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setFormImage('');
-                          setUploadFileName('');
-                        }}
-                        className="p-1.5 text-xs text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                        title="Remove image"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
+                    )}
                   </div>
                 )}
               </div>
