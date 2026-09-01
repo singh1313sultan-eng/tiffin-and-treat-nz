@@ -191,7 +191,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <input
                     id="navbar-search-input"
                     type="text"
-                    placeholder="Search tiffins, pizzas, sides..."
+                    placeholder="Search parathas, tiffins, kulchas, burgers..."
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
                     autoFocus
@@ -343,7 +343,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Search className="w-4 h-4 text-[#8C8275] mr-2" />
               <input
                 type="text"
-                placeholder="Search food, curries, pizzas..."
+                placeholder="Search parathas, tiffins, snacks..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 className="w-full text-xs text-[#1E1B18] bg-transparent focus:outline-none"

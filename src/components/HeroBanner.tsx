@@ -82,24 +82,24 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             {/* Top Eyebrow Tag */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E06D53]/10 border border-[#E06D53]/20 text-[#C95338] text-[11px] sm:text-xs font-semibold max-w-full">
               <Sparkles className="w-3.5 h-3.5 text-[#E06D53] shrink-0" />
-              <span className="truncate">Aotearoa's Homestyle Tiffin & Fusion Kitchen</span>
+              <span className="truncate">TNT Menu • Flavours You'll Love • Made Fresh For You!</span>
             </div>
 
             {/* Desktop Headline & Description */}
             <div className="hidden lg:block space-y-4">
               <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1E1B18] tracking-tight leading-[1.15]">
-                Comforting Homestyle <span className="text-[#E06D53] italic">Tiffins</span> & Sizzling Artisanal <span className="text-[#E06D53] italic">Pizzas</span>.
+                Fresh. Tasty. Desi. <span className="text-[#E06D53] italic">Always!</span>
               </h1>
 
               <p className="text-base sm:text-lg text-[#5A5043] font-normal leading-relaxed max-w-2xl">
-                From steaming multi-tier thali dabbas packed with rich slow-cooked curries and hot rotis, to signature Butter Chicken & Peri-Peri lamb pizzas. Freshly prepared and delivered hot across NZ.
+                From hot butter-glazed stuffed parathas and Amritsari kulchas to authentic homestyle tiffins, crispy street chaat, desi burgers, and slow-simmered masala tea.
               </p>
             </div>
 
             {/* Compact Mobile Title */}
             <div className="block lg:hidden">
               <h1 className="font-serif text-2xl font-bold text-[#1E1B18] tracking-tight">
-                Gourmet Tiffins <span className="text-[#E06D53]">&</span> Artisanal Pizzas
+                Fresh. Tasty. Desi. <span className="text-[#E06D53]">Always!</span>
               </h1>
             </div>
 
@@ -257,14 +257,14 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   
                   <div className="absolute top-3 left-3 bg-[#E06D53] text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                    Signature Tiffin
+                    TNT Special Tiffin
                   </div>
 
                   <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <div className="text-lg font-serif font-bold">The Royal 4-Tier Gourmet Tiffin</div>
+                    <div className="text-lg font-serif font-bold">Special Tiffin Feast Tray</div>
                     <div className="text-xs text-white/80 flex items-center justify-between mt-1">
-                      <span>3 Hot Rotis • Shahi Curry • Dal Makhani • Rice & Sweet</span>
-                      <span className="font-mono font-bold text-sm text-[#FDE68A]">NZD $24.90</span>
+                      <span>4 Hot Rotis • Royal Curry • Jeera Rice & Sweet</span>
+                      <span className="font-mono font-bold text-sm text-[#FDE68A]">NZD $17.00</span>
                     </div>
                   </div>
                 </div>
@@ -272,19 +272,19 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
               {/* Floating Badge 1: Daily Homestyle Tiffins CTA */}
               <div 
-                onClick={() => onScrollToCategory('tiffins')}
+                onClick={() => onScrollToCategory('deals')}
                 className="absolute -bottom-3 left-2 sm:-bottom-6 sm:-left-6 bg-white p-2.5 sm:p-3.5 rounded-2xl shadow-xl border border-[#E8E0D2] flex items-center gap-2.5 sm:gap-3 cursor-pointer hover:border-[#E06D53] hover:shadow-2xl transition-all group max-w-[85%] sm:max-w-xs"
               >
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
                   <div className="text-xs font-bold text-[#1E1B18] group-hover:text-[#E06D53] transition-colors flex items-center gap-1">
-                    <span>Daily Regular Tiffins</span>
+                    <span>Allo Paratha Combo</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>
                   <div className="text-[10px] sm:text-[11px] text-[#7A7063]">
-                    Rotating daily curries from NZD $10.00
+                    Paratha + Curd + Pickle + Lassi/Tea • $20
                   </div>
                 </div>
               </div>

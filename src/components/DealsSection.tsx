@@ -47,7 +47,7 @@ export const DealsSection: React.FC<DealsSectionProps> = ({
               Value Meal Bundles & Office Specials
             </h2>
             <p className="text-xs sm:text-sm text-[#706658] mt-1 max-w-xl">
-              Curated combinations of tiffins, artisanal pizzas, sides, and sweet treats crafted to give you the ultimate feast at unbeatable value.
+              Authentic combos straight from our TNT menu board: hot stuffed paratha, cooling curd, tangy pickle, and your choice of lassi or tea.
             </p>
           </div>
 

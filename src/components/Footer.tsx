@@ -106,16 +106,16 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
 
             <p className="text-xs text-[#A89E91] leading-relaxed max-w-sm">
-              Crafting wholesome homestyle tiffins, authentic Dum Biryanis, and artisanal fusion pizzas for Kiwi food lovers. Prepared fresh daily using 100% Halal certified meats and free-range NZ dairy.
+              Fresh. Tasty. Desi. Always! Serving authentic stuffed parathas, Amritsari kulchas, homestyle tiffin meals, crunchy street chaat, and desi street burgers. Made fresh for you every day.
             </p>
 
             <div className="flex items-center gap-3 text-xs text-[#C5BBAE] pt-1">
               <div className="flex items-center gap-1 bg-[#292522] px-2.5 py-1 rounded-lg border border-[#3E3832]">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>100% Halal Certified</span>
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Fresh. Tasty. Desi. Always!</span>
               </div>
               <div className="flex items-center gap-1 bg-[#292522] px-2.5 py-1 rounded-lg border border-[#3E3832]">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>NZ Food Safety Verified</span>
               </div>
             </div>
@@ -128,33 +128,33 @@ export const Footer: React.FC<FooterProps> = ({
             </h4>
             <ul className="space-y-2 text-[#A89E91]">
               <li>
-                <button onClick={() => onSelectCategory('tiffins')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
-                  Tiffins & Thali Dabbas
+                <button onClick={() => onSelectCategory('paratha')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
+                  Stuffed Parathas ($2.99 - $7.99)
                 </button>
               </li>
               <li>
-                <button onClick={() => onSelectCategory('pizzas')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
-                  Artisanal & Fusion Pizzas
+                <button onClick={() => onSelectCategory('tiffins')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
+                  Tiffin Meals ($10 - $17)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('kulcha')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
+                  Amritsari Kulchas ($7 - $12)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('chat')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
+                  Chat & Snacks ($3 - $11.99)
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onSelectCategory('burgers')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
+                  Burgers & Sandwiches
                 </button>
               </li>
               <li>
                 <button onClick={() => onSelectCategory('deals')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
-                  Value Combos & Deals
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onSelectCategory('biryani')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
-                  Dum Biryani Pots
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onSelectCategory('starters')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
-                  Street Eats & Entrées
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onSelectCategory('desserts')} className="hover:text-[#E06D53] transition-colors cursor-pointer">
-                  Cheesecakes & Sweet Treats
+                  Allo Paratha Combo ($20)
                 </button>
               </li>
             </ul>

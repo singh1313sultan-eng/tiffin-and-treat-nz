@@ -158,7 +158,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   Your basket is empty
                 </div>
                 <p className="text-xs text-[#706658] max-w-xs mx-auto">
-                  Explore our homestyle tiffins, artisanal pizzas, and street treats to begin your order.
+                  Explore our authentic parathas, homestyle tiffins, kulchas, and street snacks to begin your order.
                 </p>
                 <button
                   onClick={onClose}

@@ -36,12 +36,18 @@ interface AdminMenuManagerProps {
 
 const CATEGORIES: { id: ProductCategory; label: string }[] = [
   { id: 'all', label: 'All Categories' },
-  { id: 'tiffins', label: 'Tiffin Boxes' },
-  { id: 'pizzas', label: 'Gourmet Pizzas' },
-  { id: 'starters', label: 'Sides & Bites' },
-  { id: 'biryani', label: 'Dum Biryanis' },
-  { id: 'desserts', label: 'Desserts & Sweets' },
-  { id: 'drinks', label: 'Beverages & Lassis' },
+  { id: 'paratha', label: 'Paratha' },
+  { id: 'chat', label: 'Chat & Snacks' },
+  { id: 'rolls', label: 'Rolls' },
+  { id: 'kulcha', label: 'Kulcha' },
+  { id: 'burgers', label: 'Burgers & Sandwiches' },
+  { id: 'maggi', label: 'Maggi, Tea & Cha-Churi' },
+  { id: 'fries', label: 'Fries' },
+  { id: 'rice', label: 'Rice' },
+  { id: 'drinks', label: 'Beverages' },
+  { id: 'tiffins', label: 'Tiffin (Meals)' },
+  { id: 'tiffin_extras', label: 'Tiffin Extras' },
+  { id: 'deals', label: 'Combos' }
 ];
 
 export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
@@ -68,7 +74,7 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
   // Form State for Add / Edit
   const [formName, setFormName] = useState('');
   const [formTagline, setFormTagline] = useState('');
-  const [formCategory, setFormCategory] = useState<'tiffins' | 'pizzas' | 'starters' | 'biryani' | 'desserts' | 'drinks'>('tiffins');
+  const [formCategory, setFormCategory] = useState<MenuItem['category']>('paratha');
   const [formPrice, setFormPrice] = useState('18.90');
   const [formOriginalPrice, setFormOriginalPrice] = useState('');
   const [formDescription, setFormDescription] = useState('');
@@ -178,7 +184,7 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
         serves: formServes.trim() || '1 person',
         isChefSpecial: formIsChefSpecial,
         isPopular: formIsPopular,
-        customizable: formCategory === 'pizzas' || formCategory === 'tiffins'
+        customizable: formCategory === 'tiffins' || formCategory === 'paratha' || formCategory === 'burgers' || formCategory === 'kulcha'
       };
       onAddItem(newItem);
     }
@@ -488,12 +494,17 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                     onChange={(e) => setFormCategory(e.target.value as any)}
                     className="w-full bg-white border border-[#D9CFBF] rounded-xl px-3.5 py-2.5 text-[#1E1B18] focus:outline-none focus:border-[#E06D53] shadow-2xs"
                   >
-                    <option value="tiffins">Tiffin Boxes</option>
-                    <option value="pizzas">Gourmet Pizzas</option>
-                    <option value="starters">Sides & Starters</option>
-                    <option value="biryani">Dum Biryanis</option>
-                    <option value="desserts">Desserts</option>
-                    <option value="drinks">Beverages & Lassis</option>
+                    <option value="paratha">Paratha</option>
+                    <option value="chat">Chat & Snacks</option>
+                    <option value="rolls">Rolls</option>
+                    <option value="kulcha">Kulcha</option>
+                    <option value="burgers">Burgers & Sandwiches</option>
+                    <option value="maggi">Maggi, Tea & Cha-Churi</option>
+                    <option value="fries">Fries</option>
+                    <option value="rice">Rice</option>
+                    <option value="drinks">Beverages</option>
+                    <option value="tiffins">Tiffin (Meals)</option>
+                    <option value="tiffin_extras">Tiffin Extras</option>
                   </select>
                 </div>
               </div>

@@ -13,13 +13,18 @@ export type PizzaCrust =
 
 export type ProductCategory = 
   | 'all'
-  | 'tiffins'
-  | 'pizzas'
-  | 'deals'
-  | 'starters'
-  | 'biryani'
-  | 'desserts'
+  | 'paratha'
+  | 'chat'
+  | 'rolls'
+  | 'kulcha'
+  | 'burgers'
+  | 'maggi'
+  | 'fries'
+  | 'rice'
   | 'drinks'
+  | 'tiffins'
+  | 'tiffin_extras'
+  | 'deals'
   | 'subscription';
 
 export interface ToppingOption {
@@ -33,19 +38,19 @@ export interface MenuItem {
   id: string;
   name: string;
   tagline?: string;
-  category: 'tiffins' | 'pizzas' | 'starters' | 'biryani' | 'desserts' | 'drinks';
+  category: 'paratha' | 'chat' | 'rolls' | 'kulcha' | 'burgers' | 'maggi' | 'fries' | 'rice' | 'drinks' | 'tiffins' | 'tiffin_extras';
   description: string;
   price: number;
   originalPrice?: number;
   image: string;
-  dietary: DietaryType[];
+  dietary?: DietaryType[];
   isPopular?: boolean;
   isChefSpecial?: boolean;
   calories?: string;
   serves?: string;
   customizable?: boolean;
   defaultSpice?: SpiceLevel;
-  includedTiers?: string[]; // for tiffins (e.g. 3 rotis, paneer, dal, rice, sweet)
+  includedTiers?: string[]; // for tiffins or sets
   isSoldOut?: boolean;
 }
 

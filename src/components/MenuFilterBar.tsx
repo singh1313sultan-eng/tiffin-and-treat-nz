@@ -3,11 +3,11 @@ import {
   Sparkles, 
   Flame, 
   Utensils, 
-  Pizza, 
   Layers, 
   Coffee, 
-  CakeSlice, 
-  CalendarCheck
+  Sandwich,
+  Soup,
+  Plus
 } from 'lucide-react';
 import { ProductCategory } from '../types';
 
@@ -26,14 +26,18 @@ interface CategoryConfig {
 
 const CATEGORIES: CategoryConfig[] = [
   { id: 'all', label: 'All Items', icon: <Utensils className="w-4 h-4" /> },
-  { id: 'tiffins', label: 'Tiffins & Thalis', icon: <Layers className="w-4 h-4 text-[#E06D53]" />, badge: 'Popular' },
-  { id: 'pizzas', label: 'Artisanal Pizzas', icon: <Pizza className="w-4 h-4 text-amber-600" /> },
-  { id: 'deals', label: 'Combos & Deals', icon: <Flame className="w-4 h-4 text-red-500" />, badge: 'Save $' },
-  { id: 'starters', label: 'Street Eats & Sides', icon: <Sparkles className="w-4 h-4 text-orange-500" /> },
-  { id: 'biryani', label: 'Biryani Bowls', icon: <Utensils className="w-4 h-4 text-amber-700" /> },
-  { id: 'desserts', label: 'Sweet Treats', icon: <CakeSlice className="w-4 h-4 text-pink-500" /> },
-  { id: 'drinks', label: 'Lassis & Drinks', icon: <Coffee className="w-4 h-4 text-teal-600" /> },
-  { id: 'subscription', label: 'Weekly Meal Pass', icon: <CalendarCheck className="w-4 h-4 text-purple-600" /> }
+  { id: 'paratha', label: 'Paratha', icon: <Flame className="w-4 h-4 text-[#E06D53]" />, badge: 'Fresh' },
+  { id: 'chat', label: 'Chat & Snacks', icon: <Sparkles className="w-4 h-4 text-amber-600" /> },
+  { id: 'rolls', label: 'Rolls', icon: <Flame className="w-4 h-4 text-orange-500" /> },
+  { id: 'kulcha', label: 'Kulcha', icon: <Layers className="w-4 h-4 text-[#E06D53]" />, badge: 'Special' },
+  { id: 'burgers', label: 'Burgers & Sandwiches', icon: <Sandwich className="w-4 h-4 text-amber-700" /> },
+  { id: 'maggi', label: 'Maggi, Tea & Cha-Churi', icon: <Soup className="w-4 h-4 text-emerald-600" /> },
+  { id: 'fries', label: 'Fries', icon: <Flame className="w-4 h-4 text-yellow-600" /> },
+  { id: 'rice', label: 'Rice', icon: <Utensils className="w-4 h-4 text-neutral-600" /> },
+  { id: 'drinks', label: 'Beverages', icon: <Coffee className="w-4 h-4 text-teal-600" /> },
+  { id: 'tiffins', label: 'Tiffin (Meals)', icon: <Layers className="w-4 h-4 text-[#E06D53]" />, badge: 'Popular' },
+  { id: 'tiffin_extras', label: 'Tiffin Extras', icon: <Plus className="w-4 h-4 text-[#706658]" /> },
+  { id: 'deals', label: 'Combos', icon: <Flame className="w-4 h-4 text-red-500" />, badge: '$20 Combo' }
 ];
 
 export const MenuFilterBar: React.FC<MenuFilterBarProps> = ({
