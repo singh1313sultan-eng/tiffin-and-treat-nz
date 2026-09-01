@@ -15,7 +15,7 @@ import {
 
 // Local storage cache keys for offline-first operation
 const LS_KEYS = {
-  MENU: 'tt_menu_items_tnt_board_v1',
+  MENU: 'tt_menu_items_tnt_live_v3',
   ORDERS: 'tt_orders_v2',
   CUSTOMERS: 'tt_customers_v2',
   STORES: 'tt_stores_v2',
@@ -50,27 +50,41 @@ export const dbFetchMenuItems = async (): Promise<MenuItem[]> => {
     try {
       const { data, error } = await supabase
         .from('menu_items')
-        .select('*')
-        .order('name', { ascending: true });
+        .select('*');
 
       if (!error && data && data.length > 0) {
-        const formatted: MenuItem[] = data.map(row => ({
-          id: row.id,
-          name: row.name,
-          tagline: row.tagline || '',
-          category: row.category,
-          price: Number(row.price),
-          originalPrice: row.original_price ? Number(row.original_price) : undefined,
-          description: row.description,
-          image: row.image,
-          dietary: row.dietary || [],
-          isPopular: row.is_popular || false,
-          isChefSpecial: row.is_chef_special || false,
-          calories: row.calories || undefined,
-          serves: row.serves || undefined,
-          customizable: row.customizable ?? true,
-          isSoldOut: row.is_sold_out || false
-        }));
+        const formatted: MenuItem[] = data.map(row => {
+          const defaultItem = MENU_ITEMS.find(m => m.id === row.id);
+          return {
+            id: row.id,
+            name: row.name,
+            tagline: row.tagline || defaultItem?.tagline || '',
+            category: row.category as any,
+            price: Number(row.price),
+            originalPrice: row.original_price ? Number(row.original_price) : defaultItem?.originalPrice,
+            description: row.description || defaultItem?.description || '',
+            image: row.image || defaultItem?.image || '',
+            dietary: row.dietary || [],
+            isPopular: row.is_popular ?? row.is_bestseller ?? defaultItem?.isPopular ?? false,
+            isChefSpecial: row.is_chef_special ?? row.is_featured ?? defaultItem?.isChefSpecial ?? false,
+            calories: row.calories ? (typeof row.calories === 'number' ? `${row.calories} kcal` : row.calories) : defaultItem?.calories,
+            serves: row.serves || defaultItem?.serves || '1 person',
+            customizable: row.customizable ?? defaultItem?.customizable ?? true,
+            isSoldOut: row.is_sold_out || false,
+            includedTiers: defaultItem?.includedTiers
+          };
+        });
+
+        // Maintain menu ordering: if items exist in MENU_ITEMS, preserve that sequence
+        formatted.sort((a, b) => {
+          const idxA = MENU_ITEMS.findIndex(m => m.id === a.id);
+          const idxB = MENU_ITEMS.findIndex(m => m.id === b.id);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return a.name.localeCompare(b.name);
+        });
+
         setLocalStorageData(LS_KEYS.MENU, formatted);
         return formatted;
       }
@@ -96,9 +110,11 @@ export const dbAddMenuItem = async (item: MenuItem): Promise<void> => {
         price: item.price,
         description: item.description,
         image: item.image,
-        dietary: item.dietary,
-        calories: item.calories || null,
-        is_sold_out: item.isSoldOut || false
+        dietary: item.dietary || [],
+        calories: item.calories ? parseInt(item.calories.replace(/\D/g, '')) || null : null,
+        is_sold_out: item.isSoldOut || false,
+        is_bestseller: !!item.isPopular,
+        is_featured: !!item.isChefSpecial
       });
     } catch (e) {
       console.error('[Supabase] Failed to insert menu item to cloud', e);
@@ -118,9 +134,11 @@ export const dbUpdateMenuItem = async (item: MenuItem): Promise<void> => {
         price: item.price,
         description: item.description,
         image: item.image,
-        dietary: item.dietary,
-        calories: item.calories || null,
-        is_sold_out: item.isSoldOut || false
+        dietary: item.dietary || [],
+        calories: item.calories ? parseInt(item.calories.replace(/\D/g, '')) || null : null,
+        is_sold_out: item.isSoldOut || false,
+        is_bestseller: !!item.isPopular,
+        is_featured: !!item.isChefSpecial
       }).eq('id', item.id);
     } catch (e) {
       console.error('[Supabase] Failed to update menu item in cloud', e);
