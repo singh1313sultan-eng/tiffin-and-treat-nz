@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   MenuItem, 
   ProductCategory, 
@@ -22,7 +22,10 @@ import {
   ToggleLeft,
   ToggleRight,
   TrendingUp,
-  CheckCircle2
+  CheckCircle2,
+  Upload,
+  Link,
+  RefreshCw
 } from 'lucide-react';
 
 interface AdminMenuManagerProps {
@@ -84,6 +87,89 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
   const [formIsChefSpecial, setFormIsChefSpecial] = useState(false);
   const [formIsPopular, setFormIsPopular] = useState(false);
 
+  // Image Upload States
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [imageSourceMode, setImageSourceMode] = useState<'upload' | 'url'>('upload');
+  const [uploadFileName, setUploadFileName] = useState<string>('');
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+  const [isProcessingImage, setIsProcessingImage] = useState<boolean>(false);
+
+  // Client-side image upload & canvas compression
+  const handleImageFileUpload = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (JPEG, PNG, WEBP, etc.)');
+      return;
+    }
+
+    setIsProcessingImage(true);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        // High quality client-side canvas compression to max 1000px
+        const maxDim = 1000;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.85);
+          setFormImage(compressed);
+        } else {
+          setFormImage(dataUrl);
+        }
+        setUploadFileName(file.name);
+        setUploadSuccess(true);
+        setIsProcessingImage(false);
+        setTimeout(() => setUploadSuccess(false), 3000);
+      };
+      img.onerror = () => {
+        setFormImage(dataUrl);
+        setUploadFileName(file.name);
+        setIsProcessingImage(false);
+      };
+      img.src = dataUrl;
+    };
+    reader.onerror = () => {
+      setIsProcessingImage(false);
+      alert('Failed to read image file.');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleImageFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
   // Filtered menu list
   const filteredItems = useMemo(() => {
     return menuItems.filter(item => {
@@ -120,15 +206,19 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
   const openAddModal = () => {
     setFormName('');
     setFormTagline('');
-    setFormCategory('tiffins');
-    setFormPrice('18.90');
+    setFormCategory('paratha');
+    setFormPrice('7.99');
     setFormOriginalPrice('');
     setFormDescription('');
-    setFormImage('https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80');
-    setFormCalories('580 kcal');
+    setFormImage('https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80');
+    setFormCalories('420 kcal');
     setFormServes('1 person');
     setFormIsChefSpecial(false);
     setFormIsPopular(false);
+    setImageSourceMode('upload');
+    setUploadFileName('');
+    setUploadSuccess(false);
+    setIsProcessingImage(false);
     setEditingItem(null);
     setIsAddModalOpen(true);
   };
@@ -142,10 +232,14 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
     setFormOriginalPrice(item.originalPrice ? item.originalPrice.toString() : '');
     setFormDescription(item.description);
     setFormImage(item.image);
-    setFormCalories(item.calories || '550 kcal');
+    setFormCalories(item.calories || '450 kcal');
     setFormServes(item.serves || '1 person');
     setFormIsChefSpecial(!!item.isChefSpecial);
     setFormIsPopular(!!item.isPopular);
+    setImageSourceMode(item.image.startsWith('data:') ? 'upload' : 'url');
+    setUploadFileName('');
+    setUploadSuccess(false);
+    setIsProcessingImage(false);
     setIsAddModalOpen(true);
   };
 
@@ -587,24 +681,156 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                 />
               </div>
 
-              {/* Image URL with preview */}
-              <div className="space-y-1">
-                <label className="text-[#3D372E] font-bold">Photo Image URL</label>
-                <div className="flex gap-3 items-center">
-                  <input
-                    type="url"
-                    value={formImage}
-                    onChange={(e) => setFormImage(e.target.value)}
-                    className="flex-1 bg-white border border-[#D9CFBF] rounded-xl px-3.5 py-2.5 text-[#1E1B18] focus:outline-none focus:border-[#E06D53] shadow-2xs"
-                  />
-                  {formImage && (
+              {/* Image Upload & URL Selector */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-[#3D372E] font-bold text-xs flex items-center gap-1.5">
+                    <ImageIcon className="w-4 h-4 text-[#E06D53]" />
+                    <span>Food Item Image *</span>
+                  </label>
+                  
+                  {/* Mode Toggle Switch */}
+                  <div className="flex bg-[#F5EFE6] p-0.5 rounded-lg text-[11px] font-semibold border border-[#E2D8C9]">
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceMode('upload')}
+                      className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
+                        imageSourceMode === 'upload'
+                          ? 'bg-white text-[#1E1B18] shadow-2xs font-bold'
+                          : 'text-[#706658] hover:text-[#1E1B18]'
+                      }`}
+                    >
+                      <Upload className="w-3 h-3" />
+                      <span>Upload File</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceMode('url')}
+                      className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
+                        imageSourceMode === 'url'
+                          ? 'bg-white text-[#1E1B18] shadow-2xs font-bold'
+                          : 'text-[#706658] hover:text-[#1E1B18]'
+                      }`}
+                    >
+                      <Link className="w-3 h-3" />
+                      <span>Image URL</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Upload File Mode */}
+                {imageSourceMode === 'upload' ? (
+                  <div className="space-y-2">
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          handleImageFileUpload(e.target.files[0]);
+                        }
+                      }}
+                      accept="image/png, image/jpeg, image/jpg, image/webp, image/avif"
+                      className="hidden"
+                    />
+
+                    {/* Drag and drop zone */}
+                    <div
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`border-2 border-dashed rounded-2xl p-4 sm:p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 ${
+                        isDragging
+                          ? 'border-[#E06D53] bg-[#FAF0ED] ring-4 ring-[#E06D53]/10'
+                          : 'border-[#D9CFBF] bg-[#FAF7F2] hover:bg-[#F5EFE6] hover:border-[#C4B7A2]'
+                      }`}
+                    >
+                      <div className="w-10 h-10 rounded-full bg-white shadow-2xs flex items-center justify-center text-[#E06D53]">
+                        {isProcessingImage ? (
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <Upload className="w-5 h-5" />
+                        )}
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <p className="text-xs font-bold text-[#1E1B18]">
+                          {isProcessingImage ? 'Optimizing image...' : 'Click to browse or drag & drop photo here'}
+                        </p>
+                        <p className="text-[11px] text-[#7A7063]">
+                          Supports JPEG, PNG, WEBP • Auto-compressed for fast loading
+                        </p>
+                      </div>
+
+                      {uploadFileName && (
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200 mt-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="truncate max-w-xs">{uploadFileName}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  /* URL Input Mode */
+                  <div className="space-y-1.5">
+                    <input
+                      type="url"
+                      value={formImage}
+                      onChange={(e) => setFormImage(e.target.value)}
+                      placeholder="https://images.unsplash.com/..."
+                      className="w-full bg-white border border-[#D9CFBF] rounded-xl px-3.5 py-2.5 text-[#1E1B18] text-xs focus:outline-none focus:border-[#E06D53] shadow-2xs font-mono"
+                    />
+                    <p className="text-[10px] text-[#8C8275]">
+                      Paste any direct image link from Unsplash, Cloudinary, or web servers.
+                    </p>
+                  </div>
+                )}
+
+                {/* Live Preview Card */}
+                {formImage && (
+                  <div className="flex items-center gap-3 p-2.5 bg-white border border-[#E8E0D2] rounded-xl shadow-2xs">
                     <img 
                       src={formImage} 
-                      alt="Preview" 
-                      className="w-10 h-10 rounded-xl object-cover border border-[#E8E0D2] shrink-0"
+                      alt="Food preview" 
+                      className="w-14 h-14 rounded-lg object-cover border border-[#D9CFBF] shrink-0"
                     />
-                  )}
-                </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#1E1B18]">
+                        <span>Live Preview</span>
+                        {uploadSuccess && (
+                          <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold animate-pulse">
+                            Uploaded!
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-[#7A7063] truncate">
+                        {formImage.startsWith('data:') ? 'Uploaded local image file (Base64 optimized)' : formImage}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-1.5 text-xs font-semibold text-[#E06D53] hover:bg-[#FAF0ED] rounded-lg transition-colors cursor-pointer"
+                        title="Upload new image"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormImage('');
+                          setUploadFileName('');
+                        }}
+                        className="p-1.5 text-xs text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        title="Remove image"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Badges & Flags */}
