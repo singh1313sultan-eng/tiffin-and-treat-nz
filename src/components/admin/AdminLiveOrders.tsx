@@ -50,9 +50,10 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
 
   // Filter calculations
   const filteredOrders = useMemo(() => {
-    return orders.filter(order => {
+    return (orders || []).filter(order => {
+      if (!order) return false;
       // Store filter
-      if (selectedStoreFilter !== 'all' && order.store.id !== selectedStoreFilter) {
+      if (selectedStoreFilter !== 'all' && order.store?.id !== selectedStoreFilter) {
         return false;
       }
 
@@ -66,10 +67,10 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
       // Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchesNum = order.orderNumber.toLowerCase().includes(q);
-        const matchesName = order.customerDetails.name.toLowerCase().includes(q);
-        const matchesPhone = order.customerDetails.phone.toLowerCase().includes(q);
-        const matchesItem = order.items.some(i => i.menuItem.name.toLowerCase().includes(q));
+        const matchesNum = (order.orderNumber || '').toLowerCase().includes(q);
+        const matchesName = (order.customerDetails?.name || '').toLowerCase().includes(q);
+        const matchesPhone = (order.customerDetails?.phone || '').toLowerCase().includes(q);
+        const matchesItem = (order.items || []).some(i => (i.menuItem?.name || '').toLowerCase().includes(q));
         if (!matchesNum && !matchesName && !matchesPhone && !matchesItem) return false;
       }
 
@@ -304,7 +305,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                             </span>
                           </div>
                           <div className="text-[11px] text-[#E06D53] font-semibold">
-                            {order.store.name}
+                            {order.store?.name || 'Central Kitchen'}
                           </div>
                           <div className="text-[10px] text-[#706658]">
                             Target: {order.estimatedDeliveryTime}
@@ -524,7 +525,7 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                     </div>
 
                     <div className="text-xs text-[#706658] mt-1 flex items-center gap-2">
-                      <span className="text-[#E06D53] font-semibold">{order.store.name}</span>
+                      <span className="text-[#E06D53] font-semibold">{order.store?.name || 'Central Kitchen'}</span>
                       <span>•</span>
                       <span>Target: {order.estimatedDeliveryTime}</span>
                     </div>
@@ -720,8 +721,8 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
           <div className="bg-white text-black rounded-3xl max-w-md w-full p-6 font-mono text-xs shadow-2xl space-y-4 animate-in zoom-in-95 duration-200">
             <div className="text-center border-b border-dashed border-neutral-300 pb-4 space-y-1">
               <h2 className="font-bold text-lg uppercase tracking-wider">TIFFIN & TREAT NZ</h2>
-              <p className="text-[11px] text-neutral-600">{inspectingOrder.store.name}</p>
-              <p className="text-[10px] text-neutral-500">{inspectingOrder.store.address}</p>
+              <p className="text-[11px] text-neutral-600">{inspectingOrder.store?.name || 'Central Kitchen'}</p>
+              <p className="text-[10px] text-neutral-500">{inspectingOrder.store?.address || ''}</p>
               <p className="text-[10px] text-neutral-500 font-bold">GST No: 124-889-102</p>
             </div>
 

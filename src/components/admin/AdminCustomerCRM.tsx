@@ -51,10 +51,10 @@ export const AdminCustomerCRM: React.FC<AdminCustomerCRMProps> = ({
 
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchesName = c.name.toLowerCase().includes(q);
-        const matchesEmail = c.email.toLowerCase().includes(q);
-        const matchesPhone = c.phone.toLowerCase().includes(q);
-        const matchesSuburb = c.suburb.toLowerCase().includes(q);
+        const matchesName = (c.name || '').toLowerCase().includes(q);
+        const matchesEmail = (c.email || '').toLowerCase().includes(q);
+        const matchesPhone = (c.phone || '').toLowerCase().includes(q);
+        const matchesSuburb = (c.suburb || '').toLowerCase().includes(q);
         if (!matchesName && !matchesEmail && !matchesPhone && !matchesSuburb) return false;
       }
 
@@ -440,7 +440,7 @@ export const AdminCustomerCRM: React.FC<AdminCustomerCRMProps> = ({
                           </span>
                         </div>
                         <div className="text-[11px] text-[#706658]">
-                          {order.items.map(i => `${i.quantity}x ${i.menuItem.name}`).join(', ')}
+                          {order.items?.map(i => `${i.quantity}x ${i.menuItem?.name || 'Item'}`).join(', ') || 'Order'}
                         </div>
                       </div>
 

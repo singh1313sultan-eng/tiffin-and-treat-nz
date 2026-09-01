@@ -257,7 +257,7 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
     setFormServes(item.serves || '1 person');
     setFormIsChefSpecial(!!item.isChefSpecial);
     setFormIsPopular(!!item.isPopular);
-    setImageSourceMode(item.image.startsWith('data:') ? 'upload' : 'url');
+    setImageSourceMode((item.image?.startsWith('data:') || item.image?.startsWith('/uploads')) ? 'upload' : 'url');
     setUploadFileName('');
     setUploadSuccess(false);
     setIsProcessingImage(false);
@@ -429,9 +429,12 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <img 
-                        src={item.image} 
+                        src={item.image || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80'} 
                         alt={item.name} 
-                        className="w-12 h-12 rounded-2xl object-cover border border-[#E8E0D2] shrink-0"
+                        className="w-12 h-12 rounded-2xl object-cover border border-[#E8E0D2] shrink-0 bg-neutral-100"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80';
+                        }}
                       />
                       <div className="space-y-0.5 max-w-xs sm:max-w-sm">
                         <div className="flex items-center gap-2">
@@ -481,29 +484,31 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                         />
                         <button
                           onClick={() => handleSaveInlinePrice(item.id)}
-                          className="p-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md cursor-pointer"
+                          className="p-1 text-emerald-600 hover:bg-emerald-50 rounded"
+                          title="Save price"
                         >
                           <Check className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => setInlinePriceEditId(null)}
-                          className="p-1 bg-neutral-200 hover:bg-neutral-300 text-[#1E1B18] rounded-md cursor-pointer"
+                          className="p-1 text-neutral-400 hover:bg-neutral-100 rounded"
+                          title="Cancel"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ) : (
-                      <div 
+                      <button
                         onClick={() => {
                           setInlinePriceEditId(item.id);
-                          setInlinePriceValue(item.price.toString());
+                          setInlinePriceValue(item.price.toFixed(2));
                         }}
-                        className="font-mono text-sm font-bold text-[#1E1B18] hover:text-[#E06D53] cursor-pointer flex items-center gap-1.5 group"
-                        title="Click to quickly edit price"
+                        className="group/price flex items-center gap-1 font-mono font-bold text-[#1E1B18] hover:text-[#E06D53] transition-colors cursor-pointer"
+                        title="Click to edit price"
                       >
-                        <span>${item.price.toFixed(2)}</span>
-                        <Edit3 className="w-3 h-3 text-[#A89E91] group-hover:text-[#E06D53] opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
+                        <span>NZD ${item.price.toFixed(2)}</span>
+                        <Edit3 className="w-3 h-3 text-[#A89E91] group-hover/price:text-[#E06D53] opacity-0 group-hover/price:opacity-100 transition-opacity" />
+                      </button>
                     )}
                     {item.originalPrice && (
                       <div className="text-[10px] text-[#A89E91] line-through">
@@ -512,11 +517,11 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                     )}
                   </td>
 
-                  {/* Sold Out Toggle */}
-                  <td className="py-4 px-4 text-center">
+                  {/* Stock Status Toggle */}
+                  <td className="py-4 px-4">
                     <button
                       onClick={() => onToggleSoldOut(item.id, !item.isSoldOut)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border ${
                         item.isSoldOut
                           ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
                           : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
@@ -530,11 +535,15 @@ export const AdminMenuManager: React.FC<AdminMenuManagerProps> = ({
                   {/* Dietary Badges */}
                   <td className="py-4 px-4">
                     <div className="flex flex-wrap gap-1 max-w-xs">
-                      {item.dietary.map(d => (
-                        <span key={d} className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-[#FAF7F2] text-[#706658] border border-[#E8E0D2]">
-                          {d}
-                        </span>
-                      ))}
+                      {(item.dietary || []).length > 0 ? (
+                        item.dietary.map(d => (
+                          <span key={d} className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-[#FAF7F2] text-[#706658] border border-[#E8E0D2]">
+                            {d}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-[10px] text-[#A89E91] italic">Standard</span>
+                      )}
                     </div>
                   </td>
 

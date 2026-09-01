@@ -39,11 +39,11 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
 
   // Aggregate Metrics
   const metrics = useMemo(() => {
-    const totalGross = validOrders.reduce((sum, o) => sum + o.totalAmount, 0);
-    const totalSubtotal = validOrders.reduce((sum, o) => sum + o.subtotal, 0);
-    const totalDeliveryFees = validOrders.reduce((sum, o) => sum + o.deliveryFee, 0);
-    const totalTips = validOrders.reduce((sum, o) => sum + o.tip, 0);
-    const totalDiscounts = validOrders.reduce((sum, o) => sum + o.discount, 0);
+    const totalGross = validOrders.reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+    const totalSubtotal = validOrders.reduce((sum, o) => sum + (Number(o.subtotal) || 0), 0);
+    const totalDeliveryFees = validOrders.reduce((sum, o) => sum + (Number(o.deliveryFee) || 0), 0);
+    const totalTips = validOrders.reduce((sum, o) => sum + (Number(o.tip) || 0), 0);
+    const totalDiscounts = validOrders.reduce((sum, o) => sum + (Number(o.discount) || 0), 0);
     
     // NZ IRD standard 15% GST: In NZ, GST is 3/23 (approx 13.043%) of GST-inclusive price or 15% added to net price
     const gstCollected = totalGross * (3 / 23);
@@ -78,17 +78,18 @@ export const AdminFinancials: React.FC<AdminFinancialsProps> = ({
     };
 
     validOrders.forEach(order => {
-      const method = order.customerDetails.paymentMethod as string;
+      const method = (order.customerDetails?.paymentMethod || 'online_eftpos') as string;
+      const amount = Number(order.totalAmount) || 0;
       if (gateways[method]) {
         gateways[method].count += 1;
-        gateways[method].total += order.totalAmount;
+        gateways[method].total += amount;
       } else {
         // Fallback
         if (!gateways.windcave_card) {
           gateways.windcave_card = { count: 0, total: 0, label: 'Other Gateways', icon: '💳' };
         }
         gateways.windcave_card.count += 1;
-        gateways.windcave_card.total += order.totalAmount;
+        gateways.windcave_card.total += amount;
       }
     });
 

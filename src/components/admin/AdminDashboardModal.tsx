@@ -13,6 +13,7 @@ import { AdminMenuManager } from './AdminMenuManager';
 import { AdminFinancials } from './AdminFinancials';
 import { AdminCustomerCRM } from './AdminCustomerCRM';
 import { AdminStoreSettings } from './AdminStoreSettings';
+import { ErrorBoundary } from '../ErrorBoundary';
 import { 
   ChefHat, 
   UtensilsCrossed, 
@@ -314,84 +315,86 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
 
       {/* Main Tab Content Area */}
       <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
-        {activeTab === 'orders' && (
-          <AdminLiveOrders
-            orders={orders}
-            stores={stores}
-            onUpdateOrderStatus={handleStatusChange}
-            onCancelOrder={(id) => {
-              onCancelOrder(id);
-              showAdminToast('Order cancelled');
-            }}
-          />
-        )}
+        <ErrorBoundary fallbackTitle="Admin Tab Error - Restoring View">
+          {activeTab === 'orders' && (
+            <AdminLiveOrders
+              orders={orders}
+              stores={stores}
+              onUpdateOrderStatus={handleStatusChange}
+              onCancelOrder={(id) => {
+                onCancelOrder(id);
+                showAdminToast('Order cancelled');
+              }}
+            />
+          )}
 
-        {activeTab === 'menu' && (
-          <AdminMenuManager
-            menuItems={menuItems}
-            onAddItem={(item) => {
-              onAddItem(item);
-              showAdminToast(`Added "${item.name}" to menu!`);
-            }}
-            onUpdateItem={(item) => {
-              onUpdateItem(item);
-              showAdminToast(`Updated "${item.name}"`);
-            }}
-            onDeleteItem={(id) => {
-              onDeleteItem(id);
-              showAdminToast('Dish removed from menu');
-            }}
-            onToggleSoldOut={handleSoldOutToggle}
-            onQuickUpdatePrice={handlePriceUpdate}
-          />
-        )}
+          {activeTab === 'menu' && (
+            <AdminMenuManager
+              menuItems={menuItems}
+              onAddItem={(item) => {
+                onAddItem(item);
+                showAdminToast(`Added "${item.name}" to menu!`);
+              }}
+              onUpdateItem={(item) => {
+                onUpdateItem(item);
+                showAdminToast(`Updated "${item.name}"`);
+              }}
+              onDeleteItem={(id) => {
+                onDeleteItem(id);
+                showAdminToast('Dish removed from menu');
+              }}
+              onToggleSoldOut={handleSoldOutToggle}
+              onQuickUpdatePrice={handlePriceUpdate}
+            />
+          )}
 
-        {activeTab === 'financials' && (
-          <AdminFinancials
-            orders={orders}
-            stores={stores}
-          />
-        )}
+          {activeTab === 'financials' && (
+            <AdminFinancials
+              orders={orders}
+              stores={stores}
+            />
+          )}
 
-        {activeTab === 'customers' && (
-          <AdminCustomerCRM
-            customers={customers}
-            orders={orders}
-            onToggleVIP={(id) => {
-              onToggleVIP(id);
-              showAdminToast('Customer VIP status updated');
-            }}
-            onUpdateCustomerNotes={(id, notes) => {
-              onUpdateCustomerNotes(id, notes);
-              showAdminToast('Customer notes saved');
-            }}
-          />
-        )}
+          {activeTab === 'customers' && (
+            <AdminCustomerCRM
+              customers={customers}
+              orders={orders}
+              onToggleVIP={(id) => {
+                onToggleVIP(id);
+                showAdminToast('Customer VIP status updated');
+              }}
+              onUpdateCustomerNotes={(id, notes) => {
+                onUpdateCustomerNotes(id, notes);
+                showAdminToast('Customer notes saved');
+              }}
+            />
+          )}
 
-        {activeTab === 'settings' && (
-          <AdminStoreSettings
-            stores={stores}
-            onToggleStoreStatus={(id, open) => {
-              onToggleStoreStatus(id, open);
-              showAdminToast(`Branch status updated to ${open ? 'OPEN' : 'PAUSED'}`);
-            }}
-            onUpdateStoreTimes={(id, p, d) => {
-              onUpdateStoreTimes(id, p, d);
-              showAdminToast('Branch pickup & delivery estimates updated');
-            }}
-            announcementBanner={announcementBanner}
-            onUpdateAnnouncementBanner={(msg) => {
-              onUpdateAnnouncementBanner(msg);
-              showAdminToast('Storefront announcement broadcast updated');
-            }}
-            soundEnabled={soundEnabled}
-            onToggleSound={() => setSoundEnabled(!soundEnabled)}
-            onResetDemoData={() => {
-              onResetDemoData();
-              showAdminToast('Demo orders and menu reset to defaults');
-            }}
-          />
-        )}
+          {activeTab === 'settings' && (
+            <AdminStoreSettings
+              stores={stores}
+              onToggleStoreStatus={(id, open) => {
+                onToggleStoreStatus(id, open);
+                showAdminToast(`Branch status updated to ${open ? 'OPEN' : 'PAUSED'}`);
+              }}
+              onUpdateStoreTimes={(id, p, d) => {
+                onUpdateStoreTimes(id, p, d);
+                showAdminToast('Branch pickup & delivery estimates updated');
+              }}
+              announcementBanner={announcementBanner}
+              onUpdateAnnouncementBanner={(msg) => {
+                onUpdateAnnouncementBanner(msg);
+                showAdminToast('Storefront announcement broadcast updated');
+              }}
+              soundEnabled={soundEnabled}
+              onToggleSound={() => setSoundEnabled(!soundEnabled)}
+              onResetDemoData={() => {
+                onResetDemoData();
+                showAdminToast('Demo orders and menu reset to defaults');
+              }}
+            />
+          )}
+        </ErrorBoundary>
       </main>
 
     </div>

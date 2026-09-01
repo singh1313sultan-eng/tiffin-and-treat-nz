@@ -27,12 +27,15 @@ export const MenuCard: React.FC<MenuCardProps> = ({
       {/* Image Container */}
       <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-neutral-100">
         <img
-          src={item.image}
+          src={item.image || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80'}
           alt={item.name}
           className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${
             item.isSoldOut ? 'grayscale contrast-75' : ''
           }`}
           loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80';
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
 
