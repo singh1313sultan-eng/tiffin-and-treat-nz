@@ -16,7 +16,8 @@ import {
   PlacedOrder,
   CustomerRecord,
   OrderStatus,
-  AdminUser
+  AdminUser,
+  PaymentMode
 } from './types';
 import { 
   MENU_ITEMS, 
@@ -37,6 +38,7 @@ import {
   dbFetchOrders,
   dbCreateOrder,
   dbUpdateOrderStatus,
+  dbUpdateOrderPayment,
   dbFetchCustomers,
   dbUpsertCustomer,
   dbToggleVIP,
@@ -307,6 +309,61 @@ export default function App() {
 
   const handleCancelOrder = (orderId: string) => {
     handleUpdateOrderStatus(orderId, 'cancelled');
+  };
+
+  const handleUpdateOrderPayment = (
+    orderId: string, 
+    amountPaid: number, 
+    paymentMode: PaymentMode, 
+    settledBy?: string
+  ) => {
+    const total = orders.find(o => o.orderId === orderId)?.totalAmount || 0;
+    const diff = Number((total - amountPaid).toFixed(2));
+    const paymentStatus = diff <= 0 ? 'paid' : (paymentMode === 'Credit' ? 'credit' : (amountPaid > 0 ? 'partial' : 'pending'));
+    const now = new Date().toISOString();
+
+    setOrders(prev => prev.map(o => {
+      if (o.orderId === orderId) {
+        return {
+          ...o,
+          amountPaid,
+          paymentDifference: diff,
+          paymentMode,
+          paymentStatus,
+          paymentSettledAt: now,
+          settledBy: settledBy || 'Staff',
+          customerDetails: {
+            ...o.customerDetails,
+            amountPaid,
+            paymentDifference: diff,
+            paymentMode,
+            paymentStatus
+          }
+        };
+      }
+      return o;
+    }));
+
+    if (activePlacedOrder && activePlacedOrder.orderId === orderId) {
+      setActivePlacedOrder(prev => prev ? {
+        ...prev,
+        amountPaid,
+        paymentDifference: diff,
+        paymentMode,
+        paymentStatus,
+        paymentSettledAt: now,
+        settledBy: settledBy || 'Staff',
+        customerDetails: {
+          ...prev.customerDetails,
+          amountPaid,
+          paymentDifference: diff,
+          paymentMode,
+          paymentStatus
+        }
+      } : null);
+    }
+
+    dbUpdateOrderPayment(orderId, amountPaid, paymentMode, settledBy);
   };
 
   // Customer CRM Handlers
@@ -873,6 +930,7 @@ export default function App() {
         onQuickUpdatePrice={handleQuickUpdatePrice}
         onUpdateOrderStatus={handleUpdateOrderStatus}
         onCancelOrder={handleCancelOrder}
+        onUpdateOrderPayment={handleUpdateOrderPayment}
         onToggleVIP={handleToggleVIP}
         onUpdateCustomerNotes={handleUpdateCustomerNotes}
         onToggleStoreStatus={handleToggleStoreStatus}

@@ -5,7 +5,8 @@ import {
   CustomerRecord, 
   OrderStatus, 
   AdminUser,
-  DietaryType 
+  DietaryType,
+  PaymentMode 
 } from '../types';
 import { 
   MENU_ITEMS, 
@@ -526,6 +527,77 @@ export const apiUpdateOrderStatus = async (orderId: string, status: OrderStatus)
 
   if (isSupabaseConfigured() && supabase) {
     await supabase.from('orders').update({ status }).eq('order_id', orderId);
+  }
+
+  return updated;
+};
+
+export const apiUpdateOrderPayment = async (
+  orderId: string, 
+  amountPaid: number, 
+  paymentMode: PaymentMode | string, 
+  settledBy: string = 'Staff'
+): Promise<PlacedOrder> => {
+  await new Promise(r => setTimeout(r, 150));
+  const orders = getStored<PlacedOrder[]>(DB_KEYS.ORDERS, INITIAL_ORDERS);
+  const targetIndex = orders.findIndex(o => o.orderId === orderId);
+
+  if (targetIndex === -1) {
+    throw { status: 404, code: 'ORDER_NOT_FOUND', message: `Order #${orderId} not found.` } as ApiErrorResponse;
+  }
+
+  const target = orders[targetIndex];
+  const total = Number(target.totalAmount) || 0;
+  const difference = Number((total - amountPaid).toFixed(2));
+  const paymentStatus = difference <= 0 ? 'paid' : (paymentMode === 'Credit' ? 'credit' : (amountPaid > 0 ? 'partial' : 'pending'));
+  const now = new Date().toISOString();
+
+  const updated: PlacedOrder = {
+    ...target,
+    amountPaid,
+    paymentDifference: difference,
+    paymentMode,
+    paymentStatus,
+    paymentSettledAt: now,
+    settledBy,
+    customerDetails: {
+      ...target.customerDetails,
+      amountPaid,
+      paymentDifference: difference,
+      paymentMode,
+      paymentStatus
+    }
+  };
+
+  orders[targetIndex] = updated;
+  setStored(DB_KEYS.ORDERS, orders);
+
+  // Sync to REST API
+  try {
+    await fetch(`/api/orders/${encodeURIComponent(orderId)}/payment`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amountPaid, paymentMode, settledBy })
+    });
+  } catch {}
+
+  // Sync to Supabase
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      const { data: current } = await supabase.from('orders').select('customer_details').eq('order_id', orderId).single();
+      const newCust = {
+        ...(current?.customer_details || {}),
+        amountPaid,
+        paymentDifference: difference,
+        paymentMode,
+        paymentStatus,
+        paymentSettledAt: now,
+        settledBy
+      };
+      await supabase.from('orders').update({ customer_details: newCust }).eq('order_id', orderId);
+    } catch (e) {
+      console.warn('[Supabase] Failed to write payment update to cloud', e);
+    }
   }
 
   return updated;

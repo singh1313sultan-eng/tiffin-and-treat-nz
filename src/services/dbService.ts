@@ -4,7 +4,8 @@ import {
   PlacedOrder, 
   StoreLocation, 
   CustomerRecord, 
-  OrderStatus 
+  OrderStatus,
+  PaymentMode 
 } from '../types';
 import { 
   MENU_ITEMS, 
@@ -304,23 +305,38 @@ export const dbFetchOrders = async (): Promise<PlacedOrder[]> => {
         .order('created_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
-        const formatted: PlacedOrder[] = data.map(row => ({
-          orderId: row.order_id,
-          orderNumber: row.order_number,
-          createdAt: row.created_at,
-          customerDetails: row.customer_details,
-          items: row.items,
-          subtotal: Number(row.subtotal),
-          deliveryFee: Number(row.delivery_fee),
-          discount: Number(row.discount),
-          appliedCoupon: row.applied_coupon,
-          tip: Number(row.tip),
-          gstAmount: Number(row.gst_amount),
-          totalAmount: Number(row.total_amount),
-          estimatedDeliveryTime: row.estimated_delivery_time,
-          status: row.status as OrderStatus,
-          store: row.store_data
-        }));
+        const formatted: PlacedOrder[] = data.map(row => {
+          const total = Number(row.total_amount) || 0;
+          const cust = row.customer_details || {};
+          const amountPaid = cust.amountPaid != null ? Number(cust.amountPaid) : undefined;
+          const diff = amountPaid != null ? Number((total - amountPaid).toFixed(2)) : undefined;
+          const paymentMode: PaymentMode | string = cust.paymentMode || (cust.paymentMethod?.includes('cash') ? 'Cash' : 'Card');
+          const paymentStatus = cust.paymentStatus || (amountPaid != null ? (diff! <= 0 ? 'paid' : (paymentMode === 'Credit' ? 'credit' : 'partial')) : (cust.paymentMethod?.includes('cash') ? 'pending' : 'paid'));
+
+          return {
+            orderId: row.order_id,
+            orderNumber: row.order_number,
+            createdAt: row.created_at,
+            customerDetails: cust,
+            items: row.items || [],
+            subtotal: Number(row.subtotal) || 0,
+            deliveryFee: Number(row.delivery_fee) || 0,
+            discount: Number(row.discount) || 0,
+            appliedCoupon: row.applied_coupon,
+            tip: Number(row.tip) || 0,
+            gstAmount: Number(row.gst_amount) || 0,
+            totalAmount: total,
+            estimatedDeliveryTime: row.estimated_delivery_time,
+            status: row.status as OrderStatus,
+            store: row.store_data,
+            amountPaid,
+            paymentDifference: diff,
+            paymentMode,
+            paymentStatus,
+            paymentSettledAt: cust.paymentSettledAt,
+            settledBy: cust.settledBy
+          };
+        });
         setLocalStorageData(LS_KEYS.ORDERS, formatted);
         return formatted;
       }
@@ -329,6 +345,18 @@ export const dbFetchOrders = async (): Promise<PlacedOrder[]> => {
     }
   }
 
+  // Check local API /api/orders fallback
+  try {
+    const res = await fetch('/api/orders');
+    if (res.ok) {
+      const apiOrders = await res.json();
+      if (Array.isArray(apiOrders) && apiOrders.length > 0) {
+        setLocalStorageData(LS_KEYS.ORDERS, apiOrders);
+        return apiOrders;
+      }
+    }
+  } catch {}
+
   return getLocalStorageData(LS_KEYS.ORDERS, INITIAL_ORDERS);
 };
 
@@ -336,13 +364,28 @@ export const dbCreateOrder = async (order: PlacedOrder): Promise<void> => {
   const cached = getLocalStorageData<PlacedOrder[]>(LS_KEYS.ORDERS, INITIAL_ORDERS);
   setLocalStorageData(LS_KEYS.ORDERS, [order, ...cached]);
 
+  // Sync to local API
+  try {
+    await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order)
+    });
+  } catch {}
+
   if (isSupabaseConfigured() && supabase) {
     try {
       await supabase.from('orders').insert({
         order_id: order.orderId,
         order_number: order.orderNumber,
         created_at: order.createdAt,
-        customer_details: order.customerDetails,
+        customer_details: {
+          ...order.customerDetails,
+          amountPaid: order.amountPaid,
+          paymentDifference: order.paymentDifference,
+          paymentMode: order.paymentMode,
+          paymentStatus: order.paymentStatus
+        },
         items: order.items,
         subtotal: order.subtotal,
         delivery_fee: order.deliveryFee,
@@ -353,7 +396,7 @@ export const dbCreateOrder = async (order: PlacedOrder): Promise<void> => {
         total_amount: order.totalAmount,
         estimated_delivery_time: order.estimatedDeliveryTime,
         status: order.status,
-        store_id: order.store.id,
+        store_id: order.store?.id,
         store_data: order.store
       });
     } catch (e) {
@@ -373,6 +416,97 @@ export const dbUpdateOrderStatus = async (orderId: string, status: OrderStatus):
       console.error('[Supabase] Failed to update order status in cloud', e);
     }
   }
+};
+
+/**
+ * Record & update actual money paid, difference, and payment mode (Cash, Card, Credit)
+ * Persists to LocalStorage, REST API, and Supabase Cloud Database.
+ */
+export const dbUpdateOrderPayment = async (
+  orderId: string, 
+  amountPaid: number, 
+  paymentMode: PaymentMode | string, 
+  settledBy: string = 'Staff'
+): Promise<PlacedOrder | null> => {
+  const cached = getLocalStorageData<PlacedOrder[]>(LS_KEYS.ORDERS, INITIAL_ORDERS);
+  const targetIndex = cached.findIndex(o => o.orderId === orderId);
+  
+  if (targetIndex === -1) return null;
+
+  const target = cached[targetIndex];
+  const total = Number(target.totalAmount) || 0;
+  const difference = Number((total - amountPaid).toFixed(2));
+  const paymentStatus = difference <= 0 ? 'paid' : (paymentMode === 'Credit' ? 'credit' : (amountPaid > 0 ? 'partial' : 'pending'));
+  const now = new Date().toISOString();
+
+  const updatedOrder: PlacedOrder = {
+    ...target,
+    amountPaid,
+    paymentDifference: difference,
+    paymentMode,
+    paymentStatus,
+    paymentSettledAt: now,
+    settledBy,
+    customerDetails: {
+      ...target.customerDetails,
+      amountPaid,
+      paymentDifference: difference,
+      paymentMode,
+      paymentStatus
+    }
+  };
+
+  // 1. Update local cache immediately
+  cached[targetIndex] = updatedOrder;
+  setLocalStorageData(LS_KEYS.ORDERS, cached);
+
+  // 2. Update local REST API endpoint
+  try {
+    await fetch(`/api/orders/${encodeURIComponent(orderId)}/payment`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amountPaid,
+        paymentMode,
+        settledBy
+      })
+    });
+  } catch (err) {
+    console.warn('[API] Order payment PATCH failed, persisting to Supabase', err);
+  }
+
+  // 3. Update Supabase Cloud Database (JSONB customer_details)
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      const { data: current } = await supabase
+        .from('orders')
+        .select('customer_details')
+        .eq('order_id', orderId)
+        .single();
+
+      const newCustomerDetails = {
+        ...(current?.customer_details || target.customerDetails || {}),
+        amountPaid,
+        paymentDifference: difference,
+        paymentMode,
+        paymentStatus,
+        paymentSettledAt: now,
+        settledBy
+      };
+
+      await supabase
+        .from('orders')
+        .update({ customer_details: newCustomerDetails })
+        .eq('order_id', orderId);
+    } catch (e) {
+      console.error('[Supabase] Failed to update order payment in cloud', e);
+    }
+  }
+
+  // 4. Multi-tab broadcast
+  broadcastOrderUpdate(updatedOrder);
+
+  return updatedOrder;
 };
 
 // ==============================================================================

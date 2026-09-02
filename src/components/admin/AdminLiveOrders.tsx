@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
 import { 
   PlacedOrder, 
   OrderStatus, 
-  StoreLocation 
+  StoreLocation,
+  PaymentMode 
 } from '../../types';
+import { dbUpdateOrderPayment } from '../../services/dbService';
 import { 
   Clock, 
   CheckCircle2, 
@@ -26,7 +27,14 @@ import {
   ExternalLink,
   Store,
   LayoutList,
-  LayoutGrid
+  LayoutGrid,
+  Receipt,
+  CreditCard,
+  Wallet,
+  Coins,
+  AlertCircle,
+  Save,
+  Loader2
 } from 'lucide-react';
 
 interface AdminLiveOrdersProps {
@@ -34,19 +42,98 @@ interface AdminLiveOrdersProps {
   stores: StoreLocation[];
   onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
   onCancelOrder: (orderId: string) => void;
+  onUpdateOrderPayment?: (orderId: string, amountPaid: number, paymentMode: PaymentMode, settledBy?: string) => void;
 }
 
 export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
   orders,
   stores,
   onUpdateOrderStatus,
-  onCancelOrder
+  onCancelOrder,
+  onUpdateOrderPayment
 }) => {
   const [viewMode, setViewMode] = useState<'list' | 'tile'>('list');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('active');
   const [selectedStoreFilter, setSelectedStoreFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [inspectingOrder, setInspectingOrder] = useState<PlacedOrder | null>(null);
+
+  // Payment Settlement states
+  const [settlingOrder, setSettlingOrder] = useState<PlacedOrder | null>(null);
+  const [paidInput, setPaidInput] = useState<string>('');
+  const [selectedPaymentMode, setSelectedPaymentMode] = useState<PaymentMode>('Cash');
+  const [settlementNote, setSettlementNote] = useState<string>('');
+  const [isSavingPayment, setIsSavingPayment] = useState<boolean>(false);
+
+  const openPaymentSettlementModal = (order: PlacedOrder) => {
+    setSettlingOrder(order);
+    const existingPaid = order.amountPaid != null ? order.amountPaid : order.totalAmount;
+    setPaidInput(existingPaid.toString());
+    const initialMode: PaymentMode = (order.paymentMode as PaymentMode) || (order.customerDetails?.paymentMethod?.includes('cash') ? 'Cash' : 'Card');
+    setSelectedPaymentMode(initialMode);
+    setSettlementNote('');
+  };
+
+  const handleSavePaymentSettlement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!settlingOrder) return;
+    setIsSavingPayment(true);
+    const amountNum = parseFloat(paidInput) || 0;
+    try {
+      if (onUpdateOrderPayment) {
+        onUpdateOrderPayment(settlingOrder.orderId, amountNum, selectedPaymentMode, 'Staff');
+      } else {
+        await dbUpdateOrderPayment(settlingOrder.orderId, amountNum, selectedPaymentMode, 'Staff');
+      }
+      setSettlingOrder(null);
+    } catch (err) {
+      alert('Failed to save payment settlement');
+    } finally {
+      setIsSavingPayment(false);
+    }
+  };
+
+  const renderPaymentSummaryBadge = (order: PlacedOrder) => {
+    const total = Number(order.totalAmount) || 0;
+    const paid = order.amountPaid != null ? Number(order.amountPaid) : undefined;
+    const mode = order.paymentMode || (order.customerDetails?.paymentMethod?.includes('cash') ? 'Cash' : 'Card');
+    
+    if (paid != null) {
+      const diff = Number((total - paid).toFixed(2));
+      if (diff === 0) {
+        return (
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>{mode}: ${paid.toFixed(2)}</span>
+            <span className="text-emerald-600 font-semibold">• Settled</span>
+          </div>
+        );
+      } else if (diff > 0) {
+        return (
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span>{mode}: ${paid.toFixed(2)}</span>
+            <span className="text-amber-800 font-black">• Due: ${diff.toFixed(2)}</span>
+          </div>
+        );
+      } else {
+        return (
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            <span>{mode}: ${paid.toFixed(2)}</span>
+            <span className="text-blue-600 font-semibold">• Change: ${Math.abs(diff).toFixed(2)}</span>
+          </div>
+        );
+      }
+    }
+
+    return (
+      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200">
+        <span>{mode}</span>
+        <span className="text-neutral-500 font-normal">Pending</span>
+      </div>
+    );
+  };
 
   // Filter calculations
   const filteredOrders = useMemo(() => {
@@ -388,15 +475,25 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
 
                       {/* Total & Payment */}
                       <td className="py-4 px-4 align-top">
-                        <div className="space-y-1">
-                          <div className="font-mono text-sm font-bold text-emerald-700">
-                            ${order.totalAmount.toFixed(2)}
+                        <div className="space-y-1.5 min-w-[150px]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono text-sm font-extrabold text-[#1E1B18]">
+                              ${order.totalAmount.toFixed(2)}
+                            </span>
+                            <span className="text-[10px] text-[#8C8275] uppercase font-bold">Billed</span>
                           </div>
-                          <div className="text-[10px] text-[#706658] font-medium">
-                            {order.customerDetails.paymentGatewayDetails?.gateway || order.customerDetails.paymentMethod}
-                          </div>
-                          <div className="text-[9px] font-mono text-[#8C8275]">
-                            Ref: {order.customerDetails.paymentGatewayDetails?.receiptRef || 'Direct'}
+
+                          {/* Payment Mode & Settlement Badge */}
+                          {renderPaymentSummaryBadge(order)}
+
+                          <div>
+                            <button
+                              onClick={() => openPaymentSettlementModal(order)}
+                              className="text-[11px] font-bold text-[#E06D53] hover:text-[#C95338] inline-flex items-center gap-1 bg-[#FAF0ED] hover:bg-[#F5E2DC] px-2.5 py-1 rounded-lg border border-[#F0D5CD] transition-all cursor-pointer shadow-2xs"
+                            >
+                              <Receipt className="w-3 h-3" />
+                              <span>{order.amountPaid != null ? 'Edit Payment' : 'Record Payment'}</span>
+                            </button>
                           </div>
                         </div>
                       </td>
@@ -555,11 +652,21 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                     )}
                   </div>
 
-                  <div className="text-right sm:border-l sm:border-[#E8E0D2] sm:pl-3 w-full sm:w-auto flex sm:flex-col justify-between sm:justify-center items-center sm:items-end">
-                    <span className="text-[10px] uppercase font-bold text-[#8C8275]">Total NZD</span>
-                    <span className="font-mono text-sm font-bold text-emerald-600">
-                      ${order.totalAmount.toFixed(2)}
-                    </span>
+                  <div className="text-right sm:border-l sm:border-[#E8E0D2] sm:pl-3 w-full sm:w-auto flex sm:flex-col justify-between sm:justify-center items-center sm:items-end gap-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] uppercase font-bold text-[#8C8275]">Billed:</span>
+                      <span className="font-mono text-sm font-extrabold text-[#1E1B18]">
+                        ${order.totalAmount.toFixed(2)}
+                      </span>
+                    </div>
+                    {renderPaymentSummaryBadge(order)}
+                    <button
+                      onClick={() => openPaymentSettlementModal(order)}
+                      className="text-[10px] font-bold text-[#E06D53] hover:text-[#C95338] inline-flex items-center gap-1 bg-white hover:bg-[#FAF0ED] px-2 py-0.5 rounded-lg border border-[#F0D5CD] transition-all cursor-pointer"
+                    >
+                      <Receipt className="w-3 h-3" />
+                      <span>{order.amountPaid != null ? 'Edit Payment' : 'Record Payment'}</span>
+                    </button>
                   </div>
                 </div>
 
@@ -816,6 +923,248 @@ export const AdminLiveOrders: React.FC<AdminLiveOrdersProps> = ({
                 <span>Print Docket</span>
               </button>
             </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Payment Settlement & Recording Modal */}
+      {settlingOrder && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white text-[#1E1B18] rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-[#E8E0D2] space-y-5 animate-in zoom-in-95 duration-200">
+            
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-[#EBE3D5] pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-xl bg-[#FAF0ED] text-[#E06D53] flex items-center justify-center font-bold">
+                    <Receipt className="w-4 h-4" />
+                  </span>
+                  <h3 className="font-serif font-bold text-lg text-[#1E1B18]">
+                    Record / Settle Customer Payment
+                  </h3>
+                </div>
+                <p className="text-xs text-[#706658]">
+                  Order #{settlingOrder.orderNumber} • {settlingOrder.customerDetails.name} ({settlingOrder.customerDetails.phone})
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSettlingOrder(null)}
+                className="w-8 h-8 rounded-full bg-[#FAF7F2] hover:bg-[#F0EAE1] flex items-center justify-center text-[#706658] hover:text-[#1E1B18] transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Bill Summary Banner */}
+            <div className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#E8E0D2] flex items-center justify-between">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-[#8C8275] tracking-wider block">Total Billed Amount</span>
+                <span className="text-xs text-[#706658]">Includes 15% NZ GST</span>
+              </div>
+              <div className="font-mono text-2xl font-black text-[#1E1B18]">
+                NZD ${settlingOrder.totalAmount.toFixed(2)}
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSavePaymentSettlement} className="space-y-4">
+              
+              {/* Payment Mode Selection */}
+              <div>
+                <label className="block text-xs font-bold text-[#1E1B18] mb-1.5">
+                  Select Payment Mode:
+                </label>
+                <div className="grid grid-cols-3 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPaymentMode('Cash')}
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
+                      selectedPaymentMode === 'Cash'
+                        ? 'bg-emerald-50 border-emerald-500 text-emerald-800 ring-2 ring-emerald-500/20 shadow-xs'
+                        : 'bg-[#FAF7F2] border-[#E8E0D2] text-[#706658] hover:bg-white'
+                    }`}
+                  >
+                    <Coins className="w-5 h-5 text-emerald-600" />
+                    <span className="text-xs font-bold">Cash</span>
+                    <span className="text-[10px] text-neutral-500">Driver / Counter</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPaymentMode('Card')}
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
+                      selectedPaymentMode === 'Card'
+                        ? 'bg-blue-50 border-blue-500 text-blue-800 ring-2 ring-blue-500/20 shadow-xs'
+                        : 'bg-[#FAF7F2] border-[#E8E0D2] text-[#706658] hover:bg-white'
+                    }`}
+                  >
+                    <CreditCard className="w-5 h-5 text-blue-600" />
+                    <span className="text-xs font-bold">Card</span>
+                    <span className="text-[10px] text-neutral-500">EFTPOS / Credit</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedPaymentMode('Credit');
+                      if (paidInput === settlingOrder.totalAmount.toString()) {
+                        setPaidInput('0');
+                      }
+                    }}
+                    className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
+                      selectedPaymentMode === 'Credit'
+                        ? 'bg-amber-50 border-amber-500 text-amber-900 ring-2 ring-amber-500/20 shadow-xs'
+                        : 'bg-[#FAF7F2] border-[#E8E0D2] text-[#706658] hover:bg-white'
+                    }`}
+                  >
+                    <Wallet className="w-5 h-5 text-amber-600" />
+                    <span className="text-xs font-bold">Credit</span>
+                    <span className="text-[10px] text-neutral-500">Account / Khata</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Actual Money Paid Input */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-[#1E1B18]">
+                    Actual Money Paid by Customer (NZD):
+                  </label>
+                  <span className="text-[11px] text-[#8C8275]">
+                    Enter exact bills/coins received
+                  </span>
+                </div>
+
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono font-bold text-base text-[#8C8275]">$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    required
+                    value={paidInput}
+                    onChange={(e) => setPaidInput(e.target.value)}
+                    placeholder="0.00"
+                    className="w-full pl-8 pr-4 py-3 bg-[#FAF7F2] border border-[#D9CFBF] focus:border-[#E06D53] focus:bg-white rounded-2xl font-mono text-base font-bold text-[#1E1B18] focus:outline-none transition-all shadow-inner"
+                  />
+                </div>
+
+                {/* Quick Fill Chips */}
+                <div className="flex items-center gap-2 pt-1 flex-wrap">
+                  <span className="text-[10px] font-bold text-[#8C8275] uppercase">Quick:</span>
+                  <button
+                    type="button"
+                    onClick={() => setPaidInput(settlingOrder.totalAmount.toFixed(2))}
+                    className="text-[11px] font-bold bg-[#FAF7F2] hover:bg-[#F0EAE1] text-[#1E1B18] px-2.5 py-1 rounded-lg border border-[#E8E0D2] transition-colors cursor-pointer"
+                  >
+                    Exact (${settlingOrder.totalAmount.toFixed(2)})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaidInput((Math.ceil(settlingOrder.totalAmount / 10) * 10).toFixed(2))}
+                    className="text-[11px] font-bold bg-[#FAF7F2] hover:bg-[#F0EAE1] text-[#1E1B18] px-2.5 py-1 rounded-lg border border-[#E8E0D2] transition-colors cursor-pointer"
+                  >
+                    Round ${(Math.ceil(settlingOrder.totalAmount / 10) * 10).toFixed(2)}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaidInput('0')}
+                    className="text-[11px] font-bold bg-[#FAF7F2] hover:bg-[#F0EAE1] text-[#1E1B18] px-2.5 py-1 rounded-lg border border-[#E8E0D2] transition-colors cursor-pointer"
+                  >
+                    $0 (Full Credit)
+                  </button>
+                </div>
+              </div>
+
+              {/* Real-time Dynamic Difference Calculation Card */}
+              {(() => {
+                const total = settlingOrder.totalAmount;
+                const paid = parseFloat(paidInput) || 0;
+                const diff = Number((total - paid).toFixed(2));
+
+                if (diff === 0) {
+                  return (
+                    <div className="p-3.5 bg-emerald-50 border border-emerald-300 rounded-2xl flex items-center justify-between text-xs text-emerald-900 animate-in fade-in">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                        <div>
+                          <div className="font-bold text-emerald-900">Fully Settled (Paid in Full)</div>
+                          <div className="text-[11px] text-emerald-700">Customer has paid the entire order amount</div>
+                        </div>
+                      </div>
+                      <span className="font-mono font-black text-sm text-emerald-800">$0.00 balance</span>
+                    </div>
+                  );
+                } else if (diff > 0) {
+                  return (
+                    <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-2xl flex items-center justify-between text-xs text-amber-950 animate-in fade-in">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+                        <div>
+                          <div className="font-bold text-amber-900">Customer Due / Outstanding Balance</div>
+                          <div className="text-[11px] text-amber-800">
+                            {selectedPaymentMode === 'Credit' 
+                              ? 'Remaining order amount recorded as Store Credit' 
+                              : 'Underpaid by customer - outstanding balance kept on record'}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right font-mono">
+                        <span className="text-[10px] uppercase font-bold text-amber-700 block">Due Amount</span>
+                        <span className="font-black text-base text-amber-900">NZD ${diff.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div className="p-3.5 bg-blue-50 border border-blue-300 rounded-2xl flex items-center justify-between text-xs text-blue-950 animate-in fade-in">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-blue-600 shrink-0" />
+                        <div>
+                          <div className="font-bold text-blue-900">Return Change to Customer</div>
+                          <div className="text-[11px] text-blue-700">Customer handed excess cash. Hand over change to customer</div>
+                        </div>
+                      </div>
+                      <div className="text-right font-mono">
+                        <span className="text-[10px] uppercase font-bold text-blue-700 block">Change</span>
+                        <span className="font-black text-base text-blue-900">NZD ${Math.abs(diff).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  );
+                }
+              })()}
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#EBE3D5]">
+                <button
+                  type="button"
+                  onClick={() => setSettlingOrder(null)}
+                  className="px-4 py-2.5 bg-[#FAF7F2] hover:bg-[#F0EAE1] text-[#706658] hover:text-[#1E1B18] font-bold text-xs rounded-xl border border-[#E8E0D2] transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingPayment}
+                  className="px-5 py-2.5 bg-[#E06D53] hover:bg-[#C95338] text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  {isSavingPayment ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Saving Payment...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Save Payment Record</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+            </form>
 
           </div>
         </div>

@@ -172,6 +172,8 @@ export interface CustomerDetails {
 
 export type OrderStatus = 'received' | 'kitchen' | 'packed' | 'on_the_way' | 'delivered' | 'cancelled';
 
+export type PaymentMode = 'Cash' | 'Card' | 'Credit';
+
 export interface PlacedOrder {
   orderId: string;
   orderNumber: string;
@@ -188,6 +190,13 @@ export interface PlacedOrder {
   estimatedDeliveryTime: string;
   status: OrderStatus;
   store: StoreLocation;
+  // Payment settlement and accounting fields
+  amountPaid?: number; // Actual money handed over / paid by customer
+  paymentDifference?: number; // Difference: totalAmount - (amountPaid || 0)
+  paymentMode?: PaymentMode | string; // Cash, Card, Credit
+  paymentStatus?: 'paid' | 'partial' | 'credit' | 'pending';
+  paymentSettledAt?: string;
+  settledBy?: string;
 }
 
 export interface CustomerRecord {

@@ -38,6 +38,24 @@ function saveMenuFile(data: any[]) {
   fs.writeFileSync(path.resolve(dir, 'menu.json'), JSON.stringify(data, null, 2), 'utf-8');
 }
 
+function getOrdersFile(): any[] {
+  const ordersPath = path.resolve(__dirname, 'public/data/orders.json');
+  try {
+    if (fs.existsSync(ordersPath)) {
+      return JSON.parse(fs.readFileSync(ordersPath, 'utf-8'));
+    }
+  } catch (e) {
+    console.error('Failed to read orders.json', e);
+  }
+  return [];
+}
+
+function saveOrdersFile(data: any[]) {
+  const dir = path.resolve(__dirname, 'public/data');
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.resolve(dir, 'orders.json'), JSON.stringify(data, null, 2), 'utf-8');
+}
+
 // Live Mock API Backend Plugin inside Vite server
 function apiBackendPlugin(): Plugin {
   return {
@@ -210,6 +228,126 @@ function apiBackendPlugin(): Plugin {
             res.statusCode = 200;
             return res.end(JSON.stringify({ success: true }));
           }
+        }
+
+        // GET /api/orders
+        if (req.method === 'GET' && (url === '/api/orders' || url.startsWith('/api/orders?'))) {
+          const orders = getOrdersFile();
+          res.statusCode = 200;
+          return res.end(JSON.stringify(orders));
+        }
+
+        // POST /api/orders - Add new order
+        if (req.method === 'POST' && url === '/api/orders') {
+          const body = await parseBody(req);
+          const orders = getOrdersFile();
+          orders.unshift(body);
+          saveOrdersFile(orders);
+          res.statusCode = 201;
+          return res.end(JSON.stringify({ success: true, order: body }));
+        }
+
+        // PATCH /api/orders/:id/payment (Record / Edit actual money paid and payment mode)
+        const orderPaymentMatch = url.match(/^\/api\/orders\/([^?\/]+)\/payment/);
+        if (orderPaymentMatch && (req.method === 'PATCH' || req.method === 'PUT' || req.method === 'POST')) {
+          const orderId = decodeURIComponent(orderPaymentMatch[1]);
+          const body = await parseBody(req);
+          const orders = getOrdersFile();
+          const orderIndex = orders.findIndex((o: any) => o.orderId === orderId || o.id === orderId);
+
+          const amountPaid = Number(body.amountPaid) || 0;
+          const paymentMode = body.paymentMode || 'Cash';
+          const settledBy = body.settledBy || 'Staff';
+
+          if (orderIndex !== -1) {
+            const target = orders[orderIndex];
+            const total = Number(target.totalAmount) || 0;
+            const difference = Number((total - amountPaid).toFixed(2));
+            const paymentStatus = difference <= 0 ? 'paid' : (paymentMode === 'Credit' ? 'credit' : (amountPaid > 0 ? 'partial' : 'pending'));
+
+            target.amountPaid = amountPaid;
+            target.paymentDifference = difference;
+            target.paymentMode = paymentMode;
+            target.paymentStatus = paymentStatus;
+            target.paymentSettledAt = new Date().toISOString();
+            target.settledBy = settledBy;
+            if (target.customerDetails) {
+              target.customerDetails.amountPaid = amountPaid;
+              target.customerDetails.paymentDifference = difference;
+              target.customerDetails.paymentMode = paymentMode;
+              target.customerDetails.paymentStatus = paymentStatus;
+            }
+
+            orders[orderIndex] = target;
+            saveOrdersFile(orders);
+            res.statusCode = 200;
+            return res.end(JSON.stringify({ success: true, order: target }));
+          } else {
+            res.statusCode = 200;
+            return res.end(JSON.stringify({ 
+              success: true, 
+              order: { orderId, amountPaid, paymentDifference: 0, paymentMode, paymentStatus: 'paid' } 
+            }));
+          }
+        }
+
+        // GET /api/reports/sales (Sales report & billing bifurcation)
+        if (req.method === 'GET' && (url === '/api/reports/sales' || url.startsWith('/api/reports/sales?'))) {
+          const orders = getOrdersFile();
+          const validOrders = orders.filter((o: any) => o.status !== 'cancelled');
+
+          let totalGross = 0;
+          let totalPaid = 0;
+          let totalDue = 0;
+          let totalCash = 0;
+          let totalCard = 0;
+          let totalCredit = 0;
+          let cashCount = 0;
+          let cardCount = 0;
+          let creditCount = 0;
+
+          validOrders.forEach((o: any) => {
+            const total = Number(o.totalAmount) || 0;
+            const paid = o.amountPaid != null ? Number(o.amountPaid) : total;
+            const mode = o.paymentMode || (o.customerDetails?.paymentMethod?.includes('cash') ? 'Cash' : 'Card');
+            const diff = Number((total - paid).toFixed(2));
+
+            totalGross += total;
+            totalPaid += paid;
+            if (diff > 0) totalDue += diff;
+
+            if (mode === 'Cash') {
+              totalCash += paid;
+              cashCount++;
+            } else if (mode === 'Credit') {
+              totalCredit += (diff > 0 ? diff : total);
+              creditCount++;
+            } else {
+              totalCard += paid;
+              cardCount++;
+            }
+          });
+
+          const gstTotal = Number((totalGross * (3 / 23)).toFixed(2));
+          const netRevenue = Number((totalGross - gstTotal).toFixed(2));
+
+          res.statusCode = 200;
+          return res.end(JSON.stringify({
+            success: true,
+            summary: {
+              totalOrders: validOrders.length,
+              grossInvoiced: Number(totalGross.toFixed(2)),
+              actualCollected: Number(totalPaid.toFixed(2)),
+              outstandingDue: Number(totalDue.toFixed(2)),
+              gst15Percent: gstTotal,
+              netRevenueExGst: netRevenue,
+              bifurcation: {
+                cash: { count: cashCount, totalCollected: Number(totalCash.toFixed(2)) },
+                card: { count: cardCount, totalCollected: Number(totalCard.toFixed(2)) },
+                credit: { count: creditCount, totalDue: Number(totalCredit.toFixed(2)) }
+              }
+            }
+          }));
         }
 
         // Return standard API status

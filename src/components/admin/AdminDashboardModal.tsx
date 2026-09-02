@@ -6,7 +6,8 @@ import {
   CustomerRecord, 
   OrderStatus, 
   AdminTabType,
-  AdminUser
+  AdminUser,
+  PaymentMode
 } from '../../types';
 import { AdminLiveOrders } from './AdminLiveOrders';
 import { AdminMenuManager } from './AdminMenuManager';
@@ -51,6 +52,7 @@ interface AdminDashboardModalProps {
   onQuickUpdatePrice: (itemId: string, newPrice: number) => void;
   onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
   onCancelOrder: (orderId: string) => void;
+  onUpdateOrderPayment?: (orderId: string, amountPaid: number, paymentMode: PaymentMode, settledBy?: string) => void;
   onToggleVIP: (customerId: string) => void;
   onUpdateCustomerNotes: (customerId: string, notes: string) => void;
   onToggleStoreStatus: (storeId: string, isOpen: boolean) => void;
@@ -76,6 +78,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
   onQuickUpdatePrice,
   onUpdateOrderStatus,
   onCancelOrder,
+  onUpdateOrderPayment,
   onToggleVIP,
   onUpdateCustomerNotes,
   onToggleStoreStatus,
@@ -324,6 +327,13 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
               onCancelOrder={(id) => {
                 onCancelOrder(id);
                 showAdminToast('Order cancelled');
+              }}
+              onUpdateOrderPayment={(orderId, amountPaid, paymentMode, settledBy) => {
+                if (onUpdateOrderPayment) {
+                  onUpdateOrderPayment(orderId, amountPaid, paymentMode, settledBy);
+                }
+                playChime();
+                showAdminToast(`Payment recorded: ${paymentMode} • $${amountPaid.toFixed(2)}`);
               }}
             />
           )}
